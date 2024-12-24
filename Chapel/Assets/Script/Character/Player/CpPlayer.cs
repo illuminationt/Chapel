@@ -10,6 +10,7 @@ public class CpPlayer : MonoBehaviour
     Transform _transform = null;
     CpPilotComponent _pilotComponent = null;
     CpShootComponent _shootComponent = null;
+    CpDebugComponent _debugComponent = null;
     CpPlayerForwardCalculator _forwardCalculator = null;
 
     public int TestValue = 123;
@@ -32,6 +33,7 @@ public class CpPlayer : MonoBehaviour
         debugDrawDirection();
 
         updateShoot();
+
     }
 
     void updatePilot()

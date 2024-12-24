@@ -12,7 +12,7 @@ public class CpPlayerForwardCalculator
     public void execute()
     {
         var controller = CpInputManager.Instance;
-        Vector2 currentDirection = controller.getDirectionInput();
+        Vector2 currentDirection = controller.GetDirectionInput();
 
         const float directionInputDeadZone = 0.8f;
         float currentDirInputSize = currentDirection.magnitude;

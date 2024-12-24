@@ -9,7 +9,7 @@ public class CpPilotComponent : MonoBehaviour
     {
         var input = CpInputManager.Instance;
 
-        Vector2 deltaMove = input.getMoveInput();
+        Vector2 deltaMove = input.GetMoveInput();
         deltaMove *= _speed * Time.deltaTime;
         move(deltaMove);
     }

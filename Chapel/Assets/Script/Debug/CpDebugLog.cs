@@ -4,8 +4,8 @@ using UnityEngine;
 
 public static class CpDebug
 {
-    const string ConditionalDefine = "DEBUG_LOG_ON";
-    [System.Diagnostics.Conditional(ConditionalDefine)]
+    //const string ConditionalDefine = "DEBUG_LOG_ON";
+    //[System.Diagnostics.Conditional(ConditionalDefine)]
     public static void Log(object Message) => UnityEngine.Debug.Log(Message);
     public static void LogWarning(object Message) => UnityEngine.Debug.LogWarning(Message);
     public static void LogError(object Message) => UnityEngine.Debug.LogError(Message);

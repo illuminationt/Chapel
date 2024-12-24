@@ -28,6 +28,5 @@ public static class CpDebugUtil
         CpDebugUtil.DrawLine(end, end + right * arrowSize, color, duration);
         CpDebugUtil.DrawLine(end, end + left * arrowSize, color, duration);
     }
-
 }
 

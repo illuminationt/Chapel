@@ -5,6 +5,8 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 // ゲーム内で使うボタン。特定のHIDに依存しない、抽象化した入力
 public enum ECpButton
@@ -12,6 +14,14 @@ public enum ECpButton
     Shoot,
     Decide,
     Pause,
+
+    UiDecide,
+}
+
+public enum ECpInputActionType
+{
+    Player,
+    UI,
 }
 
 public struct FCpButtonInput
@@ -42,6 +52,7 @@ public struct FCpButtonInput
     bool bWasReleased;
 }
 
+
 public struct FCpPendingInput
 {
     public void Update(CpInputActions inputActions)
@@ -52,6 +63,21 @@ public struct FCpPendingInput
         _shootButtonInput = FCpButtonInput.Get(inputActions.Player.Shoot);
         _decideButtonInput = FCpButtonInput.Get(inputActions.Player.Decide);
         _pauseButtonInput = FCpButtonInput.Get(inputActions.Player.Pause);
+    }
+
+    public void  Update(PlayerInput playerInput)
+    {
+        InputActionMap inputActionMapPlayer = playerInput.actions.FindActionMap("Player");
+        _move = inputActionMapPlayer["Move"].ReadValue<Vector2>();
+        _direction = inputActionMapPlayer["Direction"].ReadValue<Vector2>();
+        _shootButtonInput = FCpButtonInput.Get(inputActionMapPlayer["Shoot"]);
+        _decideButtonInput = FCpButtonInput.Get(inputActionMapPlayer["Decide"]);
+        _pauseButtonInput = FCpButtonInput.Get(inputActionMapPlayer["Pause"]);
+
+        // UI
+        InputActionMap inputActionMapUI = playerInput.actions.FindActionMap("UI");
+        _uiMove = inputActionMapUI["Move"].ReadValue<Vector2>();
+        _uiDecideInput = FCpButtonInput.Get(inputActionMapUI["Decide"]);
     }
     public bool ExistsInput()
     {
@@ -81,6 +107,7 @@ public struct FCpPendingInput
 
     public Vector2 getMove() => _move;
     public Vector2 getDirection() => _direction;
+    public Vector2 getUiMove() => _uiMove;
     public bool WasPressed(ECpButton button)
     {
         FCpButtonInput input = FindButtonInput(button);
@@ -106,6 +133,8 @@ public struct FCpPendingInput
             case ECpButton.Shoot:return _shootButtonInput;
             case ECpButton.Decide:return _decideButtonInput;
             case ECpButton.Pause:return _pauseButtonInput;
+
+            case ECpButton.UiDecide:return _uiDecideInput;
             default:
                 CpDebug.LogError("存在しないボタンを使おうとしました");
                 FCpButtonInput dummy = new FCpButtonInput();
@@ -113,11 +142,16 @@ public struct FCpPendingInput
         }
     }
 
-    public Vector2 _move;
-    public Vector2 _direction;
-    public FCpButtonInput _shootButtonInput;
-    public FCpButtonInput _decideButtonInput;
-    public FCpButtonInput _pauseButtonInput;
+    // Player関連
+    Vector2 _move;
+    Vector2 _direction;
+    FCpButtonInput _shootButtonInput;
+    FCpButtonInput _decideButtonInput;
+    FCpButtonInput _pauseButtonInput;
+
+    // UI関連
+    Vector2 _uiMove;
+    FCpButtonInput _uiDecideInput;
 }
 
 public class CpInputManager : SingletonMonoBehaviour<CpInputManager>
@@ -135,12 +169,32 @@ public class CpInputManager : SingletonMonoBehaviour<CpInputManager>
 
     protected override void Awake()
     {
+        _input = gameObject.AddComponent<PlayerInput>();
+
+        //AsyncOperationHandle<PlayerInput> handle=Addressables.LoadAssetAsync<PlayerInput>()
+        var op = Addressables.LoadAssetAsync<InputActionAsset>("CpInputActions");
+        InputActionAsset inputActionAsset = op.WaitForCompletion();
+        _input.actions = inputActionAsset;
         _cpInputActions = new CpInputActions();
         _cpInputActions.Enable();
+
+        SwitchInputAction(ECpInputActionType.Player);
     }
     void Update()
     {
         UpdateAllInputs();
+    }
+
+    public void SwitchInputAction(ECpInputActionType newActionType)
+    {
+        string actionStr = newActionType switch
+        {
+            ECpInputActionType.Player => "Player",
+            ECpInputActionType.UI => "UI",
+            _ => CpDebug.LogErrorRetStr("ERROR")
+        };
+
+        _input.SwitchCurrentActionMap(actionStr);
     }
 
     public Vector2 GetMoveInput() { return _pendingInput.getMove(); }
@@ -151,10 +205,12 @@ public class CpInputManager : SingletonMonoBehaviour<CpInputManager>
 
     void UpdateAllInputs()
     {
-        _pendingInput.Update(_cpInputActions);
+        //_pendingInput.Update(_cpInputActions);
+        _pendingInput.Update(_input);
     }
 
     CpInputActions _cpInputActions;
+    PlayerInput _input;
     FCpPendingInput _pendingInput;
 }
 

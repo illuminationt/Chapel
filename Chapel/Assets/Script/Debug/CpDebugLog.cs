@@ -9,6 +9,11 @@ public static class CpDebug
     public static void Log(object Message) => UnityEngine.Debug.Log(Message);
     public static void LogWarning(object Message) => UnityEngine.Debug.LogWarning(Message);
     public static void LogError(object Message) => UnityEngine.Debug.LogError(Message);
+    public static string LogErrorRetStr(object Message)
+    {
+        UnityEngine.Debug.LogError(Message);
+        return "ERROR";
+    }
     public static void LogError() => LogError("‚È‚É‚©ƒGƒ‰[‹N‚«‚Ä‚Ü‚·");
     public static void LogVerbose(object Message)
     {

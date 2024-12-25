@@ -28,5 +28,15 @@ public class CpDebugComponent : MonoBehaviour
         {
             CpDebug.LogError("SHOOT RELEASED");
         }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            input.SwitchInputAction(ECpInputActionType.Player);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            input.SwitchInputAction(ECpInputActionType.UI);
+        }
     }
 }

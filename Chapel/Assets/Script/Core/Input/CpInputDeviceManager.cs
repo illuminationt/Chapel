@@ -16,6 +16,7 @@ public class CpInputDeviceManager
     InputAction inputActionSwitchProController = new InputAction(type: InputActionType.PassThrough, binding: "<SwitchProControllerHID>/*", interactions: "Press");
 
     TSltBitFlag<ECpInputDeviceType> _latestInputDeviceTypes;
+
     public CpInputDeviceManager()
     {
         inputActionKeyboard.Enable();
@@ -45,6 +46,25 @@ public class CpInputDeviceManager
         ECpInputDeviceType prioritizeDevice = GetLatestPrioritizeInputDevice();
         ECpControlScheme prioritizeScheme = CpInputUtil.ToControlScheme(prioritizeDevice);
         return prioritizeScheme;
+    }
+
+    public bool IsTriggered(ECpInputDeviceType device)
+    {
+        InputAction deviceInputAction = FindInputAction(device);
+        return deviceInputAction.triggered;
+    }
+    public bool IsMouseTriggered() => inputActionMouse.triggered;
+
+    InputAction FindInputAction(ECpInputDeviceType device)
+    {
+        return device switch
+        {
+            ECpInputDeviceType.KeyboardAndMouse => inputActionKeyboard,
+            ECpInputDeviceType.XBox => inputActionXInput,
+            ECpInputDeviceType.DualShock4 => inputActionDualShock4,
+            ECpInputDeviceType.Switch => inputActionSwitchProController,
+            _ => null
+        };
     }
 
     ECpInputDeviceType GetLatestPrioritizeInputDevice()

@@ -45,6 +45,13 @@ public enum ECpInputDeviceType
     Max,
 }
 
+public enum ECpDirectionInputDevice
+{
+    None,
+    Mouse,
+    RightStick,
+}
+
 public static class CpInputUtil
 {
     public static ECpControlScheme ToControlScheme(ECpInputDeviceType device)

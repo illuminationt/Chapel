@@ -30,16 +30,15 @@ public class CpPlayerForwardCalculator
     // 狙う的となる焦点座標を算出
     Vector2 CalcFocalLocation()
     {
-        CpInputDeviceManager deviceManager = CpInputDeviceManager.Get();
-        ECpControlScheme currentScheme = deviceManager.GetPrioritizeControlScheme();
-
-        switch (currentScheme)
+        CpInputManager inputManager = CpInputManager.Get();
+        ECpDirectionInputDevice directionInputDevice = inputManager.GetDirectionInputDevice();
+        switch (directionInputDevice)
         {
-            case ECpControlScheme.Gamepad:
-                return CalcFocalLocation_Gamepad();
-            case ECpControlScheme.KeyboardAndMouse:
-                return CalcFocalLocation_KeyboardAndMouse();
-            case ECpControlScheme.None:
+            case ECpDirectionInputDevice.RightStick:
+                return CalcFocalLocation_RightStick();
+            case ECpDirectionInputDevice.Mouse:
+                return CalcFocalLocation_Mouse();
+            case ECpDirectionInputDevice.None:
                 // まだ操作入力を受けていないならデフォルト方向を向くような座標を返す
                 {
                     Vector2 defaultFocal = SltMath.AddVec(playerTransfomrm.position, Vector2.right * 100f);
@@ -51,7 +50,7 @@ public class CpPlayerForwardCalculator
         }
     }
 
-    Vector2 CalcFocalLocation_Gamepad()
+    Vector2 CalcFocalLocation_RightStick()
     {
         var controller = CpInputManager.Instance;
         Vector2 currentDirection = controller.GetDirectionInput();
@@ -67,7 +66,7 @@ public class CpPlayerForwardCalculator
         return retFocalLocation;
     }
 
-    Vector2 CalcFocalLocation_KeyboardAndMouse()
+    Vector2 CalcFocalLocation_Mouse()
     {
         var input = CpInputManager.Instance;
         Vector2 mouseScreenPosition = input.GetMouseLocation();

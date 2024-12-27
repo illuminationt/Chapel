@@ -84,8 +84,8 @@ public struct FCpPendingInput
         bButtonInputExists |= _decideButtonInput.ExistsInput();
         bButtonInputExists |= _pauseButtonInput.ExistsInput();
         return bButtonInputExists;
-
     }
+
 
     public void Reset()
     {
@@ -168,13 +168,17 @@ public class CpInputManager : SingletonMonoBehaviour<CpInputManager>
         SwitchInputAction(ECpInputActionType.Player);
 
         _deviceManager = new CpInputDeviceManager();
+        _latestDirectionInputDevice = ECpDirectionInputDevice.None;
     }
     void Update()
     {
         UpdateAllInputs();
+        UpdateDirectionInputDevice();
         _deviceManager.Update();
     }
 
+
+    public static CpInputManager Get() => Instance;
     public CpInputDeviceManager GetInputDeviceManager() => _deviceManager;
 
     public void SwitchInputAction(ECpInputActionType newActionType)
@@ -207,13 +211,41 @@ public class CpInputManager : SingletonMonoBehaviour<CpInputManager>
         };
     }
 
+    public ECpDirectionInputDevice GetDirectionInputDevice() => _latestDirectionInputDevice;
+
     void UpdateAllInputs()
     {
         //_pendingInput.Update(_cpInputActions);
         _pendingInput.Update(_input);
     }
 
+    void UpdateDirectionInputDevice()
+    {
+        ECpDirectionInputDevice currentDirInputDevice = CalcDirectionInputDevice();
+        if (currentDirInputDevice != ECpDirectionInputDevice.None)
+        {
+            _latestDirectionInputDevice = currentDirInputDevice;
+        }
+    }
+    ECpDirectionInputDevice CalcDirectionInputDevice()
+    {
+        bool bPadDirectionTriggered = GetDirectionInput().magnitude > 0.8f;
+        if (bPadDirectionTriggered)
+        {
+            return ECpDirectionInputDevice.RightStick;
+        }
+        bool bMouseTriggered = _deviceManager.IsMouseTriggered();
+        if (bMouseTriggered)
+        {
+            return ECpDirectionInputDevice.Mouse;
+        }
+
+        return ECpDirectionInputDevice.None;
+    }
+
+
     CpInputDeviceManager _deviceManager;
     PlayerInput _input;
     FCpPendingInput _pendingInput;
+    ECpDirectionInputDevice _latestDirectionInputDevice;
 }

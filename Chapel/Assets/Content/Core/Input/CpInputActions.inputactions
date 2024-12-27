@@ -49,6 +49,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "MouseLocation",
+                    "type": "Value",
+                    "id": "9982bf4c-510f-44be-b959-57c5c2e1ad87",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -153,19 +162,19 @@
                 },
                 {
                     "name": "",
-                    "id": "ea5f7e95-d2a9-4e7c-bebf-4bedd65da28e",
-                    "path": "<Gamepad>/rightStick",
+                    "id": "7b370759-059e-4e45-bb89-59187e1715fd",
+                    "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Direction",
+                    "action": "Decide",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "7b370759-059e-4e45-bb89-59187e1715fd",
-                    "path": "",
+                    "id": "82e32856-4990-4378-bf5d-73ae3b53ae02",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -176,11 +185,44 @@
                 {
                     "name": "",
                     "id": "e2d283a0-984b-4d2b-969c-04a7a64cf83c",
-                    "path": "",
+                    "path": "<Gamepad>/start",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "54fb806a-e541-47a7-b99e-5d93b1dc4ece",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "209527be-9cd6-4d59-afda-5e6b4ddec540",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseLocation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "30d44284-f99a-415d-b327-8985f15dbead",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Direction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

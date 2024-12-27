@@ -1,6 +1,8 @@
+using SltUtil;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class CpPlayerForwardCalculator
 {
@@ -10,6 +12,46 @@ public class CpPlayerForwardCalculator
     }
 
     public void execute()
+    {
+        Vector2 start = playerTransfomrm.position;
+        Vector2 end = start + getForwardVector() * 5f;
+
+        SltDebugDraw.DrawArrow(start, end, Color.green, 0.1f, 0f);
+    }
+
+    public Vector2 getForwardVector()
+    {
+        Vector2 selfPosition = playerTransfomrm.position;
+        Vector2 focalPosition = CalcFocalLocation();
+        Vector2 retForward = (focalPosition - selfPosition).normalized;
+        return retForward;
+    }
+
+    // 狙う的となる焦点座標を算出
+    Vector2 CalcFocalLocation()
+    {
+        CpInputDeviceManager deviceManager = CpInputDeviceManager.Get();
+        ECpControlScheme currentScheme = deviceManager.GetPrioritizeControlScheme();
+
+        switch (currentScheme)
+        {
+            case ECpControlScheme.Gamepad:
+                return CalcFocalLocation_Gamepad();
+            case ECpControlScheme.KeyboardAndMouse:
+                return CalcFocalLocation_KeyboardAndMouse();
+            case ECpControlScheme.None:
+                // まだ操作入力を受けていないならデフォルト方向を向くような座標を返す
+                {
+                    Vector2 defaultFocal = SltMath.AddVec(playerTransfomrm.position, Vector2.right * 100f);
+                    return defaultFocal;
+                }
+            default:
+                Assert.IsTrue(false);
+                return Vector2.zero;
+        }
+    }
+
+    Vector2 CalcFocalLocation_Gamepad()
     {
         var controller = CpInputManager.Instance;
         Vector2 currentDirection = controller.GetDirectionInput();
@@ -21,14 +63,17 @@ public class CpPlayerForwardCalculator
             latestForwardVector = currentDirection;
         }
 
-        CpDebug.Log("dir"+currentDirection);
+        Vector2 retFocalLocation = SltMath.AddVec(playerTransfomrm.position, latestForwardVector * 100f);
+        return retFocalLocation;
     }
 
-    public Vector2 getForwardVector()
+    Vector2 CalcFocalLocation_KeyboardAndMouse()
     {
-        return latestForwardVector;
+        var input = CpInputManager.Instance;
+        Vector2 mouseScreenPosition = input.GetMouseLocation();
+        Vector2 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mouseScreenPosition);
+        return mouseWorldPosition;
     }
-
 
     Transform playerTransfomrm;
     Vector2 latestForwardVector = Vector2.right;

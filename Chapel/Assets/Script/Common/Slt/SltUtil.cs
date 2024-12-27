@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SltUtil
 {
-    public static class Math
+    public static class SltMath
     {
         public static bool IsNearlyEqual(float a, float b, float tolerance = 0.01f)
         {
@@ -19,6 +19,23 @@ namespace SltUtil
         {
             float VecSize = Vec.magnitude;
             return IsNearlyEqual(VecSize, Size, SizeTolerance);
+        }
+
+        public static Vector2 AddVec(in Vector2 v1, in Vector2 v2)
+        {
+            return v1 + v2;
+        }
+        public static Vector2 AddVec(in Vector2 v1,in Vector3 v2)
+        {
+            return new Vector2(v1.x + v2.x, v1.y + v2.y);
+        }
+        public static Vector2 AddVec(in Vector3 v1,in Vector2 v2)
+        {
+            return new Vector2(v1.x+v2.x, v1.y+v2.y);
+        }
+        public static Vector2 AddVec(in Vector3 v1, in Vector3 v2)
+        {
+            return new Vector2(v1.x+v2.x,v1.y+v2.y);
         }
     }
 }

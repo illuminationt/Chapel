@@ -71,6 +71,15 @@ public partial class @CpInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MouseLocation"",
+                    ""type"": ""Value"",
+                    ""id"": ""9982bf4c-510f-44be-b959-57c5c2e1ad87"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -175,19 +184,19 @@ public partial class @CpInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""ea5f7e95-d2a9-4e7c-bebf-4bedd65da28e"",
-                    ""path"": ""<Gamepad>/rightStick"",
+                    ""id"": ""7b370759-059e-4e45-bb89-59187e1715fd"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Direction"",
+                    ""action"": ""Decide"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""7b370759-059e-4e45-bb89-59187e1715fd"",
-                    ""path"": """",
+                    ""id"": ""82e32856-4990-4378-bf5d-73ae3b53ae02"",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -198,11 +207,44 @@ public partial class @CpInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""e2d283a0-984b-4d2b-969c-04a7a64cf83c"",
-                    ""path"": """",
+                    ""path"": ""<Gamepad>/start"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""54fb806a-e541-47a7-b99e-5d93b1dc4ece"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""209527be-9cd6-4d59-afda-5e6b4ddec540"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MouseLocation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""30d44284-f99a-415d-b327-8985f15dbead"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Direction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -343,6 +385,7 @@ public partial class @CpInputActions: IInputActionCollection2, IDisposable
         m_Player_Direction = m_Player.FindAction("Direction", throwIfNotFound: true);
         m_Player_Decide = m_Player.FindAction("Decide", throwIfNotFound: true);
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
+        m_Player_MouseLocation = m_Player.FindAction("MouseLocation", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Move = m_UI.FindAction("Move", throwIfNotFound: true);
@@ -413,6 +456,7 @@ public partial class @CpInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Direction;
     private readonly InputAction m_Player_Decide;
     private readonly InputAction m_Player_Pause;
+    private readonly InputAction m_Player_MouseLocation;
     public struct PlayerActions
     {
         private @CpInputActions m_Wrapper;
@@ -422,6 +466,7 @@ public partial class @CpInputActions: IInputActionCollection2, IDisposable
         public InputAction @Direction => m_Wrapper.m_Player_Direction;
         public InputAction @Decide => m_Wrapper.m_Player_Decide;
         public InputAction @Pause => m_Wrapper.m_Player_Pause;
+        public InputAction @MouseLocation => m_Wrapper.m_Player_MouseLocation;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -446,6 +491,9 @@ public partial class @CpInputActions: IInputActionCollection2, IDisposable
             @Pause.started += instance.OnPause;
             @Pause.performed += instance.OnPause;
             @Pause.canceled += instance.OnPause;
+            @MouseLocation.started += instance.OnMouseLocation;
+            @MouseLocation.performed += instance.OnMouseLocation;
+            @MouseLocation.canceled += instance.OnMouseLocation;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -465,6 +513,9 @@ public partial class @CpInputActions: IInputActionCollection2, IDisposable
             @Pause.started -= instance.OnPause;
             @Pause.performed -= instance.OnPause;
             @Pause.canceled -= instance.OnPause;
+            @MouseLocation.started -= instance.OnMouseLocation;
+            @MouseLocation.performed -= instance.OnMouseLocation;
+            @MouseLocation.canceled -= instance.OnMouseLocation;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -543,6 +594,7 @@ public partial class @CpInputActions: IInputActionCollection2, IDisposable
         void OnDirection(InputAction.CallbackContext context);
         void OnDecide(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
+        void OnMouseLocation(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

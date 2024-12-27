@@ -53,6 +53,6 @@ public class CpPlayer : MonoBehaviour
         Vector2 dir = _forwardCalculator.getForwardVector();
         Vector2 start = _transform.position;
         Vector2 end = start + dir * 22f;
-        CpDebugUtil.DrawArrow(start, end, 0f, Color.green);
+        // SltDebugDraw.DrawArrow(start, end, 3f, 0f, Color.green);
     }
 }

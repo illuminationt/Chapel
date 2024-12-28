@@ -13,8 +13,8 @@ public class CpShootComponent : MonoBehaviour
 {
     public GameObject testShotPrefab = null;
     public FCpMoveParamLinear MoveParamLinear;
-    public CpPlayerWeaponParam WeaponParamDefault;
-    public CpPlayerWeaponParam WeaponParamSpecial;
+    public CpPlayerWeaponParamScriptableObject PlayerWeaponParamScriptableObject;
+    public CpPlayerWeaponParamScriptableObject PlayerWeaponParamScriptableObject2;
 
     CpPlayerShootSlot _slotDefault = new CpPlayerShootSlot();
     CpPlayerShootSlot _slotSpecial = new CpPlayerShootSlot();
@@ -39,11 +39,11 @@ public class CpShootComponent : MonoBehaviour
 
     void RegisterDefaultWeapon()
     {
-        _slotDefault.RegisterWeapon(WeaponParamDefault);
+        _slotDefault.RegisterWeapon(PlayerWeaponParamScriptableObject.WeaponParam);
     }
     void RegisterSpecialWeapon()
     {
-        _slotSpecial.RegisterWeapon(WeaponParamSpecial);
+        _slotDefault.RegisterWeapon(PlayerWeaponParamScriptableObject2.WeaponParam);
     }
 
     CpShotBase CreateShot(GameObject prefab)

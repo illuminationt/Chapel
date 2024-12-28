@@ -295,6 +295,14 @@ PrefabInstance:
       value: 77
       objectReference: {fileID: 0}
     - target: {fileID: 4952226926188075212, guid: d791dde1f08494d4ea1807c284c44fa2, type: 3}
+      propertyPath: PlayerWeaponParamScriptableObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 20161d4ba6e862d44906e1f37087ff4d, type: 2}
+    - target: {fileID: 4952226926188075212, guid: d791dde1f08494d4ea1807c284c44fa2, type: 3}
+      propertyPath: PlayerWeaponParamScriptableObject2
+      value: 
+      objectReference: {fileID: 11400000, guid: bb46352c55fa64f41add4a10311a01b0, type: 2}
+    - target: {fileID: 4952226926188075212, guid: d791dde1f08494d4ea1807c284c44fa2, type: 3}
       propertyPath: WeaponParamDefault._weaponElements.Array.size
       value: 3
       objectReference: {fileID: 0}
@@ -404,7 +412,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4952226926188075212, guid: d791dde1f08494d4ea1807c284c44fa2, type: 3}
       propertyPath: WeaponParamDefault._weaponElements.Array.data[2].WeaponShotParam.LocationParam.Param_Offset.Offset.x
-      value: 1
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4952226926188075212, guid: d791dde1f08494d4ea1807c284c44fa2, type: 3}
+      propertyPath: WeaponParamDefault._weaponElements.Array.data[2].WeaponShotParam.LocationParam.Param_Offset.Offset.y
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4952226926188075212, guid: d791dde1f08494d4ea1807c284c44fa2, type: 3}
       propertyPath: WeaponParamDefault._weaponElements.Array.data[2].WeaponShotParam.MoveParam.MoveParamLinear.MaxSpeedf

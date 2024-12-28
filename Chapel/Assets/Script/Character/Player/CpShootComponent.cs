@@ -4,6 +4,7 @@ using UnityEngine;
 
 public struct FCpShootControlParam
 {
+    public CpPlayer Player;
     public Vector2 origin;
     public Vector2 forward;
 }
@@ -12,25 +13,37 @@ public class CpShootComponent : MonoBehaviour
 {
     public GameObject testShotPrefab = null;
     public FCpMoveParamLinear MoveParamLinear;
+    public CpPlayerWeaponParam WeaponParamDefault;
+    public CpPlayerWeaponParam WeaponParamSpecial;
+
+    CpPlayerShootSlot _slotDefault = new CpPlayerShootSlot();
+    CpPlayerShootSlot _slotSpecial = new CpPlayerShootSlot();
+
+
     // 弾丸発射処理.
     // 外部からのパラメータはcontrolParamで受け取る.
     public void execute(in FCpShootControlParam controlParam)
     {
-        CpInputManager input = CpInputManager.Get();
-        if (input.WasPressed(ECpButton.Shoot) || input.IsPressHold(ECpButton.Shoot))
-        {
-            CpShotBase shot = CreateShot(testShotPrefab);
-            shot.transform.position = transform.position;
-            MoveParamLinear.Degree = SltMath.ToDegree(controlParam.forward);
+        _slotDefault.Update(controlParam);
+        _slotSpecial.Update(controlParam);
 
-            ICpMover mover = shot as ICpMover;
-            mover.StartMove(MoveParamLinear);
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            RegisterDefaultWeapon();
+        }
+        if (Input.GetKeyUp(KeyCode.U))
+        {
+            RegisterSpecialWeapon();
         }
     }
 
-    private void Update()
+    void RegisterDefaultWeapon()
     {
-
+        _slotDefault.RegisterWeapon(WeaponParamDefault);
+    }
+    void RegisterSpecialWeapon()
+    {
+        _slotSpecial.RegisterWeapon(WeaponParamSpecial);
     }
 
     CpShotBase CreateShot(GameObject prefab)

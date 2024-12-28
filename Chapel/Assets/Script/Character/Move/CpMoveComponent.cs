@@ -25,6 +25,10 @@ public class CpMoveComponent : MonoBehaviour
     {
         _moverManager.RequestStart(moveParamLinear);
     }
+    public void RequestStart(in FCpMoveParamCurve moveParamCurve)
+    {
+        _moverManager.RequestStart(moveParamCurve);
+    }
 
 
     public void RequestStart(CpMoveParamScriptableObjectBase moveParamSO)

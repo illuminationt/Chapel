@@ -30,16 +30,6 @@ public class CpDebugComponent : MonoBehaviour
             CpDebug.LogError("SHOOT RELEASED");
         }
 
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            input.SwitchInputAction(ECpInputActionType.Player);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            input.SwitchInputAction(ECpInputActionType.UI);
-        }
-
         if (Input.GetKey(KeyCode.T))
         {
             Vector2 mouseLocation = input.GetMouseLocation();
@@ -51,6 +41,6 @@ public class CpDebugComponent : MonoBehaviour
             throw new InvalidOperationException();
         }
 
-        SltDebugDraw.DrawArrow(Vector2.zero, new Vector2(3, 4), Color.red, 0.11f);
+        //SltDebugDraw.DrawArrow(Vector2.zero, new Vector2(3, 4), Color.red, 0.11f);
     }
 }

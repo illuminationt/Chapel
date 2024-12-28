@@ -1,11 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Oddworm.Framework;
-using Shapes;
 
-public static class CpDebugUtil
+public class CpTime
 {
-
+    public static float DeltaTime => Time.deltaTime;
 }
-

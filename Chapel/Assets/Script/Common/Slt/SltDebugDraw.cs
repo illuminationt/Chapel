@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Shapes;
-using SltUtil;
-
 public static class SltDebugDraw
 {
     public static void DrawLine(Vector2 start, Vector2 end, Color color, float thickness = 5f, float duration = 0f, bool depthTest = true)

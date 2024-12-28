@@ -36,6 +36,7 @@ public class CpPlayerWeaponParamElementBase
     protected void CreateShot(in FCpShootControlParam controlParam, CpPlayerWeaponShotParam weaponShotParam)
     {
         CpPlayerShot newShot = CpObjectPool.Get().Create(weaponShotParam.PlayerShot);
+        newShot.OnCreated(controlParam);
 
         FCpShotSpawnLocationRequestParam locationReqParam;
         locationReqParam.origin = controlParam.origin;

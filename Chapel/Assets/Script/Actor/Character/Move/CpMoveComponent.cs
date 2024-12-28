@@ -2,8 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(CpActorBase))]
 public class CpMoveComponent : MonoBehaviour
 {
+    private void Awake()
+    {
+        ICpActorForwardInterface forwardInterface = GetComponent<CpActorBase>();
+        _moverManager = new CpMoverManager(forwardInterface);
+    }
 
     private void Update()
     {
@@ -36,5 +42,5 @@ public class CpMoveComponent : MonoBehaviour
         _moverManager.RequestStart(moveParamSO.GetMoveParam());
     }
 
-    CpMoverManager _moverManager = new CpMoverManager();
+    CpMoverManager _moverManager;
 }

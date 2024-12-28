@@ -13,17 +13,21 @@ public class CpPlayerForwardCalculator
     public void execute()
     {
         Vector2 start = playerTransfomrm.position;
-        Vector2 end = start + getForwardVector() * 5f;
+        Vector2 end = start + GetForwardVector() * 5f;
 
         SltDebugDraw.DrawArrow(start, end, Color.green, 0.1f, 0f);
     }
 
-    public Vector2 getForwardVector()
+    public Vector2 GetForwardVector()
     {
         Vector2 selfPosition = playerTransfomrm.position;
         Vector2 focalPosition = CalcFocalLocation();
         Vector2 retForward = (focalPosition - selfPosition).normalized;
         return retForward;
+    }
+    public float GetForwardDegree()
+    {
+        return SltMath.ToDegree(GetForwardVector());
     }
 
     // 狙う的となる焦点座標を算出

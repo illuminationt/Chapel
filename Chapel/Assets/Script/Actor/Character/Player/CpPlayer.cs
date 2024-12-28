@@ -5,7 +5,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(CpPilotComponent))]
 [RequireComponent(typeof(CpShootComponent))]
-public class CpPlayer : MonoBehaviour
+public class CpPlayer : CpActorBase
 {
     Transform _transform = null;
     CpPilotComponent _pilotComponent = null;
@@ -20,9 +20,6 @@ public class CpPlayer : MonoBehaviour
         _pilotComponent = GetComponent<CpPilotComponent>();
         _shootComponent = GetComponent<CpShootComponent>();
         _forwardCalculator = new CpPlayerForwardCalculator(_transform);
-
-        CpDebug.Log("a");
-        Debug.Log("AJFNO");
     }
 
     private void Update()
@@ -36,6 +33,12 @@ public class CpPlayer : MonoBehaviour
 
     }
 
+    // ICpActorForwardInterface
+    public override float GetForwardDegree()
+    {
+        return _forwardCalculator.GetForwardDegree();
+    }
+
     void updatePilot()
     {
         _pilotComponent.execute();
@@ -44,13 +47,13 @@ public class CpPlayer : MonoBehaviour
     {
         FCpShootControlParam shootControlParam = new FCpShootControlParam();
         shootControlParam.origin = _transform.position;
-        shootControlParam.forward = _forwardCalculator.getForwardVector();
+        shootControlParam.forward = _forwardCalculator.GetForwardVector();
         _shootComponent.execute(shootControlParam);
     }
 
     void debugDrawDirection()
     {
-        Vector2 dir = _forwardCalculator.getForwardVector();
+        Vector2 dir = _forwardCalculator.GetForwardVector();
         Vector2 start = _transform.position;
         Vector2 end = start + dir * 22f;
         // SltDebugDraw.DrawArrow(start, end, 3f, 0f, Color.green);

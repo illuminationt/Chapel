@@ -15,6 +15,7 @@ public class CpMoverLinear : CpMoverBase
     protected override void InitializeInternal()
     {
         _currentSpeed = _paramLinear.Speed;
+        _initialDegree = Context.OwnerDegree;
     }
 
     protected override void UpdateInternal()
@@ -24,10 +25,11 @@ public class CpMoverLinear : CpMoverBase
 
     public override Vector2 GetVelocity()
     {
-        Vector2 dir = SltMath.ToVector(_paramLinear.Degree);
+        Vector2 dir = SltMath.ToVector(_initialDegree + _paramLinear.DegreeOffset);
         return dir * _currentSpeed;
     }
 
     float _currentSpeed = 0f;
+    float _initialDegree = 0f;
     FCpMoveParamLinear _paramLinear;
 }

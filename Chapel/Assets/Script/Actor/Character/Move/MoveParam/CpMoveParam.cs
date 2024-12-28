@@ -33,5 +33,6 @@ public abstract class CpMoveParamBase
 public struct FCpMoverContext
 {
     public Vector2 Velocity;
+    public float OwnerDegree;
 }
 

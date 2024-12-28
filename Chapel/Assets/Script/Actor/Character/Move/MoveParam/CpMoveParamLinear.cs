@@ -14,6 +14,6 @@ public struct FCpMoveParamLinear
 {
     public float Speed;
     public float MaxSpeedf;
-    public float Degree;
+    public float DegreeOffset;
     public float Accel;
 }

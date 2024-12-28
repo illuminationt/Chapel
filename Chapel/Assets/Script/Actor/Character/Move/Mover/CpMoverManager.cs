@@ -5,9 +5,9 @@ using UnityEngine;
 
 public partial class CpMoverManager
 {
-    public CpMoverManager()
+    public CpMoverManager(ICpActorForwardInterface forward)
     {
-
+        _ownerForwardInterface = forward;
     }
 
     public bool IsActive()
@@ -25,12 +25,17 @@ public partial class CpMoverManager
     {
         FCpMoverContext context;
         context.Velocity = _currentVelocity;
+        context.OwnerDegree = _ownerForwardInterface.GetForwardDegree();
         return context;
     }
 
     public void Update()
     {
-        _currentMover?.Update();
+        if (_currentMover != null)
+        {
+            _currentMover.Update();
+            _currentVelocity = _currentMover.GetVelocity();
+        }
     }
 
     public Vector2 GetDeltaMove()
@@ -44,4 +49,5 @@ public partial class CpMoverManager
 
     Vector2 _currentVelocity = Vector2.zero;
     CpMoverBase _currentMover = null;
+    ICpActorForwardInterface _ownerForwardInterface = null;
 }

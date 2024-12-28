@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro.EditorUtilities;
 using UnityEngine;
 
 public abstract class CpMoverBaseUtility
@@ -31,6 +32,7 @@ public abstract class CpMoverBaseUtility
     public virtual Vector2 GetDeltaMove() { return GetVelocity() * Time.smoothDeltaTime; }
     public abstract Vector2 GetVelocity();
 
+    protected ref readonly FCpMoverContext Context => ref _context;
     protected float Duration => _duration;
 
     // 

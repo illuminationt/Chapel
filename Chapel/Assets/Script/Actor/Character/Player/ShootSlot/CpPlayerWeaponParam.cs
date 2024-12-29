@@ -49,7 +49,6 @@ public class CpPlayerWeaponParamElementBase
     }
 }
 
-
 // ˆê’èŽžŠÔŠÔŠu‚ÅŽw’è‚µ‚½’e‚ð”­ŽË‚·‚é
 [System.Serializable]
 public class CpPlayerWeaponParamElementInterval : CpPlayerWeaponParamElementBase

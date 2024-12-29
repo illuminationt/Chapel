@@ -19,14 +19,14 @@ MonoBehaviour:
         LocationParam:
           LocationType: 1
           Param_Offset:
-            Offset: {x: 0.5, y: 0.5}
+            Offset: {x: 0, y: 0}
         MoveParam:
           MoveParamType: 1
           MoveParamLinear:
-            Speed: 20
+            Speed: 22
             MaxSpeedf: 55
             DegreeOffset: 0
-            Accel: 14
+            Accel: 1
           MoveParamCurve:
             Speed: 0
             MaxSpeed: 0
@@ -34,46 +34,4 @@ MonoBehaviour:
             Degree: 0
             AngularSpeed: 0
             MaxCurveDegree: 0
-      Interval: 0.3
-    - WeaponShotParam:
-        PlayerShot: {fileID: 2527995188642578116, guid: 5d030434dde35ef4f9abe60fe9400154, type: 3}
-        LocationParam:
-          LocationType: 1
-          Param_Offset:
-            Offset: {x: 0.5, y: -0.5}
-        MoveParam:
-          MoveParamType: 1
-          MoveParamLinear:
-            Speed: 20
-            MaxSpeedf: 55
-            DegreeOffset: 0
-            Accel: 14
-          MoveParamCurve:
-            Speed: 0
-            MaxSpeed: 0
-            Accel: 0
-            Degree: 0
-            AngularSpeed: 0
-            MaxCurveDegree: 0
-      Interval: 0.3
-    - WeaponShotParam:
-        PlayerShot: {fileID: 2527995188642578116, guid: 5d030434dde35ef4f9abe60fe9400154, type: 3}
-        LocationParam:
-          LocationType: 1
-          Param_Offset:
-            Offset: {x: -0.5, y: 0.5}
-        MoveParam:
-          MoveParamType: 1
-          MoveParamLinear:
-            Speed: 20
-            MaxSpeedf: 55
-            DegreeOffset: 0
-            Accel: 14
-          MoveParamCurve:
-            Speed: 0
-            MaxSpeed: 0
-            Accel: 0
-            Degree: 0
-            AngularSpeed: 0
-            MaxCurveDegree: 0
-      Interval: 0.4
+      Interval: 0.2

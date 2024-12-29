@@ -5,14 +5,20 @@ using UnityEngine;
 
 public partial class CpMoverManager
 {
-    public CpMoverManager(ICpActorForwardInterface forward)
+    public CpMoverManager(CpActorBase actor)
     {
-        _ownerForwardInterface = forward;
+        _ownerActor = actor;
     }
 
     public bool IsActive()
     {
-        return _currentMover != null;
+        if (_currentMover == null) { return false; }
+
+        if (_currentMover.IsFinished())
+        {
+            return false;
+        }
+        return true;
     }
 
     public void RequestStart(CpMoveParamBase moveParam)
@@ -24,8 +30,12 @@ public partial class CpMoverManager
     FCpMoverContext CreateContext()
     {
         FCpMoverContext context;
+        context.OwnerActor = _ownerActor;
+        context.OwnerPosition = _ownerActor.transform.position;
         context.Velocity = _currentVelocity;
-        context.OwnerDegree = _ownerForwardInterface.GetForwardDegree();
+
+        ICpActorForwardInterface forwardInterface = _ownerActor;
+        context.OwnerDegree = forwardInterface.GetForwardDegree();
         return context;
     }
 
@@ -33,8 +43,12 @@ public partial class CpMoverManager
     {
         if (_currentMover != null)
         {
-            _currentMover.Update();
-            _currentVelocity = _currentMover.GetVelocity();
+            bool bFinished = _currentMover.IsFinished();
+            if (!bFinished)
+            {
+                _currentMover.Update();
+                _currentVelocity = _currentMover.GetVelocity();
+            }
         }
     }
 
@@ -49,5 +63,5 @@ public partial class CpMoverManager
 
     Vector2 _currentVelocity = Vector2.zero;
     CpMoverBase _currentMover = null;
-    ICpActorForwardInterface _ownerForwardInterface = null;
+    CpActorBase _ownerActor = null;
 }

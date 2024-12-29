@@ -31,6 +31,7 @@ public abstract class CpMoverBaseUtility
     protected virtual void UpdateInternal() { }
     public virtual Vector2 GetDeltaMove() { return GetVelocity() * Time.smoothDeltaTime; }
     public abstract Vector2 GetVelocity();
+    public virtual bool IsFinished() { return false; }
 
     protected ref readonly FCpMoverContext Context => ref _context;
     protected float Duration => _duration;

@@ -11,8 +11,6 @@ public struct FCpShootControlParam
 
 public class CpShootComponent : MonoBehaviour
 {
-    public GameObject testShotPrefab = null;
-    public FCpMoveParamLinear MoveParamLinear;
     public CpPlayerWeaponParamScriptableObject PlayerWeaponParamScriptableObject;
     public CpPlayerWeaponParamScriptableObject PlayerWeaponParamScriptableObject2;
 
@@ -44,11 +42,5 @@ public class CpShootComponent : MonoBehaviour
     void RegisterSpecialWeapon()
     {
         _slotDefault.RegisterWeapon(PlayerWeaponParamScriptableObject2.WeaponParam);
-    }
-
-    CpShotBase CreateShot(GameObject prefab)
-    {
-        GameObject newObj = Instantiate(prefab);
-        return newObj.GetComponent<CpShotBase>();
     }
 }

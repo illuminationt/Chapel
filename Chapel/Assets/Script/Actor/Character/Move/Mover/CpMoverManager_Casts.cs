@@ -34,5 +34,9 @@ public partial class CpMoverManager
     {
         _currentMover = CpMoverCurve.Create(moveParamCurve, CreateContext());
     }
+    public void RequestStart(in FCpMoveParamTween moveParamTween)
+    {
+        _currentMover = CpMoverTween.Create(moveParamTween, CreateContext());
+    }
 }
 

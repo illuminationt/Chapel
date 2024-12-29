@@ -31,12 +31,29 @@ public class CpPlayer : CpActorBase
 
         updateShoot();
 
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            CpTaskComponent taskComp = GetComponent<CpTaskComponent>();
+            taskComp.StartStateMachine();
+        }
     }
 
     // ICpActorForwardInterface
     public override float GetForwardDegree()
     {
-        return _forwardCalculator.GetForwardDegree();
+        return ForwardCalculator.GetForwardDegree();
+    }
+
+    CpPlayerForwardCalculator ForwardCalculator
+    {
+        get
+        {
+            if (_forwardCalculator == null)
+            {
+                _forwardCalculator = new CpPlayerForwardCalculator(transform);
+            }
+            return _forwardCalculator;
+        }
     }
 
     void updatePilot()

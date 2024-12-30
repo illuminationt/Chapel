@@ -178,11 +178,11 @@ public class CpHellTimingWatcher
     {
     }
 
-    public ECpHellTimingWatchResult Update()
+    public bool Update()
     {
-        if (_latestShootTimingIndex >= shootTimingList.Count)
+        if (IsFinished())
         {
-            return ECpHellTimingWatchResult.Finished;
+            return true;
         }
 
         _timer += CpTime.DeltaTime;
@@ -195,7 +195,12 @@ public class CpHellTimingWatcher
             OnShootTiming.Invoke();
         }
 
-        return ECpHellTimingWatchResult.None;
+        return false;
+    }
+
+    public bool IsFinished()
+    {
+        return _latestShootTimingIndex >= shootTimingList.Count;
     }
 
     public int GetCurrentShootCount()
@@ -229,7 +234,6 @@ public class CpHellTimingWatcher
     List<float> shootTimingList;
 }
 
-
 public struct FCpUpdateHellContext
 {
     public Vector2 Position;
@@ -250,20 +254,11 @@ public class CpHellUpdator
     {
         _timingWatcher.Update();
         return true;
-        //ECpHellTimingWatchResult timingResult = _timingWatcher.Update();
-        //switch (timingResult)
-        //{
-        //    case ECpHellTimingWatchResult.None:
-        //        return false;
-        //    case ECpHellTimingWatchResult.Shoot:
-        //        return false;
-        //    case ECpHellTimingWatchResult.Finished:
-        //        return true;
+    }
 
-        //    default:
-        //        Assert.IsTrue(false);
-        //        return false;
-        //}
+    public bool IsFinished()
+    {
+        return _timingWatcher.IsFinished();
     }
 
     void OnNotifyShootTiming()

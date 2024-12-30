@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(CpActorBase))]
 public class CpHellComponent : MonoBehaviour
@@ -15,6 +16,13 @@ public class CpHellComponent : MonoBehaviour
         {
             CpMultiHellUpdator updator = _multiHellUpdators[index];
             updator.Update();
+
+            if (updator.IsFinished())
+            {
+                FCpMultiHellUpdatorId id = updator.GetId();
+                _multiHellUpdators.RemoveAt(index);
+                OnHellFinished.Invoke(id);
+            }
         }
     }
 
@@ -28,7 +36,7 @@ public class CpHellComponent : MonoBehaviour
         RequestStart(newMultiHellParam);
     }
 
-    public void RequestStart(CpMultiHellParam multiHellParam)
+    public FCpMultiHellUpdatorId RequestStart(CpMultiHellParam multiHellParam)
     {
         FCpUpdateHellContext context;
         context.Position = transform.position;
@@ -39,6 +47,12 @@ public class CpHellComponent : MonoBehaviour
         CpMultiHellUpdator newMultiUpdator = new CpMultiHellUpdator(multiHellParam, context);
         newMultiUpdator.Start();
         _multiHellUpdators.Add(newMultiUpdator);
+
+        return newMultiUpdator.GetId();
     }
+
+    public UnityEvent<FCpMultiHellUpdatorId> OnHellFinished => _onHellFinished;
+
     List<CpMultiHellUpdator> _multiHellUpdators = new List<CpMultiHellUpdator>();
+    UnityEvent<FCpMultiHellUpdatorId> _onHellFinished;
 }

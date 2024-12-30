@@ -2,19 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CpObjectPool : SingletonMonoBehaviour<CpObjectPool>
+public class CpObjectPool : MonoBehaviour
 {
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-    static void Initialize()
+    public static CpObjectPool Create()
     {
         GameObject Obj = new GameObject("CpObjectPool", typeof(CpObjectPool));
         DontDestroyOnLoad(Obj);
         Obj.SetActive(true);
 
-        CpObjectPool CtrlManager = Obj.GetComponent<CpObjectPool>();
-        CtrlManager.enabled = true;
+        CpObjectPool pool = Obj.GetComponent<CpObjectPool>();
+        pool.enabled = true;
+
+        return pool;
     }
-    public static CpObjectPool Get() => CpObjectPool.Instance;
+
+    public static CpObjectPool Get() => CpGameManager.Instance.ObjectPool;
 
     public T Create<T>(T obj) where T : MonoBehaviour
     {

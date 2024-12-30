@@ -33,6 +33,10 @@ public class CpMoveComponent : MonoBehaviour
     {
         MoverManager.RequestStart(paramTween);
     }
+    public void RequestStart(in FCpMoveParamEnemyShot paramEnemyShot)
+    {
+        MoverManager.RequestStart(paramEnemyShot);
+    }
 
 
     public void RequestStart(CpMoveParamScriptableObjectBase moveParamSO)

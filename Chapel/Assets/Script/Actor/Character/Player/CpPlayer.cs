@@ -1,4 +1,5 @@
 using Oddworm.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,7 +14,7 @@ public class CpPlayer : CpActorBase
     CpDebugComponent _debugComponent = null;
     CpPlayerForwardCalculator _forwardCalculator = null;
 
-    public int TestValue = 123;
+    public CpHellParamScriptableObject HellParamScriptableObject = null;
     private void Start()
     {
         _transform = GetComponent<Transform>();
@@ -25,7 +26,6 @@ public class CpPlayer : CpActorBase
     private void Update()
     {
         _pilotComponent.execute();
-
         _forwardCalculator.execute();
         debugDrawDirection();
 
@@ -36,6 +36,12 @@ public class CpPlayer : CpActorBase
             CpTaskComponent taskComp = GetComponent<CpTaskComponent>();
             taskComp.StartStateMachine();
         }
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            CpHellComponent hellComp = GetComponent<CpHellComponent>();
+            hellComp.RequestStart(HellParamScriptableObject.MultiHellParam);
+        }
     }
 
     // ICpActorForwardInterface
@@ -43,6 +49,7 @@ public class CpPlayer : CpActorBase
     {
         return ForwardCalculator.GetForwardDegree();
     }
+    // end of ICpActorForwardInterface
 
     CpPlayerForwardCalculator ForwardCalculator
     {
@@ -56,10 +63,6 @@ public class CpPlayer : CpActorBase
         }
     }
 
-    void updatePilot()
-    {
-        _pilotComponent.execute();
-    }
     void updateShoot()
     {
         FCpShootControlParam shootControlParam = new FCpShootControlParam();
@@ -73,6 +76,21 @@ public class CpPlayer : CpActorBase
         Vector2 dir = _forwardCalculator.GetForwardVector();
         Vector2 start = _transform.position;
         Vector2 end = start + dir * 22f;
-        // SltDebugDraw.DrawArrow(start, end, 3f, 0f, Color.green);
     }
+
+    // ICpAttackSendable
+    public FCpAttackSendParam CreateAttackSendParam()
+    {
+        FCpAttackSendParam sendParam;
+        sendParam.Attack = 1f;
+        return sendParam;
+    }
+    // end of ICpAttackSendable
+
+    // ICpAttackReceivable
+    public void OnReceiveAttack(in FCpAttackSendParam attackSendParam)
+    {
+        CpDebug.LogError("自機がダメージ受けた");
+    }
+    // end of ICpAttackReceivable
 }

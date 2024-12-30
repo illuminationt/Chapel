@@ -14,28 +14,8 @@ public class CpDebugComponent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var input = CpInputManager.Instance;
-        if (input.WasPressed(ECpButton.Shoot))
-        {
-            CpDebug.LogError("SHOOT PRESSED");
-        }
-
-        if (input.IsPressHold(ECpButton.Shoot))
-        {
-            CpDebug.LogError("SHOOT HOLD");
-        }
-
-        if (input.WasReleased(ECpButton.Shoot))
-        {
-            CpDebug.LogError("SHOOT RELEASED");
-        }
-
-        if (Input.GetKey(KeyCode.T))
-        {
-            Vector2 mouseLocation = input.GetMouseLocation();
-            CpDebug.Log(mouseLocation);
-        }
-
+        var input = CpInputManager.Get();
+        CpDebug.Log("move=" + input.GetMoveInput());
         if (Input.GetKeyDown(KeyCode.I))
         {
             throw new InvalidOperationException();

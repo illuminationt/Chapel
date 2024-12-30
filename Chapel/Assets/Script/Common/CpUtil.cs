@@ -28,4 +28,18 @@ public static class CpUtil
                 return Vector2.zero;
         }
     }
+
+    public static Vector2 GetPlayerWorldPosition()
+    {
+        CpPlayer player = CpGameManager.Instance.Player;
+        Vector2 pos = player.transform.position;
+        return pos;
+    }
+
+    public static Vector2 GetDirectionToPlayer(in Vector2 origin)
+    {
+        Vector2 playerPos = GetPlayerWorldPosition();
+        return (playerPos - origin).normalized;
+    }
+
 }

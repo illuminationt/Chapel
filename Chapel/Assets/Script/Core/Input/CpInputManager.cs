@@ -144,20 +144,23 @@ public struct FCpPendingInput
     FCpButtonInput _uiDecideInput;
 }
 
-public class CpInputManager : SingletonMonoBehaviour<CpInputManager>
+public class CpInputManager : MonoBehaviour
 {
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-    static void Initialize()
+    public static CpInputManager Create()
     {
         GameObject Obj = new GameObject("CtdControllerManager", typeof(CpInputManager));
         DontDestroyOnLoad(Obj);
         Obj.SetActive(true);
 
-        CpInputManager CtrlManager = Obj.GetComponent<CpInputManager>();
-        CtrlManager.enabled = true;
+        CpInputManager inputManager = Obj.GetComponent<CpInputManager>();
+        inputManager.enabled = true;
+
+        inputManager.Initialize();
+
+        return inputManager;
     }
 
-    protected override void Awake()
+    void Initialize()
     {
         _input = gameObject.AddComponent<PlayerInput>();
 
@@ -170,6 +173,7 @@ public class CpInputManager : SingletonMonoBehaviour<CpInputManager>
         _deviceManager = new CpInputDeviceManager();
         _latestDirectionInputDevice = ECpDirectionInputDevice.None;
     }
+
     void Update()
     {
         UpdateAllInputs();
@@ -178,7 +182,7 @@ public class CpInputManager : SingletonMonoBehaviour<CpInputManager>
     }
 
 
-    public static CpInputManager Get() => Instance;
+    public static CpInputManager Get() => CpGameManager.Instance.InputManager;
     public CpInputDeviceManager GetInputDeviceManager() => _deviceManager;
 
     public void SwitchInputAction(ECpInputActionType newActionType)

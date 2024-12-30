@@ -28,7 +28,7 @@ public class CpInputDeviceManager
 
     public static CpInputDeviceManager Get()
     {
-        return CpInputManager.Instance.GetInputDeviceManager();
+        return CpInputManager.Get().GetInputDeviceManager();
     }
 
     public void Update()

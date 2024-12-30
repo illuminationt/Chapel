@@ -55,8 +55,8 @@ public class CpPlayerForwardCalculator
 
     Vector2 CalcFocalLocation_RightStick()
     {
-        var controller = CpInputManager.Instance;
-        Vector2 currentDirection = controller.GetDirectionInput();
+        var input = CpInputManager.Get();
+        Vector2 currentDirection = input.GetDirectionInput();
 
         const float directionInputDeadZone = 0.8f;
         float currentDirInputSize = currentDirection.magnitude;
@@ -71,7 +71,8 @@ public class CpPlayerForwardCalculator
 
     Vector2 CalcFocalLocation_Mouse()
     {
-        var input = CpInputManager.Instance;
+        var input = CpInputManager.Get();
+
         Vector2 mouseScreenPosition = input.GetMouseLocation();
         Vector2 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mouseScreenPosition);
         return mouseWorldPosition;

@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Sirenix;
+using Sirenix.OdinInspector;
 
 public static class SltMath
 {
@@ -64,4 +66,96 @@ public static class SltMath
         return normalizedDegree;
     }
 
+}
+
+[System.Serializable]
+public struct SltFloatInterval
+{
+    public SltFloatInterval(float min, float max)
+    {
+        bEnableMin = bEnableMax = true;
+        _min = min;
+        _max = max;
+    }
+    public void Reset()
+    {
+        bEnableMin = bEnableMax = false;
+        _min = -float.MaxValue;
+        _max = float.MaxValue;
+    }
+    public void Set(float min, float max)
+    {
+        this = new SltFloatInterval(min, max);
+    }
+
+    public void SetMin(float min)
+    {
+        bEnableMin = true;
+        _min = min;
+        Validate();
+    }
+    public void SetMax(float max)
+    {
+        _max = max;
+        Validate();
+    }
+
+    public void Clamp(ref float clamped)
+    {
+        Validate();
+
+        if (bEnableMin && bEnableMax)
+        {
+            clamped = Mathf.Clamp(clamped, _min, _max);
+
+        }
+        else if (bEnableMin && !bEnableMax)
+        {
+            // ç≈è¨ílÇæÇØë∂ç›
+            if (clamped < _min)
+            {
+                clamped = _min;
+            }
+        }
+        else if (!bEnableMin && bEnableMax)
+        {
+            // ç≈ëÂílÇæÇØë∂ç›
+            if (clamped > _max)
+            {
+                clamped = _max;
+            }
+        }
+        else
+        {
+            // âΩÇ‡ÇµÇ»Ç¢
+        }
+    }
+
+    void Validate()
+    {
+        if (bEnableMin && bEnableMax)
+        {
+            if (_min > _max || _max < _min)
+            {
+                _min = _max;
+            }
+        }
+    }
+
+
+    [SerializeField]
+    [ToggleLeft]
+    [LabelText("Enable Min")]
+    bool bEnableMin;
+    [SerializeField]
+    [ShowIf("@bEnableMin")]
+    float _min;
+
+    [SerializeField]
+    [ToggleLeft]
+    [LabelText("Enable Max")]
+    bool bEnableMax;
+    [SerializeField]
+    [ShowIf("@bEnableMax")]
+    float _max;
 }

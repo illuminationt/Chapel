@@ -38,5 +38,38 @@ public partial class CpMoverManager
     {
         _currentMover = CpMoverTween.Create(moveParamTween, CreateContext());
     }
+    public void RequestStart(in FCpMoveParamEnemyShot param)
+    {
+        switch (param.MoveType)
+        {
+            case ECpEnemyShotMoveType.Default:
+                RequestStart(param.ParamDefault);
+                break;
+
+            case ECpEnemyShotMoveType.MoveParam:
+                RequestStart(param.ParamMoveParam);
+                break;
+
+            case ECpEnemyShotMoveType.MoveParamList:
+                RequestStart(param.ParamMoveParamList);
+                break;
+
+            default:
+                Assert.IsTrue(false);
+                break;
+        }
+    }
+    public void RequestStart(in FCpMoveParamEnemyShotDefault moveParamEnemyShotDefault)
+    {
+        _currentMover = CpMoverEnemyShotDefault.Create(moveParamEnemyShotDefault, CreateContext());
+    }
+    public void RequestStart(in FCpMoveParamEnemyShotMoveParam param)
+    {
+        _currentMover = CpMoverEnemyShotMoveParam.Create(param, CreateContext());
+    }
+    public void RequestStart(in FCpMoveParamEnemyShotMoveParamList param)
+    {
+        _currentMover = CpMoverEnemyShotMoveParamList.Create(param, CreateContext());
+    }
 }
 

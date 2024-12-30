@@ -7,7 +7,7 @@ public class CpPilotComponent : MonoBehaviour
     [SerializeField] float _speed = 1f;
     public void execute()
     {
-        var input = CpInputManager.Instance;
+        var input = CpInputManager.Get();
 
         Vector2 deltaMove = input.GetMoveInput();
         deltaMove *= _speed * Time.deltaTime;

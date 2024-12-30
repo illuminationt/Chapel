@@ -32,6 +32,12 @@ public static class SltDebugDraw
         DrawLine(end, toRight, color, thickness, duration);
     }
 
+    public static void DrawArrow(Vector2 start, Vector2 direction, float length, Color color, float thickness = 2f, float duration = 0f)
+    {
+        Vector2 end = start + direction * length;
+        DrawArrow(start, end, color, thickness, duration);
+    }
+
     public static void DrawText(string str, Color color, float fontSize = 5f)
     {
         using (Draw.Command(Camera.main))

@@ -5,8 +5,14 @@ using UnityEngine.Assertions;
 
 public class CpActorBase : MonoBehaviour,
     ICpActorForwardInterface,
-    ICpTweenable
+    ICpTweenable,
+    ICpActRunnable
 {
+    protected virtual void Update()
+    {
+        ICpActRunnable actRunnable = this;
+        actRunnable.UpdateActRunnerManager();
+    }
     public virtual float GetForwardDegree()
     {
         Assert.IsTrue(false);
@@ -24,5 +30,23 @@ public class CpActorBase : MonoBehaviour,
         return _tweenManager;
     }
 
+    // end of ICpTweenable
+
+    // ICpActRunnable
+    public CpActRunnerManager GetActRunnerManager()
+    {
+        return _actRunnerManager;
+    }
+    public CpActRunnerManager GetOrCreateActRunnerManager()
+    {
+        if (_actRunnerManager == null)
+        {
+            _actRunnerManager = new CpActRunnerManager(this);
+        }
+        return _actRunnerManager;
+    }
+    // end of ICpActRunnable
+
     SltTweenManager _tweenManager = null;
+    CpActRunnerManager _actRunnerManager = null;
 }

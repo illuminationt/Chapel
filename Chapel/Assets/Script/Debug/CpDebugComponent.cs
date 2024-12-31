@@ -14,13 +14,8 @@ public class CpDebugComponent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var input = CpInputManager.Get();
-        CpDebug.Log("move=" + input.GetMoveInput());
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            throw new InvalidOperationException();
-        }
-
         //SltDebugDraw.DrawArrow(Vector2.zero, new Vector2(3, 4), Color.red, 0.11f);
+
+
     }
 }

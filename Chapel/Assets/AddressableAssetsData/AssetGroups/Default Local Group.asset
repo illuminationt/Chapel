@@ -21,6 +21,10 @@ MonoBehaviour:
     m_Address: CpInputActions
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 0f09254786cb9284a89e727297429d8e
+    m_Address: CpGameSettings
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: d2068e8ef4e2187419e3ebe2a548d31d, type: 2}
   m_SchemaSet:

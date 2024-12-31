@@ -4,5 +4,6 @@ using UnityEngine;
 
 public interface ICpAttackReceivable
 {
+    public ECpAttackReceiverGroup GetAttackReceiverGroup();
     public void OnReceiveAttack(in FCpAttackSendParam attackSendParam);
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class CpGameManager : SingletonMonoBehaviour<CpGameManager>
 {
@@ -18,6 +19,8 @@ public class CpGameManager : SingletonMonoBehaviour<CpGameManager>
     }
     void InitializeInternal()
     {
+        var op = Addressables.LoadAssetAsync<CpGameSettings>("CpGameSettings");
+        _gameSettings = op.WaitForCompletion();
     }
 
     public CpPlayer Player
@@ -59,4 +62,7 @@ public class CpGameManager : SingletonMonoBehaviour<CpGameManager>
             return _objectPool;
         }
     }
+
+    public CpGameSettings GameSettings => _gameSettings;
+    CpGameSettings _gameSettings;
 }

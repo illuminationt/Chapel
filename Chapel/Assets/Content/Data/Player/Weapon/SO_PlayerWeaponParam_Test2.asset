@@ -23,7 +23,7 @@ MonoBehaviour:
         MoveParam:
           MoveParamType: 1
           MoveParamLinear:
-            Speed: 20
+            Speed: 144
             MaxSpeedf: 55
             DegreeOffset: 0
             Accel: 14
@@ -44,7 +44,7 @@ MonoBehaviour:
         MoveParam:
           MoveParamType: 1
           MoveParamLinear:
-            Speed: 20
+            Speed: 144
             MaxSpeedf: 55
             DegreeOffset: 0
             Accel: 14
@@ -65,7 +65,7 @@ MonoBehaviour:
         MoveParam:
           MoveParamType: 1
           MoveParamLinear:
-            Speed: 20
+            Speed: 144
             MaxSpeedf: 55
             DegreeOffset: 0
             Accel: 14

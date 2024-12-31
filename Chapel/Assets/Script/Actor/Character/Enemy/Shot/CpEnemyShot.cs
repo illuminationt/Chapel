@@ -11,6 +11,25 @@ public class CpEnemyShotInitializeParam
 
 public class CpEnemyShot : CpShotBase
 {
+
+    // ICpAttackSendable
+    public override ECpAttackSenderGroup GetAttackSenderGroup()
+    {
+        return ECpAttackSenderGroup.EnemyShot;
+    }
+    public override FCpAttackSendParam CreateAttackSendParam()
+    {
+        FCpAttackSendParam sendParam;
+        sendParam.Attack = 1f;
+        return sendParam;
+    }
+    // end of ICpAttackSendable
+
+    public override ECpAttackReceiverGroup GetAttackReceiverGroup()
+    {
+        return ECpAttackReceiverGroup.EnemyShot;
+    }
+
     public void Initialize(CpEnemyShotInitializeParam initializeParam)
     {
         StartMove(initializeParam.enemyShotMoveParam);

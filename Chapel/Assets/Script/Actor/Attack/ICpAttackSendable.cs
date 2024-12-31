@@ -9,10 +9,7 @@ public struct FCpAttackSendParam
 
 public interface ICpAttackSendable
 {
+    public ECpAttackSenderGroup GetAttackSenderGroup();
+    public virtual void OnSendAttack() { }
     public abstract FCpAttackSendParam CreateAttackSendParam();
-    public void SendAttack(ICpAttackReceivable attackReceivable)
-    {
-        FCpAttackSendParam attackSendParam = CreateAttackSendParam();
-        attackReceivable.OnReceiveAttack(attackSendParam);
-    }
 }

@@ -10,7 +10,12 @@ public class CpPlayerWeaponShotParam
 {
     [SerializeField] public CpPlayerShot PlayerShot = null;
     [SerializeField] public FCpShotSpawnLocationParam LocationParam;
-    [SerializeField] public FCpMoveParam MoveParam;
+
+    [SerializeReference]
+    public ICpMoveParam MoveParam;
+
+    [SerializeReference]
+    public List<ICpActionParam> ActionParams;
 }
 
 // １つの武器が持つパラメータの構成要素
@@ -27,7 +32,6 @@ public class CpPlayerWeaponParamElementBase
 
         UpdateInternal(controlParam, bWasPressed, bPressHold, bWasReleased);
     }
-
     protected virtual void UpdateInternal(in FCpShootControlParam controlParam, bool bPressed, bool bPressHold, bool bReleased)
     {
         // 継承先でのみ実装してください
@@ -44,8 +48,15 @@ public class CpPlayerWeaponParamElementBase
         Vector2 spawnLoc = weaponShotParam.LocationParam.GetLocation(locationReqParam);
         newShot.transform.position = spawnLoc;
 
-        ICpMover mover = newShot;
-        mover.StartMove(weaponShotParam.MoveParam);
+        CpMoveComponent moveComp = newShot.GetComponent<CpMoveComponent>();
+        moveComp.RequestStart(weaponShotParam.MoveParam);
+
+        ICpActRunnable actRunnable = newShot;
+        foreach (ICpActionParam iactionParam in weaponShotParam.ActionParams)
+        {
+            actRunnable.RequestStart(iactionParam);
+        }
+
     }
 }
 

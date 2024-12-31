@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.VisualScripting;
 using UnityEngine.Assertions;
+using UnityEditor;
 
 // VisualScripting Unitの基底
 public abstract class SltUnitBase : Unit
@@ -90,7 +91,7 @@ public abstract class SltUnitBase : Unit
             task.OnFinishAction.AddListener(() => Flow.New(graphReference).Run(outputSucceed));
         }
 
-        // Unityから出るFInishExternalバインド
+        // Unityから出るFinishExternalバインド
         if (outputExternal != null && outputExternal.hasAnyConnection)
         {
             task.OnFinishExternal.AddListener(() => Flow.New(graphReference).Run(outputExternal));

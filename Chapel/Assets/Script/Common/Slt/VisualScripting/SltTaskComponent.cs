@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
 
+
 [DisallowMultipleComponent]
 [RequireComponent(typeof(StateMachine))]
 public class SltTaskComponent : MonoBehaviour
@@ -58,7 +59,7 @@ public class SltTaskComponent : MonoBehaviour
         bool bSameGUID = PendingActiveTasks.Any(x => x.UnitGuid == newTask.UnitGuid);
         if (bSameGUID)
         {
-            Assert.IsTrue(false);
+            //Assert.IsTrue(false);
             return;
         }
 
@@ -94,4 +95,6 @@ public class SltTaskComponent : MonoBehaviour
         stateMachine.enabled = true;
         bAlreadyStart = true;
     }
+
+
 }

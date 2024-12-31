@@ -29,7 +29,7 @@ public class CpTaskHell : CpTaskBase
     FCpMultiHellUpdatorId _hellUdpatorId;
 }
 
-[UnitTitle("CpHell")]
+[UnitTitle("CpTaskHell")]
 [UnitCategory("Cp/Shot")]
 [UnitSubtitle("CpTaskHell")]
 public class CpUnit_Hell : CpUnitBase

@@ -33,7 +33,7 @@ public class SltTask_Wait : SltTaskBase
 
 
 // ˆê’èŽžŠÔ‘Ò‚Â
-[UnitTitle("SltWait")]
+[UnitTitle("SltTaskWait")]
 [UnitCategory("Slt/Wait")]
 [UnitSubtitle("SltTask_Wait.cs")]
 public class SltBoltUnit_Wait : SltUnitBase

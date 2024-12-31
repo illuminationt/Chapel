@@ -39,10 +39,11 @@ public class CpHellComponent : MonoBehaviour
     public FCpMultiHellUpdatorId RequestStart(CpMultiHellParam multiHellParam)
     {
         FCpUpdateHellContext context;
-        context.Position = transform.position;
+        context.RootTransform = transform;
+        context.InitialPosition = transform.position;
 
         ICpActorForwardInterface forwardInterface = GetComponent<CpActorBase>();
-        context.Degree = forwardInterface.GetForwardDegree();
+        context.InitialDegree = forwardInterface.GetForwardDegree();
 
         CpMultiHellUpdator newMultiUpdator = new CpMultiHellUpdator(multiHellParam, context);
         newMultiUpdator.Start();
@@ -54,5 +55,5 @@ public class CpHellComponent : MonoBehaviour
     public UnityEvent<FCpMultiHellUpdatorId> OnHellFinished => _onHellFinished;
 
     List<CpMultiHellUpdator> _multiHellUpdators = new List<CpMultiHellUpdator>();
-    UnityEvent<FCpMultiHellUpdatorId> _onHellFinished;
+    UnityEvent<FCpMultiHellUpdatorId> _onHellFinished = new UnityEvent<FCpMultiHellUpdatorId>();
 }

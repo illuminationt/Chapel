@@ -4,12 +4,22 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 [RequireComponent(typeof(CpMoveComponent))]
-public class CpShotBase : CpActorBase,
+public abstract class CpShotBase : CpActorBase,
     ICpMover,
     ICpAttackSendable,
     ICpAttackReceivable
 {
-    public CpMoveComponent _moveComponent = null;
+    float _timer = 0f;
+    protected override void Update()
+    {
+        base.Update();
+
+        _timer += CpTime.DeltaTime;
+        if (_timer > 2f)
+        {
+            Destroy(gameObject);
+        }
+    }
 
     // start ICpMover interface
     public CpMoveComponent GetMoveComponent() { return _moveComponent; }
@@ -24,7 +34,17 @@ public class CpShotBase : CpActorBase,
     // end of ICpForwardInterface
 
     // ICpAttackSendable
-    public FCpAttackSendParam CreateAttackSendParam()
+    public virtual ECpAttackSenderGroup GetAttackSenderGroup()
+    {
+        Assert.IsTrue(false);
+        return ECpAttackSenderGroup.None;
+    }
+    public virtual void OnSendAttack()
+    {
+        Destroy(gameObject);
+    }
+
+    public virtual FCpAttackSendParam CreateAttackSendParam()
     {
         FCpAttackSendParam sendParam;
         sendParam.Attack = 1f;
@@ -33,9 +53,22 @@ public class CpShotBase : CpActorBase,
     // end of ICpAttackSendable
 
     // ICpAttackReceivable
+    public virtual ECpAttackReceiverGroup GetAttackReceiverGroup()
+    {
+        throw new System.NotImplementedException();
+    }
     public void OnReceiveAttack(in FCpAttackSendParam attackSendParam)
     {
         Destroy(gameObject);
     }
     // end of ICpAttackReceivable
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        ICpAttackReceivable otherAttackReceivable = collision.gameObject.GetComponent<ICpAttackReceivable>();
+        CpAttackUtil.OnTriggerEnter2D(this, otherAttackReceivable, collision);
+    }
+
+
+    public CpMoveComponent _moveComponent = null;
 }

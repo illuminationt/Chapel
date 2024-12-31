@@ -120,9 +120,8 @@ public class CpHellParamLocation
 {
     public Vector2 GetLocation(in Vector2 selfPosition)
     {
-        return Vector2.zero;
+        return selfPosition;
     }
-
 
     [SerializeField] ECpHellLocationType LocationType;
     [SerializeField]
@@ -216,7 +215,7 @@ public class CpHellTimingWatcher
         {
             if (_timer > shootTimingList[index])
             {
-                maxShootableTimingIndex = index;
+                maxShootableTimingIndex = index + 1;
             }
             else
             {
@@ -236,8 +235,9 @@ public class CpHellTimingWatcher
 
 public struct FCpUpdateHellContext
 {
-    public Vector2 Position;
-    public float Degree;
+    public Transform RootTransform;
+    public Vector2 InitialPosition;
+    public float InitialDegree;
 }
 public class CpHellUpdator
 {
@@ -278,7 +278,7 @@ public class CpHellUpdator
 
     bool CreateEnemyShot(CpEnemyShotInitializeParam initParam)
     {
-        Vector2 selfPosition = _context.Position;
+        Vector2 selfPosition = _context.RootTransform.position;
         Vector2 spawnPosition = paramLocation.GetLocation(selfPosition);
 
         // プールから取得
@@ -303,8 +303,6 @@ public class CpHellUpdator
         List<Vector2> shootDirections = new List<Vector2>(multiwayNum);
         // 弾丸発射方向の基準となる、前方方向
         Vector2 shootForward = CalcForwardVector();
-
-        SltDebugDraw.DrawArrow(Vector2.zero, shootForward, 50f, Color.red, 2, 5f);
 
         for (int multiwayIndex = 0; multiwayIndex < multiwayNum; multiwayIndex++)
         {
@@ -331,7 +329,7 @@ public class CpHellUpdator
                 speed, paramTrigger.speedMinMax, accel,
                 paramTrigger.angleSpeed, paramTrigger.angleAccel, shootDirections[multiwayIndex]);
 
-            FCpMoveParamEnemyShot moveParam;
+            FCpMoveParamEnemyShot moveParam = default;
             moveParam.MoveType = ECpEnemyShotMoveType.Default;
             moveParam.ParamDefault = moveParamDefault;
             initParam.enemyShotMoveParam = moveParam;
@@ -348,7 +346,7 @@ public class CpHellUpdator
         {
             case ECpHellForwardType.Fixed:
                 {
-                    float degree = _context.Degree + paramTrigger.forwardDegreeOffset;
+                    float degree = _context.InitialDegree + paramTrigger.forwardDegreeOffset;
                     retForward = SltMath.ToVector(degree);
                 }
                 break;
@@ -387,7 +385,7 @@ public class CpHellUpdator
 
     Vector2 CalcDirectionToPlayer()
     {
-        Vector2 selfPosition = paramLocation.GetLocation(_context.Position);
+        Vector2 selfPosition = paramLocation.GetLocation(_context.InitialPosition);
         Vector2 toPlayer = CpUtil.GetDirectionToPlayer(selfPosition);
         return toPlayer;
     }

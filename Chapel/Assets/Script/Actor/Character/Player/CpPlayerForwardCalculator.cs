@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
+// 自機の正面方向決定タイプ
+public enum ECpPlayerForwardType
+{
+    Direction,// 方向をスティックで決める
+    FocalPoint,// 向く方向を座標で決める
+}
+
 public class CpPlayerForwardCalculator
 {
     public CpPlayerForwardCalculator(Transform inPlayerTransform)
@@ -14,8 +21,6 @@ public class CpPlayerForwardCalculator
     {
         Vector2 start = playerTransfomrm.position;
         Vector2 end = start + GetForwardVector() * 5f;
-
-        SltDebugDraw.DrawArrow(start, end, Color.green, 0.1f, 0f);
     }
 
     public Vector2 GetForwardVector()

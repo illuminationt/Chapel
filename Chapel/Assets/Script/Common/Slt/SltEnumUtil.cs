@@ -10,7 +10,7 @@ public static class SltEnumUtil
         return Enum.GetValues(typeof(T)).Length;
     }
 
-    public static String ToString<T>(T value) where T : Enum
+    public static string ToString<T>(T value) where T : Enum
     {
         return value.ToString();
     }
@@ -28,5 +28,9 @@ public static class SltEnumUtil
         //}
     }
 
+    public static List<T> GetAllValues<T>() where T : Enum
+    {
+        return new List<T>((T[])Enum.GetValues(typeof(T)));
+    }
 
 }

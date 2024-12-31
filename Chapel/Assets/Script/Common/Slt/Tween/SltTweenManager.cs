@@ -88,30 +88,35 @@ public class SltTweenVector2Param : SltTweenParamBase
 public class SltTweenFloatParam : SltTweenParamBase
 {
     TweenFloat TweenerFloat = null;
-    protected float TweeningSpeed = 0f;
+    protected float _tweeningFloatValue = 0f;
     UnityAction<float> _onUpdateFloat = null;
-    public TweenFloat StartMove(
-       float initialFloat, float lastSpeed, float duration, Ease easingType, UnityAction<float> onUpdate)
+    public TweenFloat StartTween(
+       float initialFloat, float lastFloat, float duration, Ease easingType, UnityAction<float> onUpdate)
     {
-        TweeningSpeed = initialFloat;
+        _tweeningFloatValue = initialFloat;
         _onUpdateFloat = onUpdate;
 
-        TweenerFloat = DOTween.To(() => TweeningSpeed, (x) => TweeningSpeed = x, lastSpeed, duration);
+        TweenerFloat = DOTween.To(() => _tweeningFloatValue, (x) => _tweeningFloatValue = x, lastFloat, duration);
         TweenerFloat.SetEase(easingType);
         TweenerFloat.OnUpdate(() => { OnUpdateTweenerSpeed(); });
         TweenerFloat.OnComplete(() => { OnCompleteTweenerSpeed(); });
 
         return TweenerFloat;
     }
+    public TweenFloat StartTween(float initialFloat, float lastFloat, float duration, Ease easingType)
+    {
+        return StartTween(initialFloat, lastFloat, duration, easingType, null);
+    }
+
+    public float GetFloatValue() { return _tweeningFloatValue; }
 
     void OnUpdateTweenerSpeed()
     {
-        _onUpdateFloat.Invoke(TweeningSpeed);
+        _onUpdateFloat?.Invoke(_tweeningFloatValue);
     }
 
     void OnCompleteTweenerSpeed()
     {
-        TweeningSpeed = 0f;
         _onUpdateFloat = null;
     }
     public override Tweener GetTweener()

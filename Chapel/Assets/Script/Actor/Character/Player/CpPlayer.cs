@@ -17,7 +17,7 @@ public class CpPlayer : CpCharacterBase
 
     public CpHellParamScriptableObject HellParamScriptableObject = null;
     public CpEnemyBase EnemyPrefab = null;
-
+    public CpEnemySpawnParam EnemySpawnParam = null;
     private void Start()
     {
         _transform = GetComponent<Transform>();
@@ -48,7 +48,7 @@ public class CpPlayer : CpCharacterBase
         }
 
         //_timer += CpTime.DeltaTime;
-        //if (_timer > 2f && count < 4)
+        //if (_timer > 1f && count < 11111111)
         //{
         //    _timer = 0f;
         //    count++;
@@ -56,21 +56,27 @@ public class CpPlayer : CpCharacterBase
         //    newEnemy.transform.position = new Vector2(0f, 70f);
         //}
 
-        //if (Input.GetKeyDown(KeyCode.K))
-        //{
-        //    CpEnemyShot[] shots = FindObjectsByType<CpEnemyShot>(FindObjectsSortMode.None);
-        //    CpDebug.LogError("EnemyShot Num:" + shots.Count());
-        //}
-
-        if (Input.GetKeyDown(KeyCode.X))
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            ICpActRunnable actRunnable = this;
-            FCpActParamScale actParamScale;
-            actParamScale.ScaleType = ECpActScaleType.XY;
-            actParamScale.Duration = 2f;
-            actParamScale.TargetScale = 0f;
-            actParamScale.EasingType = DG.Tweening.Ease.InOutSine;
-            actRunnable.RequestStart(actParamScale);
+            CpEnemySpawnerManager enemySpanerManager = CpEnemySpawnerManager.Get();
+            enemySpanerManager.RequestSpawn(EnemySpawnParam);
+        }
+
+        Vector2 Screenpos = CpUtil.GetScreenPositionFromWorldPositoni(transform.position);
+        CpDebug.Log("Player Screen Poss = " + Screenpos);
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            CpEnemyShot[] shots = FindObjectsByType<CpEnemyShot>(FindObjectsSortMode.None);
+            CpDebug.LogError("EnemyShot Num:" + shots.Count());
+            for (int i = shots.Count() - 1; i >= 0; i--)
+            {
+                Destroy(shots[i].gameObject);
+            }
+            foreach (CpEnemyShot shot in shots)
+            {
+                Destroy(shot.gameObject);
+            }
         }
     }
     float _timer = 0f;

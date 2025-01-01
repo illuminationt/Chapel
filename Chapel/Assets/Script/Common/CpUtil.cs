@@ -7,10 +7,16 @@ public static class CpUtil
 {
     public static Vector2 GetWorldPositionFromScreenPosition(in Vector2 screenPosition)
     {
-        Vector2 screenPoint = new Vector2(screenPosition.x * CpScreen.Width, screenPosition.y * CpScreen.Height);
+        Vector2 screenPoint = new Vector2(screenPosition.x, screenPosition.y);
         Camera mainCamera = Camera.main;
-        Vector3 worldPosition = mainCamera.ScreenToWorldPoint(new Vector3(screenPosition.x, screenPosition.y, 0f));
+        Vector3 worldPosition = mainCamera.ViewportToWorldPoint(screenPoint);
         return worldPosition;
+    }
+
+    public static Vector2 GetScreenPositionFromWorldPositoni(in Vector2 worldPosition)
+    {
+        Vector3 screenPosition = Camera.main.WorldToViewportPoint(worldPosition);
+        return screenPosition;
     }
 
     public static Vector2 CalcDeltaVector(Vector2 offsetVector, ECpOffsetType offsetType)

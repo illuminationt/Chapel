@@ -1,21 +1,47 @@
 using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
+using System.Transactions;
 using UnityEngine;
 using UnityEngine.Assertions;
+
+[System.Serializable]
+public class CpPlayerWeaponShotGeneralParam
+{
+    public float LifeTime = -1f;
+}
 
 // 1つのShotを撃つときのパラメータ
 [System.Serializable]
 public class CpPlayerWeaponShotParam
 {
-    [SerializeField] public CpPlayerShot PlayerShot = null;
-    [SerializeField] public FCpShotSpawnLocationParam LocationParam;
+    [SerializeField]
+    public CpPlayerShot PlayerShot = null;
+    [SerializeField]
+    public CpPlayerWeaponShotGeneralParam GeneralParam = null;
+    [SerializeField]
+    public FCpShotSpawnLocationParam LocationParam;
 
     [SerializeReference]
     public ICpMoveParam MoveParam;
 
     [SerializeReference]
     public List<ICpActionParam> ActionParams;
+
+    public bool IsActionEnable(int actionIndex)
+    {
+#if UNITY_EDITOR
+        if (IgnoreActionIndexes.Contains(actionIndex))
+        {
+            return false;
+        }
+#endif
+        return true;
+    }
+
+#if UNITY_EDITOR
+    public List<int> IgnoreActionIndexes = new List<int>();
+#endif
 }
 
 // １つの武器が持つパラメータの構成要素
@@ -40,21 +66,30 @@ public class CpPlayerWeaponParamElementBase
     protected void CreateShot(in FCpShootControlParam controlParam, CpPlayerWeaponShotParam weaponShotParam)
     {
         CpPlayerShot newShot = CpObjectPool.Get().Create(weaponShotParam.PlayerShot);
-        newShot.OnCreated(controlParam);
+        newShot.OnCreated(weaponShotParam.GeneralParam, controlParam);
 
+        // 共通パラメータ設定
+
+        // 初期座標設定
         FCpShotSpawnLocationRequestParam locationReqParam;
         locationReqParam.origin = controlParam.origin;
         locationReqParam.forwardDegree = SltMath.ToDegree(controlParam.forward);
         Vector2 spawnLoc = weaponShotParam.LocationParam.GetLocation(locationReqParam);
         newShot.transform.position = spawnLoc;
 
+        // 移動開始
         CpMoveComponent moveComp = newShot.GetComponent<CpMoveComponent>();
         moveComp.RequestStart(weaponShotParam.MoveParam);
 
+        // アクション開始
         ICpActRunnable actRunnable = newShot;
-        foreach (ICpActionParam iactionParam in weaponShotParam.ActionParams)
+        for (int actionIndex = 0; actionIndex < weaponShotParam.ActionParams.Count; actionIndex++)
         {
-            actRunnable.RequestStart(iactionParam);
+            if (weaponShotParam.IsActionEnable(actionIndex))
+            {
+                ICpActionParam iactionParam = weaponShotParam.ActionParams[actionIndex];
+                actRunnable.RequestStart(iactionParam);
+            }
         }
 
     }

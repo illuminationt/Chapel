@@ -10,14 +10,31 @@ public enum ECpActScaleType
     Y = 2,
 }
 
+public enum ECpActScaleValueType
+{
+    Absolute,
+    Rate,
+}
+
 [System.Serializable]
 public struct FCpActParamScale : ICpActionParam
 {
     public ECpActionParamType GetActionParamType() { return ECpActionParamType.Scale; }
 
+    public float GetTargetScale(float initialScale)
+    {
+        return ScaleValueType switch
+        {
+            ECpActScaleValueType.Absolute => TargetScale,
+            ECpActScaleValueType.Rate => initialScale * TargetScale,
+            _ => throw new System.NotImplementedException()
+        };
+    }
+
     public ECpActScaleType ScaleType;
     public Ease EasingType;
-    public float TargetScale;
+    [SerializeField] ECpActScaleValueType ScaleValueType;
+    [SerializeField] float TargetScale;
     public float Duration;
 }
 public class CpActRunnerScale : CpActRunnerBase
@@ -35,7 +52,7 @@ public class CpActRunnerScale : CpActRunnerBase
         _tweenFloatParam = tweenable.GetUsableTweener<SltTweenFloatParam>();
 
         float initialScale = Context.OwnerActor.transform.localScale.x;
-        float targetScale = _param.TargetScale;
+        float targetScale = _param.GetTargetScale(initialScale);
         _activeTweener = _tweenFloatParam.StartTween(initialScale, targetScale, _param.Duration, _param.EasingType);
         _activeTweener.onComplete += () => { _bActive = false; };
     }

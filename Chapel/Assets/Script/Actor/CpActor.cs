@@ -13,6 +13,11 @@ public class CpActorBase : MonoBehaviour,
         ICpActRunnable actRunnable = this;
         actRunnable.UpdateActRunnerManager();
     }
+
+    protected virtual void Release()
+    {
+        Destroy(gameObject);
+    }
     public virtual float GetForwardDegree()
     {
         Assert.IsTrue(false);

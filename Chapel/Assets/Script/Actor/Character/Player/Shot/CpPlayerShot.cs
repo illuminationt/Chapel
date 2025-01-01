@@ -5,8 +5,9 @@ using UnityEngine.Assertions;
 
 public class CpPlayerShot : CpShotBase
 {
-    public void OnCreated(in FCpShootControlParam controlParam)
+    public void OnCreated(CpPlayerWeaponShotGeneralParam generalParam, in FCpShootControlParam controlParam)
     {
+        _lifeTime = generalParam.LifeTime;
         _forwardDegreeOnCreated = SltMath.ToDegree(controlParam.forward);
     }
 

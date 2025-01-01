@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
+
 
 public class CpObjectPool : MonoBehaviour
 {
+    // Ž©‹@
     public static CpObjectPool Create()
     {
         GameObject Obj = new GameObject("CpObjectPool", typeof(CpObjectPool));
@@ -23,4 +26,6 @@ public class CpObjectPool : MonoBehaviour
         T newObj = Instantiate<T>(obj);
         return newObj;
     }
+
+    Dictionary<CpPlayerShot, ObjectPool<CpPlayerShot>> _playerShotPool;
 }

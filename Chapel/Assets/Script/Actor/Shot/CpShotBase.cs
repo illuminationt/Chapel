@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Pool;
 
 [RequireComponent(typeof(CpMoveComponent))]
 public abstract class CpShotBase : CpActorBase,
@@ -9,15 +10,20 @@ public abstract class CpShotBase : CpActorBase,
     ICpAttackSendable,
     ICpAttackReceivable
 {
-    float _timer = 0f;
+    float _elapsedTime = 0f;
+    protected float _lifeTime = 0f;
     protected override void Update()
     {
         base.Update();
 
-        _timer += CpTime.DeltaTime;
-        if (_timer > 2f)
+        if (_lifeTime > 0f)
         {
-            Destroy(gameObject);
+
+            _elapsedTime += CpTime.DeltaTime;
+            if (_elapsedTime > _lifeTime)
+            {
+                Release();
+            }
         }
     }
 

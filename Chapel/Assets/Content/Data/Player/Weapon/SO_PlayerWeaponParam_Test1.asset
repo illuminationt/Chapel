@@ -16,20 +16,33 @@ MonoBehaviour:
     _weaponElements:
     - WeaponShotParam:
         PlayerShot: {fileID: 2527995188642578116, guid: 5d030434dde35ef4f9abe60fe9400154, type: 3}
+        GeneralParam:
+          LifeTime: 0.5
         LocationParam:
           LocationType: 1
           Param_Offset:
             Offset: {x: 0, y: 0}
         MoveParam:
-          rid: 5039693629444063236
+          rid: 5039693629444063257
+        ActionParams:
+        - rid: 5039693629444063261
+        IgnoreActionIndexes: 00000000
       Interval: 0.1
   references:
     version: 2
     RefIds:
-    - rid: 5039693629444063236
-      type: {class: FCpMoveParamTween, ns: , asm: Assembly-CSharp}
+    - rid: 5039693629444063257
+      type: {class: FCpMoveParamLinear, ns: , asm: Assembly-CSharp}
       data:
-        VectorValue: {x: 0, y: 0}
-        VectorType: 0
-        Duration: 0
-        EasingType: 0
+        Speed: 200
+        MaxSpeedf: 200
+        DegreeOffset: 0
+        Accel: 11
+    - rid: 5039693629444063261
+      type: {class: FCpActParamScale, ns: , asm: Assembly-CSharp}
+      data:
+        ScaleType: 0
+        EasingType: 1
+        ScaleValueType: 1
+        TargetScale: 0.3
+        Duration: 0.5

@@ -21,6 +21,7 @@ public class CpGameManager : SingletonMonoBehaviour<CpGameManager>
     {
         var op = Addressables.LoadAssetAsync<CpGameSettings>("CpGameSettings");
         _gameSettings = op.WaitForCompletion();
+        _enemySpawnerManager = CpEnemySpawnerManager.Create();
     }
 
     public CpPlayer Player
@@ -62,6 +63,8 @@ public class CpGameManager : SingletonMonoBehaviour<CpGameManager>
             return _objectPool;
         }
     }
+    public CpEnemySpawnerManager EnemySpawnerManager => _enemySpawnerManager;
+    CpEnemySpawnerManager _enemySpawnerManager = null;
 
     public CpGameSettings GameSettings => _gameSettings;
     CpGameSettings _gameSettings;

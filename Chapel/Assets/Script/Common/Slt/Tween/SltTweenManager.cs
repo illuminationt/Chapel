@@ -81,6 +81,7 @@ public class SltTweenVector2Param : SltTweenParamBase
     }
 
     public Vector2 GetDeltaMove() => _latestDeltaMove;
+    public Vector2 GetCurrentValue() => _tweeningVector;
 }
 
 

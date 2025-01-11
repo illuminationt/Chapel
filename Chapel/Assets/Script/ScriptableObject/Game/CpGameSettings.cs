@@ -12,6 +12,6 @@ public class CpGameSettings : ScriptableObject
     public string Comment = null;
 #endif
     public static CpGameSettings Get() => CpGameManager.Instance.GameSettings;
-
+    public CpPlayerSettings PlayerSettings;
     public CpAttackSenderParamScriptableObject AttackSenderParam;
 }

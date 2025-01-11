@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-public abstract class SingletonMonoBehaviour<T> :MonoBehaviour where T : MonoBehaviour
+public abstract class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBehaviour
 {
 
     private static T instance;
@@ -13,7 +13,7 @@ public abstract class SingletonMonoBehaviour<T> :MonoBehaviour where T : MonoBeh
             {
                 Type t = typeof(T);
 
-                instance = (T)FindObjectOfType(t);
+                instance = (T)FindFirstObjectByType(t);
                 if (instance == null)
                 {
                     CpDebug.LogError(t + " をアタッチしているGameObjectはありません");

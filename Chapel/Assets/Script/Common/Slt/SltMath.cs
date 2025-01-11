@@ -66,6 +66,21 @@ public static class SltMath
         return normalizedDegree;
     }
 
+    public static Vector2 RotateVector(in Vector2 vector, float degree)
+    {
+        Quaternion quat = Quaternion.Euler(0f, 0f, degree);
+        return quat * vector;
+    }
+
+
+    public static Vector2 Lerp(in Vector2 a, in Vector2 b, float alpha)
+    {
+        return Vector2.Lerp(a, b, alpha);
+    }
+    public static float Lerp(float a, float b, float alpha)
+    {
+        return Mathf.Lerp(a, b, alpha);
+    }
 }
 
 [System.Serializable]

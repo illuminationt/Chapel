@@ -1,3 +1,4 @@
+using ImGuiNET;
 using Oddworm.Framework;
 using System;
 using System.Collections;
@@ -7,80 +8,58 @@ using UnityEngine;
 
 [RequireComponent(typeof(CpPilotComponent))]
 [RequireComponent(typeof(CpShootComponent))]
-public class CpPlayer : CpCharacterBase
+public class CpPlayer : CpCharacterBase, ICpGameplayEffectReciever
 {
+    CpGameplayEffectHandler _gameplayEffectHandler = null;
     Transform _transform = null;
     CpPilotComponent _pilotComponent = null;
     CpShootComponent _shootComponent = null;
     CpDebugComponent _debugComponent = null;
     CpPlayerForwardCalculator _forwardCalculator = null;
 
-    public CpHellParamScriptableObject HellParamScriptableObject = null;
-    public CpEnemyBase EnemyPrefab = null;
-    public CpEnemySpawnParam EnemySpawnParam = null;
-    private void Start()
+    List<Collider2D> _colliders = new List<Collider2D>();
+    public static CpPlayer Get() => CpGameManager.Instance.Player;
+
+
+    protected override void Awake()
     {
+        base.Awake();
+
+        _gameplayEffectHandler = new CpGameplayEffectHandler();
+
         _transform = GetComponent<Transform>();
         _pilotComponent = GetComponent<CpPilotComponent>();
         _shootComponent = GetComponent<CpShootComponent>();
+        _shootComponent.Initialize(this);
         _forwardCalculator = new CpPlayerForwardCalculator(_transform);
+        _colliders = GetComponents<Collider2D>().ToList();
+    }
+
+    private void Start()
+    {
+
     }
 
     protected override void Update()
     {
         base.Update();
-        _pilotComponent.execute();
-        _forwardCalculator.execute();
+        _pilotComponent.Execute();
+        _forwardCalculator.Update();
         debugDrawDirection();
 
         updateShoot();
 
-        if (Input.GetKeyDown(KeyCode.M))
+
+    }
+
+
+    public void SetCollisionEnabled(bool bEnabled)
+    {
+        foreach (Collider2D collider in _colliders)
         {
-            CpTaskComponent taskComp = GetComponent<CpTaskComponent>();
-            taskComp.StartStateMachine();
-        }
-
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            CpHellComponent hellComp = GetComponent<CpHellComponent>();
-            hellComp.RequestStart(HellParamScriptableObject.MultiHellParam);
-        }
-
-        //_timer += CpTime.DeltaTime;
-        //if (_timer > 1f && count < 11111111)
-        //{
-        //    _timer = 0f;
-        //    count++;
-        //    CpEnemyBase newEnemy = Instantiate(EnemyPrefab); ;
-        //    newEnemy.transform.position = new Vector2(0f, 70f);
-        //}
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            CpEnemySpawnerManager enemySpanerManager = CpEnemySpawnerManager.Get();
-            enemySpanerManager.RequestSpawn(EnemySpawnParam);
-        }
-
-        Vector2 Screenpos = CpUtil.GetScreenPositionFromWorldPositoni(transform.position);
-        CpDebug.Log("Player Screen Poss = " + Screenpos);
-
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            CpEnemyShot[] shots = FindObjectsByType<CpEnemyShot>(FindObjectsSortMode.None);
-            CpDebug.LogError("EnemyShot Num:" + shots.Count());
-            for (int i = shots.Count() - 1; i >= 0; i--)
-            {
-                Destroy(shots[i].gameObject);
-            }
-            foreach (CpEnemyShot shot in shots)
-            {
-                Destroy(shot.gameObject);
-            }
+            collider.enabled = bEnabled;
         }
     }
-    float _timer = 0f;
-    int count = 0;
 
     // ICpActorForwardInterface
     public override float GetForwardDegree()
@@ -113,6 +92,10 @@ public class CpPlayer : CpCharacterBase
     }
     // end of ICpAttackReceivable
 
+    //  ICpGameplayEffectReciever
+    public CpGameplayEffectHandler GetGameplayEffectHandler() { return _gameplayEffectHandler; }
+
+    // end of  ICpGameplayEffectReciever
     CpPlayerForwardCalculator ForwardCalculator
     {
         get
@@ -128,6 +111,7 @@ public class CpPlayer : CpCharacterBase
     void updateShoot()
     {
         FCpShootControlParam shootControlParam = new FCpShootControlParam();
+        shootControlParam.Player = this;
         shootControlParam.origin = _transform.position;
         shootControlParam.forward = _forwardCalculator.GetForwardVector();
         _shootComponent.execute(shootControlParam);
@@ -140,4 +124,26 @@ public class CpPlayer : CpCharacterBase
         Vector2 end = start + dir * 22f;
     }
 
+    protected override void OnTriggerEnter2D(Collider2D collision)
+    {
+        base.OnTriggerEnter2D(collision);
+
+
+        CpRoomTransitionTrigger roomTransition = collision.GetComponent<CpRoomTransitionTrigger>();
+        roomTransition?.OnTrigger();
+
+        ICpGameplayEffectSender sender = collision as ICpGameplayEffectSender;
+
+    }
+
+#if DEBUG
+    public void DrawImGui()
+    {
+        if (ImGui.TreeNode("Shoot Component"))
+        {
+            _shootComponent.DrawImGui();
+            ImGui.TreePop();
+        }
+    }
+#endif
 }

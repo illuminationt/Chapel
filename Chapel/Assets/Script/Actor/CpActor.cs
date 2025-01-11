@@ -8,6 +8,10 @@ public class CpActorBase : MonoBehaviour,
     ICpTweenable,
     ICpActRunnable
 {
+    protected virtual void Awake()
+    {
+
+    }
     protected virtual void Update()
     {
         ICpActRunnable actRunnable = this;

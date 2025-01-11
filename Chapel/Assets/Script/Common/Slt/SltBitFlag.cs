@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,6 +6,11 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.InputSystem.Controls;
 
+#if DEBUG
+using ImGuiNET;
+#endif
+
+[System.Serializable]
 public struct TSltBitFlag<TEnum> where TEnum : Enum
 {
     public TSltBitFlag(int initialFlag = 0)
@@ -39,10 +45,31 @@ public struct TSltBitFlag<TEnum> where TEnum : Enum
 #endif
     }
 
+    public void Fill(bool bFlag)
+    {
+        if (bFlag)
+        {
+            _flag = int.MaxValue;
+        }
+        else
+        {
+            _flag = 0;
+        }
+    }
+
     public bool Get(TEnum flag)
     {
         int index = Convert.ToInt32(flag);
+        return Get(index);
+    }
+    bool Get(int index)
+    {
         return (_flag & 1 << index) != 0;
+    }
+
+    public bool EqualsFlag(TEnum flag, bool bValue)
+    {
+        return Get(flag) == bValue;
     }
 
     public bool Any()
@@ -70,10 +97,28 @@ public struct TSltBitFlag<TEnum> where TEnum : Enum
         return sb.ToString();
     }
 
+    [SerializeField]
     int _flag;
+
 
     // デバッグ表示用
 #if UNITY_EDITOR
     Dictionary<TEnum, bool> EnumDict;
+#endif
+
+#if DEBUG
+    public void DrawImGui(string label)
+    {
+        ImGui.Text(label);
+
+        List<TEnum> enums = SltEnumUtil.GetAllValues<TEnum>();
+        for (int index = 0; index < enums.Count; index++)
+        {
+            bool bValue = Get(index);
+            string valueName = SltEnumUtil.ToString(enums[index]);
+            ImGui.Checkbox(valueName, ref bValue);
+            Set(enums[index], bValue);
+        }
+    }
 #endif
 }

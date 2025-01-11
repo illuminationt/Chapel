@@ -14,11 +14,13 @@ public class CpEnemySpawnerManager
         return CpGameManager.Instance.EnemySpawnerManager;
     }
 
-    public void RequestSpawn(CpEnemySpawnParam param)
+    public CpEnemySpawner RequestSpawn(CpEnemySpawnParam param)
     {
         CpEnemySpawner newSpawner = new CpEnemySpawner();
         newSpawner.RequestSpawn(param);
         _enemySpawners.Add(newSpawner);
+
+        return newSpawner;
     }
 
     List<CpEnemySpawner> _enemySpawners = new List<CpEnemySpawner>();

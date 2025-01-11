@@ -98,7 +98,7 @@ public class CpMoverTween : CpMoverBase
                 }
                 break;
             case ECpVectorType.AbsoluteScreenPosition:
-                retVector = CpUtil.GetWorldPositionFromScreenPosition(_paramTween.VectorValue);
+                retVector = CpUtil.GetWorldPositionFromNormalizedPosition(_paramTween.VectorValue);
                 break;
             case ECpVectorType.OffsetWorldSpace:
                 retVector = _paramTween.VectorValue;

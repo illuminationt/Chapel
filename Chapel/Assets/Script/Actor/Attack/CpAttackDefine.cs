@@ -66,7 +66,7 @@ public class CpAttackSenderParam
     }
 
     [SerializeField]
-    [ListDrawerSettings(Expanded = true, ListElementLabelName = "Title")]
+    [ListDrawerSettings(ListElementLabelName = "Title")]
     List<CpAttackSenderParamElement> _attackSenderParamList = new List<CpAttackSenderParamElement>();
 }
 

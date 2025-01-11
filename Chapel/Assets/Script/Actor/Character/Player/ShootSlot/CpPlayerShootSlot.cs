@@ -15,9 +15,9 @@ public class CpPlayerShootSlot
     {
         _weaponParam = weaponParam;
     }
-    public void Update(in FCpShootControlParam controlParam)
+    public void Update(in FCpShootControlParam controlParam, ref FCpShootControlResult refResult)
     {
-        _weaponParam?.Update(controlParam);
+        _weaponParam?.Update(controlParam, ref refResult);
     }
 
     // スロットが現在保持している武器パラメータ(不変)

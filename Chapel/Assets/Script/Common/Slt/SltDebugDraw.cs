@@ -38,11 +38,38 @@ public static class SltDebugDraw
         DrawArrow(start, end, color, thickness, duration);
     }
 
-    public static void DrawText(string str, Color color, float fontSize = 5f)
+    public static void DrawText(Vector2 location, string str, Color color, float fontSize = 5f)
     {
         using (Draw.Command(Camera.main))
         {
             Draw.Text(str, fontSize, color);
         }
+    }
+
+}
+
+public static class SltDebugDrawOnGizmos
+{
+    public static void DrawArrow(Vector2 start, Vector2 end, Color color)
+    {
+        Gizmos.color = color;
+        Gizmos.DrawLine(start, end);
+
+        Vector3 arrowDir = (end - start).normalized;
+        // –îˆó‚Ì“ª‚Ì•ûŒü‚ðŒvŽZ
+        float headAngle = 45f;
+        Vector2 right = Quaternion.Euler(0, 0, 180 + headAngle) * arrowDir;
+        Vector2 left = Quaternion.Euler(0, 0, 180 - headAngle) * arrowDir;
+
+        // –îˆó‚Ì“ª‚ð•`‰æ
+        float arrowLength = (end - start).magnitude;
+        Gizmos.DrawLine(end, end + right * (arrowLength * 0.2f));
+        Gizmos.DrawLine(end, end + left * (arrowLength * 0.2f));
+    }
+
+    public static void DrawArrow(in Vector2 start, in Vector2 dir, float length, Color color)
+    {
+        Vector2 end = start + dir * length;
+        DrawArrow(start, end, color);
     }
 }

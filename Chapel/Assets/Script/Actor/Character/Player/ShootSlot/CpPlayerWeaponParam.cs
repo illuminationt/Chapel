@@ -49,21 +49,21 @@ public class CpPlayerWeaponShotParam
 [System.Serializable]
 public class CpPlayerWeaponParamElementBase
 {
-    public void Update(in FCpShootControlParam controlParam)
+    public void Update(in FCpShootControlParam controlParam, ref FCpShootControlResult refResult)
     {
         CpInputManager input = CpInputManager.Get();
         bool bWasPressed = input.WasPressed(ECpButton.Shoot);
         bool bPressHold = input.IsPressHold(ECpButton.Shoot);
         bool bWasReleased = input.WasReleased(ECpButton.Shoot);
 
-        UpdateInternal(controlParam, bWasPressed, bPressHold, bWasReleased);
+        UpdateInternal(controlParam, bWasPressed, bPressHold, bWasReleased, ref refResult);
     }
-    protected virtual void UpdateInternal(in FCpShootControlParam controlParam, bool bPressed, bool bPressHold, bool bReleased)
+    protected virtual void UpdateInternal(in FCpShootControlParam controlParam, bool bPressed, bool bPressHold, bool bReleased, ref FCpShootControlResult refResult)
     {
         // åpè≥êÊÇ≈ÇÃÇ›é¿ëïÇµÇƒÇ≠ÇæÇ≥Ç¢
     }
 
-    protected void CreateShot(in FCpShootControlParam controlParam, CpPlayerWeaponShotParam weaponShotParam)
+    protected bool CreateShot(in FCpShootControlParam controlParam, CpPlayerWeaponShotParam weaponShotParam)
     {
         CpPlayerShot newShot = CpObjectPool.Get().Create(weaponShotParam.PlayerShot);
         newShot.OnCreated(weaponShotParam.GeneralParam, controlParam);
@@ -92,6 +92,7 @@ public class CpPlayerWeaponParamElementBase
             }
         }
 
+        return true;
     }
 }
 
@@ -99,9 +100,14 @@ public class CpPlayerWeaponParamElementBase
 [System.Serializable]
 public class CpPlayerWeaponParamElementInterval : CpPlayerWeaponParamElementBase
 {
-    protected override void UpdateInternal(in FCpShootControlParam controlParam, bool bPressed, bool bPressHold, bool bReleased)
+    protected override void UpdateInternal(in FCpShootControlParam controlParam, bool bPressed, bool bPressHold, bool bReleased, ref FCpShootControlResult refResult)
     {
         _timer += CpTime.DeltaTime;
+
+        if (!controlParam.Ammo.IsRemainAmmo())
+        {
+            return;
+        }
 
         if (bPressHold)
         {
@@ -109,6 +115,7 @@ public class CpPlayerWeaponParamElementInterval : CpPlayerWeaponParamElementBase
             {
                 _timer = 0f;
                 CreateShot(controlParam, WeaponShotParam);
+                refResult.AmmoDelta -= 1;
             }
         }
     }
@@ -124,11 +131,11 @@ public class CpPlayerWeaponParamElementInterval : CpPlayerWeaponParamElementBase
 [System.Serializable]
 public class CpPlayerWeaponParam
 {
-    public void Update(in FCpShootControlParam controlParam)
+    public void Update(in FCpShootControlParam controlParam, ref FCpShootControlResult refResult)
     {
         foreach (var element in _weaponElements)
         {
-            element.Update(controlParam);
+            element.Update(controlParam, ref refResult);
         }
     }
     [SerializeField] List<CpPlayerWeaponParamElementInterval> _weaponElements;

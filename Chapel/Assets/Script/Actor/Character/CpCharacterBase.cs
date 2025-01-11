@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Events;
 
 public abstract class CpCharacterBase : CpActorBase,
     ICpAttackSendable,
@@ -12,6 +13,7 @@ public abstract class CpCharacterBase : CpActorBase,
 {
     [SerializeField]
     float _hp = 1f;
+
     protected virtual void OnDead()
     {
         Destroy(gameObject);
@@ -46,7 +48,7 @@ public abstract class CpCharacterBase : CpActorBase,
     }
     // end of ICpAttackReceivable
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
         ICpAttackReceivable otherAttackReceivable = collision.gameObject.GetComponent<ICpAttackReceivable>();
 

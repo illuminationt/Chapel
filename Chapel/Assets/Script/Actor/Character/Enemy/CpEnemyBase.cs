@@ -2,9 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public struct FCpEnemyInitializeParam
 {
+    public CpEnemySpawner OwnerSpawner;
     public CpEnemySpawnLocationParam LocationParam;
     public CpSpawnedEnemySpecificParam EnemySpecificParam;
 }
@@ -12,6 +14,7 @@ public struct FCpEnemyInitializeParam
 [RequireComponent(typeof(CpTaskComponent))]
 public class CpEnemyBase : CpCharacterBase
 {
+    public static UnityEvent<CpEnemyBase> OnEnemyDead = new UnityEvent<CpEnemyBase>();
     public void Start()
     {
 
@@ -19,6 +22,7 @@ public class CpEnemyBase : CpCharacterBase
 
     public void InitializeEnemy(in FCpEnemyInitializeParam initParam)
     {
+        _ownerSpawner = initParam.OwnerSpawner;
         // ç¿ïWê›íË
         Vector2 position = initParam.LocationParam.GetSpawnLocation();
         transform.position = position;
@@ -32,6 +36,17 @@ public class CpEnemyBase : CpCharacterBase
             taskComp.StartStateMachine();
         });
     }
+
+
+    // CpCharacterBase interface
+
+    protected override void OnDead()
+    {
+        OnEnemyDead.Invoke(this);
+        Destroy(gameObject);
+    }
+
+    // end of CpCharacterBase
 
     public override float GetForwardDegree()
     {
@@ -60,4 +75,7 @@ public class CpEnemyBase : CpCharacterBase
     {
         base.OnReceiveAttack(attackSendParam);
     }
+
+    // 
+    CpEnemySpawner _ownerSpawner = null;
 }

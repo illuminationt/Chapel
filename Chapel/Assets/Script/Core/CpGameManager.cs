@@ -29,7 +29,6 @@ public class CpGameManager : SingletonMonoBehaviour<CpGameManager>
 
     private void Update()
     {
-
         _gamePlayManager.Update();
     }
 
@@ -67,7 +66,7 @@ public class CpGameManager : SingletonMonoBehaviour<CpGameManager>
         {
             if (_objectPool == null)
             {
-                _objectPool = CpObjectPool.Create();
+                _objectPool = CpObjectPool.CreateObjectPool();
             }
             return _objectPool;
         }

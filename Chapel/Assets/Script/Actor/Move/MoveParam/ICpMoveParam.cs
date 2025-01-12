@@ -16,6 +16,8 @@ public enum ECpMoveParamType
 
     HomingOnlyRotate = 500,
     HomingCloseToTarget = 501,
+
+    Physical = 1000,
 }
 public interface ICpMoveParam
 {

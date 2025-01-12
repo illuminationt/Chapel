@@ -7,13 +7,17 @@ public struct FCpInstanceId
 {
     public static FCpInstanceId Create()
     {
-        FCpInstanceId newId = new FCpInstanceId();
         if (LatestId > UInt64.MaxValue - 5)
         {
             LatestId = 1;
         }
-        newId._id = LatestId++;
+
+        FCpInstanceId newId = new FCpInstanceId(LatestId++);
         return newId;
+    }
+    private FCpInstanceId(UInt64 id)
+    {
+        _id = id;
     }
 
     public bool Equals(in FCpInstanceId other)
@@ -38,5 +42,5 @@ public struct FCpInstanceId
         else { return false; }
     }
     static UInt64 LatestId = 1;
-    UInt64 _id;
+    readonly UInt64 _id;
 }

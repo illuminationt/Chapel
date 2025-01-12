@@ -58,6 +58,11 @@ public class CpMoveComponent : MonoBehaviour
         return MoverManager.RequestStart(param);
     }
 
+    public FCpMoverId RequestStart(in FCpMoveParamPhysical param)
+    {
+        return MoverManager.RequestStart(param);
+    }
+
     public FCpMoverId RequestStart(CpMoveParamScriptableObjectBase moveParamSO)
     {
         return MoverManager.RequestStart(moveParamSO.GetMoveParam());
@@ -66,6 +71,11 @@ public class CpMoveComponent : MonoBehaviour
     public void RequestStop(ECpMoveStopReason reason)
     {
         MoverManager.RequestStop(reason);
+    }
+
+    protected void OnCollisionEnter2D(Collision2D collision)
+    {
+        MoverManager.OnCollisionEnter2D(collision);
     }
 
     CpMoverManager MoverManager

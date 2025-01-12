@@ -5,6 +5,7 @@ using UnityEngine;
 
 [PreferBinarySerialization]
 [CreateAssetMenu(menuName = "ScriptableObject/CpGameSettings")]
+
 public class CpGameSettings : ScriptableObject
 {
 #if UNITY_EDITOR
@@ -14,4 +15,5 @@ public class CpGameSettings : ScriptableObject
     public static CpGameSettings Get() => CpGameManager.Instance.GameSettings;
     public CpPlayerSettings PlayerSettings;
     public CpAttackSenderParamScriptableObject AttackSenderParam;
+    public CpPrefabSettings PrefabSettings;
 }

@@ -45,19 +45,6 @@ public partial class CpMoverManager
         _bRequestedStop = true;
     }
 
-    FCpMoverContext CreateContext()
-    {
-        FCpMoverContext context;
-        context.OwnerMoverManager = this;
-        context.OwnerActor = _ownerActor;
-        context.InitialOwnerPosition = _ownerActor.transform.position;
-        context.InitialVelocity = _currentVelocity;
-
-        ICpActorForwardInterface forwardInterface = _ownerActor;
-        context.InitialOwnerDegree = forwardInterface.GetForwardDegree();
-        return context;
-    }
-
     public ECpMoverUpdateResult Update()
     {
         if (_currentMover == null)
@@ -86,6 +73,25 @@ public partial class CpMoverManager
 
         return ECpMoverUpdateResult.Moving;
     }
+
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        _currentMover?.OnCollisionEnterHit2D(collision);
+    }
+
+    FCpMoverContext CreateContext()
+    {
+        FCpMoverContext context;
+        context.OwnerMoverManager = this;
+        context.OwnerActor = _ownerActor;
+        context.InitialOwnerPosition = _ownerActor.transform.position;
+        context.InitialVelocity = _currentVelocity;
+
+        ICpActorForwardInterface forwardInterface = _ownerActor;
+        context.InitialOwnerDegree = forwardInterface.GetForwardDegree();
+        return context;
+    }
+
 
     public Vector2 GetDeltaMove()
     {

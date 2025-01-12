@@ -7,7 +7,7 @@ using UnityEngine.Pool;
 public class CpObjectPool : MonoBehaviour
 {
     // Ž©‹@
-    public static CpObjectPool Create()
+    public static CpObjectPool CreateObjectPool()
     {
         GameObject Obj = new GameObject("CpObjectPool", typeof(CpObjectPool));
         DontDestroyOnLoad(Obj);
@@ -24,6 +24,11 @@ public class CpObjectPool : MonoBehaviour
     public T Create<T>(T obj) where T : MonoBehaviour
     {
         T newObj = Instantiate<T>(obj);
+        return newObj;
+    }
+    public GameObject Create(GameObject objPrefab)
+    {
+        GameObject newObj = Instantiate(objPrefab);
         return newObj;
     }
 

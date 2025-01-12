@@ -15,11 +15,8 @@ public struct FCpEnemyInitializeParam
 public class CpEnemyBase : CpCharacterBase
 {
     public static UnityEvent<CpEnemyBase> OnEnemyDead = new UnityEvent<CpEnemyBase>();
-    public void Start()
-    {
 
-    }
-
+    [SerializeField] CpItemDropParam _itemDropParam = null;
     public void InitializeEnemy(in FCpEnemyInitializeParam initParam)
     {
         _ownerSpawner = initParam.OwnerSpawner;
@@ -43,6 +40,12 @@ public class CpEnemyBase : CpCharacterBase
     protected override void OnDead()
     {
         OnEnemyDead.Invoke(this);
+
+        if (_itemDropParam.IsValidParam())
+        {
+            CpItemDropper.Create(transform, _itemDropParam);
+        }
+
         Destroy(gameObject);
     }
 

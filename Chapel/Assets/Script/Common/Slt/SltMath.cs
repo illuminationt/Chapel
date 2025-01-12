@@ -84,6 +84,103 @@ public static class SltMath
 }
 
 [System.Serializable]
+public struct SltIntInterval
+{
+    public SltIntInterval(int min, int max)
+    {
+        bEnableMin = bEnableMax = true;
+        _min = min;
+        _max = max;
+    }
+    public void Reset()
+    {
+        bEnableMin = bEnableMax = false;
+        _min = -int.MaxValue;
+        _max = int.MaxValue;
+    }
+    public void Set(int min, int max)
+    {
+        this = new SltIntInterval(min, max);
+    }
+
+    public void SetMin(int min)
+    {
+        bEnableMin = true;
+        _min = min;
+        Validate();
+    }
+    public void SetMax(int max)
+    {
+        _max = max;
+        Validate();
+    }
+
+    public void Clamp(ref int clamped)
+    {
+        Validate();
+
+        if (bEnableMin && bEnableMax)
+        {
+            clamped = Mathf.Clamp(clamped, _min, _max);
+
+        }
+        else if (bEnableMin && !bEnableMax)
+        {
+            // ç≈è¨ílÇæÇØë∂ç›
+            if (clamped < _min)
+            {
+                clamped = _min;
+            }
+        }
+        else if (!bEnableMin && bEnableMax)
+        {
+            // ç≈ëÂílÇæÇØë∂ç›
+            if (clamped > _max)
+            {
+                clamped = _max;
+            }
+        }
+        else
+        {
+            // âΩÇ‡ÇµÇ»Ç¢
+        }
+    }
+
+    public int GetRandom()
+    {
+        return Random.Range(_min, _max);
+    }
+
+    void Validate()
+    {
+        if (bEnableMin && bEnableMax)
+        {
+            if (_min > _max || _max < _min)
+            {
+                _min = _max;
+            }
+        }
+    }
+
+
+    [SerializeField]
+    [ToggleLeft]
+    [LabelText("Enable Min")]
+    bool bEnableMin;
+    [SerializeField]
+    [ShowIf("@bEnableMin")]
+    int _min;
+
+    [SerializeField]
+    [ToggleLeft]
+    [LabelText("Enable Max")]
+    bool bEnableMax;
+    [SerializeField]
+    [ShowIf("@bEnableMax")]
+    int _max;
+}
+
+[System.Serializable]
 public struct SltFloatInterval
 {
     public SltFloatInterval(float min, float max)
@@ -144,6 +241,11 @@ public struct SltFloatInterval
         {
             // âΩÇ‡ÇµÇ»Ç¢
         }
+    }
+
+    public float GetRandom()
+    {
+        return Random.Range(_min, _max);
     }
 
     void Validate()

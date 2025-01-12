@@ -89,6 +89,12 @@ public partial class CpMoverManager
         _currentMover = CpMoverHomingOnlyRotate.Create(param, CreateContext());
         return _currentMover.GetId();
     }
+    public FCpMoverId RequestStart(in FCpMoveParamPhysical param)
+    {
+        _currentMover = CpMoverPhysical.Create(param, CreateContext());
+        return _currentMover.GetId();
+    }
+
     public FCpMoverId RequestStart(ICpMoveParam imove)
     {
         ECpMoveParamType moveParamType = imove.GetMoveParamType();
@@ -102,6 +108,7 @@ public partial class CpMoverManager
             case ECpMoveParamType.EnemyShotMoveParamList: return RequestStart((FCpMoveParamEnemyShotMoveParamList)imove);
             case ECpMoveParamType.HomingOnlyRotate: return RequestStart((FCpMoveParamHomingOnlyRotate)imove);
             case ECpMoveParamType.HomingCloseToTarget: return RequestStart((FCpMoveParamHomingCloseToTarget)imove);
+            case ECpMoveParamType.Physical: return RequestStart((FCpMoveParamPhysical)imove);
             default:
                 Assert.IsTrue(false, "ああああ！！！！！！！");
                 return FCpMoverId.INVALID_ID;

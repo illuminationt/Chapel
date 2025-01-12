@@ -87,6 +87,9 @@ public abstract class CpMoverBaseUtility
     public virtual Vector2 GetDeltaMove() { return GetVelocity() * Time.smoothDeltaTime; }
     public abstract Vector2 GetVelocity();
     public virtual bool IsFinished() { return false; }
+
+    public virtual void OnCollisionEnterHit2D(Collision2D collision) { }
+
     public FCpMoverId GetId() => _moverId;
 
     protected ref readonly CpMoverManager OwnerMoverManager => ref _context.OwnerMoverManager;

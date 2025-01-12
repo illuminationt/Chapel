@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5960570011155263568}
   - component: {fileID: 8708326254163413162}
   - component: {fileID: 8404711360374908231}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Tilemap_Wall_Down
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -294,7 +294,7 @@ GameObject:
   - component: {fileID: 8565830800225795382}
   - component: {fileID: 3115632737242602696}
   - component: {fileID: 1204497869596394499}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Tilemap_Wall_Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -571,7 +571,7 @@ GameObject:
   - component: {fileID: 5699280339343875467}
   - component: {fileID: 5699280339343875466}
   - component: {fileID: 3422537404064553285}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: P_RoomBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -666,7 +666,7 @@ GameObject:
   - component: {fileID: 2233396307081432424}
   - component: {fileID: 2233396307081432423}
   - component: {fileID: 2233396307081432422}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Tilemap_Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1446,7 +1446,7 @@ GameObject:
   - component: {fileID: 4747734290864462728}
   - component: {fileID: 4816389598927362971}
   - component: {fileID: 4355801540217557233}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Tilemap_Wall_Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1726,7 +1726,7 @@ GameObject:
   - component: {fileID: 6378400745736052693}
   - component: {fileID: 3711665602595680462}
   - component: {fileID: 4230050209083808116}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Tilemap_Wall_Up
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2005,6 +2005,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4600435989944020252, guid: d6ff8d89a004da242b6cfaf8efeb010c, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600435989944020252, guid: d6ff8d89a004da242b6cfaf8efeb010c, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -2019,6 +2023,10 @@ PrefabInstance:
     - target: {fileID: 8694445691190973944, guid: d6ff8d89a004da242b6cfaf8efeb010c, type: 3}
       propertyPath: m_Name
       value: P_RoomGateRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 8694445691190973944, guid: d6ff8d89a004da242b6cfaf8efeb010c, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 8694445691190973944, guid: d6ff8d89a004da242b6cfaf8efeb010c, type: 3}
       propertyPath: m_IsActive
@@ -2112,12 +2120,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4600435989944020252, guid: d6ff8d89a004da242b6cfaf8efeb010c, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600435989944020252, guid: d6ff8d89a004da242b6cfaf8efeb010c, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8694445691190973944, guid: d6ff8d89a004da242b6cfaf8efeb010c, type: 3}
       propertyPath: m_Name
       value: P_RoomGateUp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8694445691190973944, guid: d6ff8d89a004da242b6cfaf8efeb010c, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 8694445691190973944, guid: d6ff8d89a004da242b6cfaf8efeb010c, type: 3}
       propertyPath: m_IsActive
@@ -2210,6 +2226,10 @@ PrefabInstance:
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4600435989944020252, guid: d6ff8d89a004da242b6cfaf8efeb010c, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 8101649040229569563, guid: d6ff8d89a004da242b6cfaf8efeb010c, type: 3}
       propertyPath: ConnectDirection
       value: 2
@@ -2221,6 +2241,10 @@ PrefabInstance:
     - target: {fileID: 8694445691190973944, guid: d6ff8d89a004da242b6cfaf8efeb010c, type: 3}
       propertyPath: m_Name
       value: P_RoomGateLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 8694445691190973944, guid: d6ff8d89a004da242b6cfaf8efeb010c, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 8694445691190973944, guid: d6ff8d89a004da242b6cfaf8efeb010c, type: 3}
       propertyPath: m_IsActive
@@ -2314,6 +2338,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4600435989944020252, guid: d6ff8d89a004da242b6cfaf8efeb010c, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600435989944020252, guid: d6ff8d89a004da242b6cfaf8efeb010c, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -2328,6 +2356,10 @@ PrefabInstance:
     - target: {fileID: 8694445691190973944, guid: d6ff8d89a004da242b6cfaf8efeb010c, type: 3}
       propertyPath: m_Name
       value: P_RoomGateDown
+      objectReference: {fileID: 0}
+    - target: {fileID: 8694445691190973944, guid: d6ff8d89a004da242b6cfaf8efeb010c, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 8694445691190973944, guid: d6ff8d89a004da242b6cfaf8efeb010c, type: 3}
       propertyPath: m_IsActive

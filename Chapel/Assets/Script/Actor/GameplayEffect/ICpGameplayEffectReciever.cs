@@ -15,6 +15,5 @@ public interface ICpGameplayEffectReciever
             return GetGameplayEffectHandler().OnInvokeGameplayEffect;
         }
     }
-
 }
 

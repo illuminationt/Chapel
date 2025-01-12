@@ -17,12 +17,7 @@ public static class CpDebug
     public static void LogError() => LogError("‚È‚É‚©ƒGƒ‰[‹N‚«‚Ä‚Ü‚·");
     public static void LogVerbose(object Message)
     {
-#if UNITY_EDITOR
-        if (CpDebugParam.bLogVerbose)
-        {
-            LogWarning(Message);
-        }
-#endif
+
     }
     public static void LogVerbose()
     {

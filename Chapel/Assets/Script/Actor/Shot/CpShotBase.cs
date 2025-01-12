@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Pool;
@@ -24,6 +25,11 @@ public abstract class CpShotBase : CpActorBase,
             {
                 Release();
             }
+        }
+
+        if (!CpUtil.IsInScreen(_transform.position, 0f))
+        {
+            Release();
         }
     }
 
@@ -73,6 +79,12 @@ public abstract class CpShotBase : CpActorBase,
     {
         ICpAttackReceivable otherAttackReceivable = collision.gameObject.GetComponent<ICpAttackReceivable>();
         CpAttackUtil.OnTriggerEnter2D(this, otherAttackReceivable, collision);
+
+        int layer = collision.gameObject.layer;
+        if (layer == CpLayer.Wall)
+        {
+            Destroy(gameObject);
+        }
     }
 
 

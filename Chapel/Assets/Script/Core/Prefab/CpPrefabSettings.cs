@@ -18,4 +18,8 @@ public class CpPrefabSettings : ScriptableObject
     }
 
     public CpItemDropper ItemDropperPrefab = null;
+
+#if UNITY_EDITOR
+    public CpHellTestObject HellTestObjectPrefab = null;
+#endif
 }

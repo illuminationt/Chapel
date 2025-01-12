@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2865977793929430338}
   - component: {fileID: -4254734619241445008}
   - component: {fileID: 5490696336856437352}
+  - component: {fileID: 1563684009015396260}
   m_Layer: 13
   m_Name: P_DropItem
   m_TagString: Untagged
@@ -104,15 +105,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerItemGameplayEffect:
     Effect:
-      rid: 7634894637618954316
+      rid: 7634894679302209607
   references:
     version: 2
     RefIds:
-    - rid: 7634894637618954316
-      type: {class: CpGEPlayerSpeed, ns: , asm: Assembly-CSharp}
+    - rid: 7634894679302209607
+      type: {class: CpGEAddPlayerAmmo, ns: , asm: Assembly-CSharp}
       data:
         Dummy: 1234
-        Speed: 200
+        DeltaAmmo: 1
 --- !u!58 &-4254734619241445008
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -176,3 +177,15 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1563684009015396260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7248470457929722315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b09d35c0bac3509449c53d78395c8887, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

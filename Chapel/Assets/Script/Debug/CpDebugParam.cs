@@ -6,7 +6,15 @@ using UnityEngine;
 
 public static class CpDebugParam
 {
-    public static bool bLogVerbose = false;
+    public static void Reset()
+    {
+        bEnableHellTest = false;
+        TestHellParamScriptableObject = null;
+        HellTestObjectNormalizedPosition = Vector2.zero;
+    }
+    public static bool bEnableHellTest = false;
+    public static CpHellParamScriptableObject TestHellParamScriptableObject = null;
+    public static Vector2 HellTestObjectNormalizedPosition;
 }
 
 #endif

@@ -6,7 +6,6 @@ using UnityEngine.EventSystems;
 [System.Serializable]
 public class CpGameplayEffectBase
 {
-    public int Dummy = 1234;
 }
 
 [System.Serializable]

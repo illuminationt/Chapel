@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class CpDebugManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        
+        if (CpDebugParam.bEnableHellTest)
+        {
+            StartHellTest();
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    void StartHellTest()
     {
-        
+        CpHellTestObject prefab = CpPrefabSettings.Get().HellTestObjectPrefab;
+        CpHellTestObject obj = Instantiate(prefab);
+        Vector2 position = CpUtil.GetWorldPositionFromNormalizedPosition(CpDebugParam.HellTestObjectNormalizedPosition);
+        obj.transform.position = position;
+
+        obj.RequestStartHell(CpDebugParam.TestHellParamScriptableObject);
     }
 }

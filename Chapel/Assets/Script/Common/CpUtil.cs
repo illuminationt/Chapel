@@ -44,6 +44,12 @@ public static class CpUtil
         return normalizedPosition;
     }
 
+    public static bool IsInScreen(in Vector2 worldPosition, float boudingRadius)
+    {
+        Vector2 np = GetNormalizedPositionFromWorldPosition(worldPosition);
+        return 0f <= np.x && np.x <= 1f && 0 <= np.y && np.y <= 1f;
+    }
+
     public static Vector2 CalcDeltaVector(Vector2 offsetVector, ECpOffsetType offsetType)
     {
         switch (offsetType)

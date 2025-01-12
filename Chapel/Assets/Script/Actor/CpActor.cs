@@ -10,7 +10,7 @@ public class CpActorBase : MonoBehaviour,
 {
     protected virtual void Awake()
     {
-
+        _transform = transform;
     }
     protected virtual void Update()
     {
@@ -56,6 +56,7 @@ public class CpActorBase : MonoBehaviour,
     }
     // end of ICpActRunnable
 
+    protected Transform _transform = null;
     SltTweenManager _tweenManager = null;
     CpActRunnerManager _actRunnerManager = null;
 }

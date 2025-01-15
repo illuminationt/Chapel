@@ -35,8 +35,6 @@ public struct FCpMoveParamEnemyShotDefault : ICpMoveParam
 public struct FCpMoveParamEnemyShotMoveParam : ICpMoveParam
 {
     public ECpMoveParamType GetMoveParamType() => ECpMoveParamType.EnemyShotMoveParam;
-
-    public int Dummy;
 }
 
 [System.Serializable]
@@ -44,10 +42,8 @@ public struct FCpMoveParamEnemyShotMoveParamList : ICpMoveParam
 {
     public ECpMoveParamType GetMoveParamType() => ECpMoveParamType.EnemyShotMoveParamList;
 
-    public float a;
     public FCpMoveParamEnemyShotMoveParam param2;
     public FCpMoveParamEnemyShotDefault basdu;
-    int souenf;
 }
 
 public struct FCpMoveParamEnemyShot

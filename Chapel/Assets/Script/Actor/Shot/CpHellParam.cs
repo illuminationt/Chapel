@@ -80,14 +80,27 @@ public enum ECpEnemyShotMoveType
     MoveParamList,
 }
 
+public enum ECpEnemyShotRotationType
+{
+    Noop,// 何もしない
+    VelocityDirection,// 速度方向
+}
+
 // １回の発射パラメータ
 [System.Serializable]
 public class CpHellParamOneTrigger
 {
+    public float GetForwardDegreeOffset()
+    {
+        return forwardDegreeOffset + CpRandom.GetDelta(forwardDegreeOffsetVariation);
+    }
+
     [LabelText("正面方向の算出方法")]
     public ECpHellForwardType forwardType;
-    [LabelText("正面方向からの固定角度差分(度)")]
-    public float forwardDegreeOffset;
+    [SerializeField, LabelText("正面方向からの固定角度差分(度)")]
+    float forwardDegreeOffset = 0f;
+    [SerializeField, LabelText("正面方向からの角度差分ランダム幅(度)")]
+    float forwardDegreeOffsetVariation = 0f;
 
     [LabelText("N-Way弾数")]
     public int multiwayNum = 1;
@@ -283,7 +296,7 @@ public class CpHellUpdator
 
         // プールから取得
         CpEnemyShot shotPrefab = paramObject.Get();
-        CpEnemyShot newShot = CpObjectPool.Get().Create<CpEnemyShot>(shotPrefab);
+        CpEnemyShot newShot = CpObjectPool.Get().Get(shotPrefab);
 
         // 初期座標を設定
         newShot.transform.position = spawnPosition;
@@ -303,6 +316,8 @@ public class CpHellUpdator
         List<Vector2> shootDirections = new List<Vector2>(multiwayNum);
         // 弾丸発射方向の基準となる、前方方向
         Vector2 shootForward = CalcForwardVector();
+        // 前方方向に加える角度差分を適用
+        shootForward = SltMath.RotateVector(shootForward, paramTrigger.GetForwardDegreeOffset());
 
         for (int multiwayIndex = 0; multiwayIndex < multiwayNum; multiwayIndex++)
         {
@@ -346,7 +361,7 @@ public class CpHellUpdator
         {
             case ECpHellForwardType.Fixed:
                 {
-                    float degree = _context.InitialDegree + paramTrigger.forwardDegreeOffset;
+                    float degree = _context.InitialDegree;
                     retForward = SltMath.ToVector(degree);
                 }
                 break;

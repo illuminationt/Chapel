@@ -16,7 +16,7 @@ public class CpPlayerAmmo
         return _currentAmmo > 0;
     }
 
-    int _currentAmmo = 10;
+    int _currentAmmo = 101111;
 #if DEBUG
     public void DrawImGui()
     {

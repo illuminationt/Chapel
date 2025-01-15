@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CpPlayerAimMarkerController
@@ -60,12 +61,30 @@ public class CpPlayerAimMarkerController
     void UpdateOnMouse(ref Vector2 markerNormalizedPosition)
     {
         var input = CpInputManager.Get();
-        Vector2 mouseScreenPosition = input.GetMouseLocation();
-        markerNormalizedPosition = CpUtil.GetNormalizedPositionFromScreenPosition(mouseScreenPosition);
+        Vector2 mousePosition = input.GetMouseLocation();
+        Vector2 mouseNormalizedPosition = Vector2.zero;
+        mouseNormalizedPosition.x = mousePosition.x / Screen.width;
+        mouseNormalizedPosition.y = mousePosition.y / Screen.height;
+
+        markerNormalizedPosition = mouseNormalizedPosition;
     }
 
     Vector2 _markerNormalizedPosition;
     Vector2 _markerWorldPosition;
     CpPlayerAimMarkerParam _param;
     CpPlayerAimMarker _markerObject;
+
+#if DEBUG
+
+    public void DrawImGui()
+    {
+        var input = CpInputManager.Get();
+
+        SltImGui.TextVector2("MouseLocation", input.GetMouseLocation());
+        SltImGui.TextVector2("NormalizedPosition", _markerNormalizedPosition);
+        SltImGui.TextVector2("WorldPosition", _markerWorldPosition);
+
+        SltImGui.TextVector2("ScreenWidth/Height", new Vector2(Screen.width, Screen.height));
+    }
+#endif
 }

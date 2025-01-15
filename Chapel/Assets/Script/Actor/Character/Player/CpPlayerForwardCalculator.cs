@@ -172,4 +172,18 @@ public class CpPlayerForwardCalculator
     ECpPlayerForwardType _forwardTypeOnRightStick;
     CpPlayerAimMarkerController _aimMarkerController = null;
     Vector2 latestForwardVector = Vector2.right;
+
+
+#if DEBUG
+    public void DrawImGui()
+    {
+        SltImGui.EnumValueCombo(ref _forwardTypeOnRightStick);
+
+        if (SltImGui.TreeNode("AimMarkerController"))
+        {
+            _aimMarkerController.DrawImGui();
+            SltImGui.TreePop();
+        }
+    }
+#endif
 }

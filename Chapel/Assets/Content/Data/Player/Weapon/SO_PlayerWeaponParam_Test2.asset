@@ -15,65 +15,46 @@ MonoBehaviour:
   WeaponParam:
     _weaponElements:
     - WeaponShotParam:
-        PlayerShot: {fileID: 2527995188642578116, guid: 5d030434dde35ef4f9abe60fe9400154, type: 3}
+        PlayerShot: {fileID: 7702228158680704638, guid: 87c88569ee00f734eb6558174ff05722, type: 3}
+        GeneralParam:
+          LifeTime: -1
         LocationParam:
           LocationType: 1
           Param_Offset:
             Offset: {x: 0.5, y: 0.5}
         MoveParam:
-          MoveParamType: 1
-          MoveParamLinear:
-            Speed: 144
-            MaxSpeedf: 55
-            DegreeOffset: 0
-            Accel: 14
-          MoveParamCurve:
-            Speed: 0
-            MaxSpeed: 0
-            Accel: 0
-            Degree: 0
-            AngularSpeed: 0
-            MaxCurveDegree: 0
+          rid: -2
+        ActionParams: []
+        IgnoreActionIndexes: 
       Interval: 0.05
     - WeaponShotParam:
         PlayerShot: {fileID: 2527995188642578116, guid: 5d030434dde35ef4f9abe60fe9400154, type: 3}
+        GeneralParam:
+          LifeTime: -1
         LocationParam:
           LocationType: 1
           Param_Offset:
             Offset: {x: 0.5, y: -0.5}
         MoveParam:
-          MoveParamType: 1
-          MoveParamLinear:
-            Speed: 144
-            MaxSpeedf: 55
-            DegreeOffset: 0
-            Accel: 14
-          MoveParamCurve:
-            Speed: 0
-            MaxSpeed: 0
-            Accel: 0
-            Degree: 0
-            AngularSpeed: 0
-            MaxCurveDegree: 0
+          rid: -2
+        ActionParams: []
+        IgnoreActionIndexes: 
       Interval: 0.05
     - WeaponShotParam:
         PlayerShot: {fileID: 2527995188642578116, guid: 5d030434dde35ef4f9abe60fe9400154, type: 3}
+        GeneralParam:
+          LifeTime: -1
         LocationParam:
           LocationType: 1
           Param_Offset:
             Offset: {x: -0.5, y: 0.5}
         MoveParam:
-          MoveParamType: 1
-          MoveParamLinear:
-            Speed: 144
-            MaxSpeedf: 55
-            DegreeOffset: 0
-            Accel: 14
-          MoveParamCurve:
-            Speed: 0
-            MaxSpeed: 0
-            Accel: 0
-            Degree: 0
-            AngularSpeed: 0
-            MaxCurveDegree: 0
+          rid: -2
+        ActionParams: []
+        IgnoreActionIndexes: 
       Interval: 0.05
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

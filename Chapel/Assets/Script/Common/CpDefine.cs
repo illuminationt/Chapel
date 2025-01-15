@@ -4,8 +4,9 @@ using UnityEngine;
 
 public static class CpScreen
 {
-    public static float Width = 284f;
-    public static float Height = 160f;
+    public static float Width = 512f;
+    public static float Height = 144f * 2f;
+
 }
 
 public static class CpCustomEventName

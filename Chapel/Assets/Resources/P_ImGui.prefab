@@ -88,3 +88,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b1fc9e557a6b441a598a88d25814d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _imGuiRenderTexture: {fileID: 8400000, guid: e83fd7c843e845a47bfc99b0a0597609, type: 2}

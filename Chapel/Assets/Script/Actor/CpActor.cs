@@ -6,7 +6,8 @@ using UnityEngine.Assertions;
 public class CpActorBase : MonoBehaviour,
     ICpActorForwardInterface,
     ICpTweenable,
-    ICpActRunnable
+    ICpActRunnable,
+    ICpPoolable
 {
     protected virtual void Awake()
     {
@@ -20,7 +21,7 @@ public class CpActorBase : MonoBehaviour,
 
     protected virtual void Release()
     {
-        Destroy(gameObject);
+        throw new System.NotImplementedException();
     }
     public virtual float GetForwardDegree()
     {
@@ -56,7 +57,26 @@ public class CpActorBase : MonoBehaviour,
     }
     // end of ICpActRunnable
 
+    // ICpPoolable
+    public ISltPoolable Instantiate(ISltPoolable prefab)
+    {
+        CpActorBase actorPrefab = prefab as CpActorBase;
+        return MonoBehaviour.Instantiate(actorPrefab);
+    }
+
+    public GameObject GetPooledGameObject() { return gameObject; }
+    public Transform GetPooledTransform() { return _transform; }
+    public int GetPoolInstanceId() { return _instanceId; }
+    public void SetPoolInstanceId(int instanceid) { _instanceId = instanceid; }
+    public virtual void ResetOnRelease()
+    {
+        _tweenManager = null;
+        _actRunnerManager = null;
+    }
+    // end of ICpPoolable
+
     protected Transform _transform = null;
     SltTweenManager _tweenManager = null;
     CpActRunnerManager _actRunnerManager = null;
+    int _instanceId = -1;
 }

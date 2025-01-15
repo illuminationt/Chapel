@@ -11,15 +11,10 @@ public abstract class CpShotBase : CpActorBase,
     ICpAttackSendable,
     ICpAttackReceivable
 {
-    float _elapsedTime = 0f;
-    protected float _lifeTime = 0f;
-    protected override void Update()
+    protected virtual void FixedUpdate()
     {
-        base.Update();
-
         if (_lifeTime > 0f)
         {
-
             _elapsedTime += CpTime.DeltaTime;
             if (_elapsedTime > _lifeTime)
             {
@@ -53,7 +48,7 @@ public abstract class CpShotBase : CpActorBase,
     }
     public virtual void OnSendAttack()
     {
-        Destroy(gameObject);
+        Release();
     }
 
     public virtual FCpAttackSendParam CreateAttackSendParam()
@@ -71,10 +66,17 @@ public abstract class CpShotBase : CpActorBase,
     }
     public void OnReceiveAttack(in FCpAttackSendParam attackSendParam)
     {
-        Destroy(gameObject);
+        Release();
     }
     // end of ICpAttackReceivable
 
+    // ICpPoolable
+    public override void ResetOnRelease()
+    {
+        base.ResetOnRelease();
+        _elapsedTime = 0f;
+    }
+    // end of 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         ICpAttackReceivable otherAttackReceivable = collision.gameObject.GetComponent<ICpAttackReceivable>();
@@ -83,10 +85,17 @@ public abstract class CpShotBase : CpActorBase,
         int layer = collision.gameObject.layer;
         if (layer == CpLayer.Wall)
         {
-            Destroy(gameObject);
+            Release();
         }
     }
 
+    protected void SetRotationToVelocity(in Vector2 dir)
+    {
+        float yaw = SltMath.ToDegree(dir);
+        transform.SetRotation(yaw);
+    }
 
+    float _elapsedTime = 0f;
+    protected float _lifeTime = 0f;
     public CpMoveComponent _moveComponent = null;
 }

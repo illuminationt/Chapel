@@ -65,7 +65,7 @@ public class CpPlayerWeaponParamElementBase
 
     protected bool CreateShot(in FCpShootControlParam controlParam, CpPlayerWeaponShotParam weaponShotParam)
     {
-        CpPlayerShot newShot = CpObjectPool.Get().Create(weaponShotParam.PlayerShot);
+        CpPlayerShot newShot = CpObjectPool.Get().Get(weaponShotParam.PlayerShot);
         newShot.OnCreated(weaponShotParam.GeneralParam, controlParam);
 
         // ã§í ÉpÉâÉÅÅ[É^ê›íË

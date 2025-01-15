@@ -57,11 +57,11 @@ public class CpDebugComponent : MonoBehaviour
             CpDebug.LogError("EnemyShot Num:" + shots.Count());
             for (int i = shots.Count() - 1; i >= 0; i--)
             {
-                Destroy(shots[i].gameObject);
+                shots[i].DebugRelease();
             }
             foreach (CpEnemyShot shot in shots)
             {
-                Destroy(shot.gameObject);
+                shot.DebugRelease();
             }
         }
         if (Input.GetKeyDown(KeyCode.R))

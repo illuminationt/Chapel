@@ -1,7 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Pool;
+
+public interface ICpPoolable : ISltPoolable
+{
+}
+
+public class CpPooledPlayerShot : SltObjects<CpPlayerShot> { }
+public class CpPlayerShotPool : SltObjectPool<CpPooledPlayerShot, CpPlayerShot> { }
+
+public class CpPooledEnemyShot : SltObjects<CpEnemyShot> { }
+public class CpEnemyShotPool : SltObjectPool<CpPooledEnemyShot, CpEnemyShot> { }
+
 
 
 public class CpObjectPool : MonoBehaviour
@@ -21,16 +33,12 @@ public class CpObjectPool : MonoBehaviour
 
     public static CpObjectPool Get() => CpGameManager.Instance.ObjectPool;
 
-    public T Create<T>(T obj) where T : MonoBehaviour
-    {
-        T newObj = Instantiate<T>(obj);
-        return newObj;
-    }
-    public GameObject Create(GameObject objPrefab)
-    {
-        GameObject newObj = Instantiate(objPrefab);
-        return newObj;
-    }
+    public CpPlayerShot Get(CpPlayerShot prefab) { return _playerShotPool.Get(prefab); }
+    public void Release(CpPlayerShot instance) { _playerShotPool.Release(instance); }
 
-    Dictionary<CpPlayerShot, ObjectPool<CpPlayerShot>> _playerShotPool;
+    public CpEnemyShot Get(CpEnemyShot prefab) { return _enemyShotPool.Get(prefab); }
+    public void Release(CpEnemyShot instance) { _enemyShotPool.Release(instance); }
+
+    CpPlayerShotPool _playerShotPool = new CpPlayerShotPool();
+    CpEnemyShotPool _enemyShotPool = new CpEnemyShotPool();
 }

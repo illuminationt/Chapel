@@ -5,10 +5,18 @@ using UnityEngine.Assertions;
 
 public class CpPlayerShot : CpShotBase
 {
+    protected override void Release()
+    {
+        CpObjectPool pool = CpObjectPool.Get();
+        pool.Release(this);
+    }
+
     public void OnCreated(CpPlayerWeaponShotGeneralParam generalParam, in FCpShootControlParam controlParam)
     {
         _lifeTime = generalParam.LifeTime;
         _forwardDegreeOnCreated = SltMath.ToDegree(controlParam.forward);
+
+        SetRotationToVelocity(SltMath.ToVector(_forwardDegreeOnCreated));
     }
 
     // start ICpForwardInterface

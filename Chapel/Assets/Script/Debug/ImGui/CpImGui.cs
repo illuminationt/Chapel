@@ -6,6 +6,8 @@ using Unity.VisualScripting;
 public class CpImGui : MonoBehaviour
 {
 #if DEBUG
+    [SerializeField]
+    RenderTexture _imGuiRenderTexture = null;
     private void Awake()
     {
         DontDestroyOnLoad(this);
@@ -34,6 +36,11 @@ public class CpImGui : MonoBehaviour
                 UImGuiUtility.Layout -= DrawImGuiRoot;
             }
         }
+
+        _imGuiRenderTexture.Release();
+        _imGuiRenderTexture.width = Screen.width;
+        _imGuiRenderTexture.height = Screen.height;
+        _imGuiRenderTexture.Create();
     }
 
     public void SetActive(bool bActive)

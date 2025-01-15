@@ -72,7 +72,6 @@ public static class SltMath
         return quat * vector;
     }
 
-
     public static Vector2 Lerp(in Vector2 a, in Vector2 b, float alpha)
     {
         return Vector2.Lerp(a, b, alpha);

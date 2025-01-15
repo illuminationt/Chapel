@@ -21,7 +21,8 @@ public struct FCpShotSpawnLocationParam_Offset
 {
     public Vector2 GetLocation(in FCpShotSpawnLocationRequestParam reqParam)
     {
-        return SltMath.AddVec(reqParam.origin, Offset);
+        Vector2 rotatedOffset = SltMath.RotateVector(Offset, reqParam.forwardDegree);
+        return SltMath.AddVec(reqParam.origin, rotatedOffset);
     }
     [SerializeField] Vector2 Offset;
 }

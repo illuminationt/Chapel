@@ -1,17 +1,16 @@
-using ImGuiNET;
 using Oddworm.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using ImGuiNET;
 
 [RequireComponent(typeof(CpPilotComponent))]
 [RequireComponent(typeof(CpShootComponent))]
 public class CpPlayer : CpCharacterBase, ICpGameplayEffectReciever
 {
     CpGameplayEffectHandler _gameplayEffectHandler = null;
-    Transform _transform = null;
     CpPilotComponent _pilotComponent = null;
     CpShootComponent _shootComponent = null;
     CpDebugComponent _debugComponent = null;
@@ -27,7 +26,6 @@ public class CpPlayer : CpCharacterBase, ICpGameplayEffectReciever
 
         _gameplayEffectHandler = new CpGameplayEffectHandler();
 
-        _transform = GetComponent<Transform>();
         _pilotComponent = GetComponent<CpPilotComponent>();
         _shootComponent = GetComponent<CpShootComponent>();
         _shootComponent.Initialize(this);
@@ -45,11 +43,11 @@ public class CpPlayer : CpCharacterBase, ICpGameplayEffectReciever
         base.Update();
         _pilotComponent.Execute();
         _forwardCalculator.Update();
-        debugDrawDirection();
+
+        float forwardDeg = _forwardCalculator.GetForwardDegree();
+        transform.SetRotation(forwardDeg);
 
         updateShoot();
-
-
     }
 
 
@@ -117,12 +115,6 @@ public class CpPlayer : CpCharacterBase, ICpGameplayEffectReciever
         _shootComponent.execute(shootControlParam);
     }
 
-    void debugDrawDirection()
-    {
-        Vector2 dir = _forwardCalculator.GetForwardVector();
-        Vector2 start = _transform.position;
-        Vector2 end = start + dir * 22f;
-    }
 
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
@@ -139,9 +131,16 @@ public class CpPlayer : CpCharacterBase, ICpGameplayEffectReciever
 #if DEBUG
     public void DrawImGui()
     {
+        SltImGui.TextVector2("Position", transform.position, 1, 4);
+
         if (ImGui.TreeNode("Shoot Component"))
         {
             _shootComponent.DrawImGui();
+            ImGui.TreePop();
+        }
+        if (ImGui.TreeNode("Forward Calculator"))
+        {
+            _forwardCalculator.DrawImGui();
             ImGui.TreePop();
         }
     }

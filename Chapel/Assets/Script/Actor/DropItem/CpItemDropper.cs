@@ -236,8 +236,8 @@ public class CpItemDropper : MonoBehaviour
         for (int index = 0; index < num; index++)
         {
             GameObject prefab = selectParam.GetPrefab();
-            GameObject itemObj = objectPool.Create(prefab);
-
+            // GameObject itemObj = objectPool.Create(prefab);
+            GameObject itemObj = Instantiate(prefab);
             CpDropItem dropItem = itemObj.GetComponent<CpDropItem>();
             FCpItemDropRandomScatterRequestParam reqParam = paramRandomScatter.CreateRequestParam(ownerPosition, forward);
             dropItem.RequestStartBehavior(reqParam);

@@ -1,12 +1,44 @@
+using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+public enum ECpMoverUpdateType
+{
+    None = 0,
+    UpdateFunction,
+    FixedUpdateFunction,
+    Manually,
+}
+
 [RequireComponent(typeof(CpActorBase))]
 public class CpMoveComponent : MonoBehaviour
 {
+    private void Awake()
+    {
+        if (_moverUpdateType == ECpMoverUpdateType.None)
+        {
+            Assert.IsTrue(_moverUpdateType != ECpMoverUpdateType.None);
+        }
+    }
+
     private void Update()
+    {
+        if (_moverUpdateType == ECpMoverUpdateType.UpdateFunction)
+        {
+            UpdateManually();
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (_moverUpdateType == ECpMoverUpdateType.FixedUpdateFunction)
+        {
+            UpdateManually();
+        }
+    }
+    public void UpdateManually()
     {
         ECpMoverUpdateResult updateResult = MoverManager.Update();
 
@@ -73,6 +105,8 @@ public class CpMoveComponent : MonoBehaviour
         MoverManager.RequestStop(reason);
     }
 
+    public Vector2 GetVelocity() { return _moverManager.GetVelocity(); }
+
     protected void OnCollisionEnter2D(Collision2D collision)
     {
         MoverManager.OnCollisionEnter2D(collision);
@@ -99,5 +133,7 @@ public class CpMoveComponent : MonoBehaviour
         }
     }
 
+    [SerializeField]
+    ECpMoverUpdateType _moverUpdateType = ECpMoverUpdateType.None;
     CpMoverManager _moverManager;
 }

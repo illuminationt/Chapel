@@ -5,53 +5,6 @@ using Sirenix.OdinInspector;
 using Sirenix;
 using UnityEngine.Assertions;
 
-//public enum ECpItemDropBehaviorType
-//{
-//    None = -1,
-
-//    MovePhysical = 1,
-//}
-
-//// アイテム生成後の挙動関連のパラメータ
-//[System.Serializable]
-//public class CpItemDropBehaviorParam
-//{
-//    public bool IsValidParam()
-//    {
-//        if (BehaviorType == ECpItemDropBehaviorType.None)
-//        {
-//            return false;
-//        }
-
-//        return true;
-//    }
-//    public ECpItemDropBehaviorType BehaviorType;
-
-//    [ShowIf("BehaviorType", ECpItemDropBehaviorType.MovePhysical)]
-//    public CpItemDropBehaviorParamMovePhysical ParamMovePhysical;
-//}
-
-//[System.Serializable]
-//public class CpItemDropParamElement
-//{
-//    public bool IsValidParam()
-//    {
-//        if (itemPrefab == null)
-//        {
-//            return false;
-//        }
-//        if (!behaviorParam.IsValidParam())
-//        {
-//            return false;
-//        }
-
-//        return true;
-//    }
-//    public GameObject itemPrefab = null;
-
-//    public CpItemDropBehaviorParam behaviorParam = null;
-//}
-
 // 落とすアイテムを選ぶパラメータ
 public enum ECpItemDropSelectType
 {
@@ -61,17 +14,24 @@ public enum ECpItemDropSelectType
     RandomWeight = 2,
 }
 
+public enum ECpDropItemRefType
+{
+    None = 0,
+    PrefabGameObject,//GameObjectクラスを使って参照する
+    PrefabCpDropItem,//CpDropItemクラスを使って参照する
+}
+
 [System.Serializable]
 public class CpItemDropSelectParamFixedPrefab
 {
-    public GameObject Prefab = null;
+    public CpDropItem Prefab = null;
 }
 
 [SerializeField]
 public class CpItemDropSelectParamRandomWeightElement : ISltLotteryable
 {
     public int GetWeight() { return Weight; }
-    public GameObject Prefab = null;
+    public CpDropItem Prefab = null;
     [SerializeField, Min(0)]
     int Weight = 0;
 }
@@ -79,7 +39,7 @@ public class CpItemDropSelectParamRandomWeightElement : ISltLotteryable
 [System.Serializable]
 public class CpItemDropSelectParamRandomWeight
 {
-    public GameObject GetPrefab()
+    public CpDropItem GetPrefab()
     {
         CpItemDropSelectParamRandomWeightElement elem = SltLottery.Get(Elements);
         return elem.Prefab;
@@ -91,13 +51,13 @@ public class CpItemDropSelectParamRandomWeight
 [System.Serializable]
 public class CpItemDropSelectParam
 {
-    public GameObject GetPrefab()
+    public CpDropItem GetPrefab()
     {
         return SelectType switch
         {
             ECpItemDropSelectType.FixedPrefab => ParamFixedPrefab.Prefab,
             ECpItemDropSelectType.RandomWeight => ParamRandomWeight.GetPrefab(),
-            _ => null,
+
         };
     }
     [SerializeField]
@@ -233,20 +193,19 @@ public class CpItemDropper : MonoBehaviour
         Vector2 ownerPosition = transform.position;
         Vector2 forward = transform.GetForwardVector();
 
+        CpObjectPool pool = CpObjectPool.Get();
+
         for (int index = 0; index < num; index++)
         {
-            GameObject prefab = selectParam.GetPrefab();
-            // GameObject itemObj = objectPool.Create(prefab);
-            GameObject itemObj = Instantiate(prefab);
-            CpDropItem dropItem = itemObj.GetComponent<CpDropItem>();
+            CpDropItem prefab = selectParam.GetPrefab();
+
+            CpDropItem dropItem = pool.Get(prefab);
             FCpItemDropRandomScatterRequestParam reqParam = paramRandomScatter.CreateRequestParam(ownerPosition, forward);
             dropItem.RequestStartBehavior(reqParam);
 
             CpRoomProxyManager roomProxyManager = CpRoomProxyManager.Get();
             CpRoomProxy roomProxy = roomProxyManager.GetActiveRoomProxy();
             CpRoom roomInstance = roomProxy.GetRoomInstance();
-
-            itemObj.transform.SetParent(roomInstance.transform);
         }
     }
 

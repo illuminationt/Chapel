@@ -31,6 +31,10 @@ public interface ISltPoolable
     {
         return GetPoolInstanceId() == other.GetPoolInstanceId();
     }
+
+    // 
+    public void OnActivated() { }
+    public void OnReleased() { }
 }
 
 public class SltObjects<T> where T : MonoBehaviour, ISltPoolable, new()
@@ -128,6 +132,13 @@ public class SltObjectPool<TPool, TPrefab> where TPool : SltObjects<TPrefab>, ne
             bInstantiated = Pool.Get(out RetInstance, bActive);
         }
 
+        RetInstance.OnActivated();
+
+        if (bInstantiated)
+        {
+            _onNewObjectCreated.Invoke(RetInstance);
+        }
+        _onObjectActive.Invoke(RetInstance);
         return RetInstance;
     }
 
@@ -142,6 +153,9 @@ public class SltObjectPool<TPool, TPrefab> where TPool : SltObjects<TPrefab>, ne
         }
 #endif
         Instance.ResetOnRelease();
+        Instance.OnReleased();
+        _onObjectReleased.Invoke(Instance);
+
         // ÉvÅ[ÉãÇ…ñﬂÇ∑
         Pool.Release(Instance);
 
@@ -190,5 +204,14 @@ public class SltObjectPool<TPool, TPrefab> where TPool : SltObjects<TPrefab>, ne
         return null;
     }
 
+
     public bool bUseActiveInstancesList { get; private set; }
+
+    public UnityEvent<TPrefab> OnNewObjectCreated => _onNewObjectCreated;
+    public UnityEvent<TPrefab> OnObjectActivated => _onObjectActive;
+    public UnityEvent<TPrefab> OnObjectReleased => _onObjectReleased;
+
+    UnityEvent<TPrefab> _onNewObjectCreated = new UnityEvent<TPrefab>();
+    UnityEvent<TPrefab> _onObjectActive = new UnityEvent<TPrefab>();
+    UnityEvent<TPrefab> _onObjectReleased = new UnityEvent<TPrefab>();
 }

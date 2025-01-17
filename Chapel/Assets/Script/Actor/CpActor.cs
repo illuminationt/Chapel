@@ -79,7 +79,19 @@ public abstract class CpActorBase : MonoBehaviour,
         _tweenManager = null;
         _actRunnerManager = null;
     }
+    public virtual void OnActivated() { }
+    public virtual void OnReleased() { }
     // end of ICpPoolable
+
+    // ï÷óòä÷êî
+    protected void AttachCurrentRoom()
+    {
+        CpRoomProxyManager roomProxyManager = CpRoomProxyManager.Get();
+        CpRoomProxy activeRoomProxy = roomProxyManager.GetActiveRoomProxy();
+        CpRoom roomInstnace = activeRoomProxy.GetRoomInstance();
+
+        _transform.SetParent(roomInstnace.transform);
+    }
 
     protected Transform _transform = null;
     SltTweenManager _tweenManager = null;

@@ -12,7 +12,7 @@ public class CpEnemyShotEraser
 
     public void RequestErase()
     {
-        Assert.IsTrue(false, $"íeè¡ÇµÇÕñ¢é¿ëï");
+        CpEnemyShot[] allEnemyShots = MonoBehaviour.FindObjectsByType<CpEnemyShot>(FindObjectsSortMode.None);
     }
     public void RequestErase(float duration)
     {

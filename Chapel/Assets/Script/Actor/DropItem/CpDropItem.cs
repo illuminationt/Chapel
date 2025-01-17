@@ -25,7 +25,11 @@ public class CpDropItem : CpActorBase, ICpGameplayEffectSender
 
     // CpActorBase interface
     public override ECpMoverUpdateType GetMoverUpdateType() { return ECpMoverUpdateType.UpdateFunction; }
-
+    public override void OnActivated()
+    {
+        base.OnActivated();
+        AttachCurrentRoom();
+    }
     // end of CpActorBase interface
 
     // ICpActorForwardInterface

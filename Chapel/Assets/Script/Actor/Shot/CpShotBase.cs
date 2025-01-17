@@ -30,6 +30,11 @@ public abstract class CpShotBase : CpActorBase,
 
     // CpActorBase interface
     public override ECpMoverUpdateType GetMoverUpdateType() { return ECpMoverUpdateType.FixedUpdateFunction; }
+    public override void OnActivated()
+    {
+        base.OnActivated();
+        AttachCurrentRoom();
+    }
 
     // end of CpActorBase interface
 
@@ -82,6 +87,7 @@ public abstract class CpShotBase : CpActorBase,
         _elapsedTime = 0f;
     }
     // end of 
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         ICpAttackReceivable otherAttackReceivable = collision.gameObject.GetComponent<ICpAttackReceivable>();

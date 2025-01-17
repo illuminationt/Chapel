@@ -54,6 +54,7 @@ public class CpGamePlayStateRoomTransition : CpGamePlayStateBase
         _nextRoomInstance.gameObject.SetActive(false);
         _nextRoomInstance.transform.position = Vector3.zero;
 
+
         // 部屋遷移時の移動量を算出
         // 移動前の部屋のゲート->移動後の部屋のゲート
         //Vector2 roomTranslation = prevRoomGatePosition - nextRoomGatePosition;

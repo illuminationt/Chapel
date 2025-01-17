@@ -110,10 +110,23 @@ public class CpDungeonManager
 
     public void DrawImGui()
     {
+        CpRoomProxyManager roomProxyManager = CpRoomProxyManager.Get();
+
         if (ImGui.CollapsingHeader("Room Proxy Manager"))
         {
-            CpRoomProxyManager roomProxyManager = CpRoomProxyManager.Get();
             roomProxyManager.DrawImGui();
+        }
+
+        if (ImGui.CollapsingHeader("Current Room"))
+        {
+            if (_activeRoomProxy != null)
+            {
+                _activeRoomProxy.DrawImGui();
+            }
+            else
+            {
+                ImGui.Text("óLå¯Ç»RoomProxyÇ™ë∂ç›ÇµÇ‹ÇπÇÒ");
+            }
         }
     }
 

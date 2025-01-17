@@ -62,6 +62,24 @@ public class CpRoomProxyManager
         }
         return null;
     }
+    public CpRoomProxy GetActiveRoomProxy()
+    {
+        for (int y = 0; y < _roomProxies.Count; y++)
+        {
+            for (int x = 0; x < _roomProxies[y].Count; x++)
+            {
+                CpRoomProxy proxy = FindRoomProxy(x, y);
+                if (proxy != null)
+                {
+                    if (proxy.GetRoomFlag(ECpRoomFlags.IsPlayerIn))
+                    {
+                        return proxy;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
     bool ExistsRoom(int x, int y)
     {

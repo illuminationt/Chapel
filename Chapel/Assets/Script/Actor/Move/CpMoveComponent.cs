@@ -17,12 +17,17 @@ public class CpMoveComponent : MonoBehaviour
 {
     private void Awake()
     {
+        _moverUpdateType = GetComponent<CpActorBase>().GetMoverUpdateType();
+    }
+    private void Start()
+    {
         if (_moverUpdateType == ECpMoverUpdateType.None)
         {
-            Assert.IsTrue(_moverUpdateType != ECpMoverUpdateType.None);
+            string str = $"{gameObject}ÇÃMoveComponent._moverUpdateTypeÇ™ê›íËÇ≥ÇÍÇƒÇ¢Ç‹ÇπÇÒ";
+            Assert.IsTrue(_moverUpdateType != ECpMoverUpdateType.None,
+                str);
         }
     }
-
     private void Update()
     {
         if (_moverUpdateType == ECpMoverUpdateType.UpdateFunction)
@@ -133,7 +138,6 @@ public class CpMoveComponent : MonoBehaviour
         }
     }
 
-    [SerializeField]
     ECpMoverUpdateType _moverUpdateType = ECpMoverUpdateType.None;
     CpMoverManager _moverManager;
 }

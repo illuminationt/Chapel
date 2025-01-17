@@ -24,12 +24,15 @@ public class CpGameManager : SingletonMonoBehaviour<CpGameManager>
         _dungeonManager = CpDungeonManager.Create();
         _gameFlowManager = CpGameFlowManager.Create();
         _gamePlayManager = CpGamePlayManager.Create();
+        _sceneManager = CpSceneManager.Create(this);
         _pauseManager = CpPauseManager.Create();
+        _enemyShotEraser = CpEnemyShotEraser.Create();
     }
 
     private void Update()
     {
         _gamePlayManager.Update();
+        _enemyShotEraser.Update();
     }
 
     public CpPlayer Player
@@ -84,6 +87,12 @@ public class CpGameManager : SingletonMonoBehaviour<CpGameManager>
 
     public CpPauseManager PauseManager => _pauseManager;
     CpPauseManager _pauseManager = null;
+
+    public CpSceneManager SceneManager => _sceneManager;
+    CpSceneManager _sceneManager = null;
+
+    public CpEnemyShotEraser EnemyShotEraser => _enemyShotEraser;
+    CpEnemyShotEraser _enemyShotEraser = null;
     public CpGameSettings GameSettings => _gameSettings;
     CpGameSettings _gameSettings;
 

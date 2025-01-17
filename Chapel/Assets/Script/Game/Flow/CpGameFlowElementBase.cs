@@ -10,6 +10,7 @@ public enum ECpGameFlowType
     GamePlay = 50,
     RoomTransition = 100,
     EnemyAppearance = 200,
+    SceneTransition = 10000,
 }
 
 public abstract class CpGameFlowElementBase

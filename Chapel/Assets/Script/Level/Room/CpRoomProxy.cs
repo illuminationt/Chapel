@@ -8,6 +8,7 @@ public enum ECpRoomFlags
     GateOpens,// ゲート解放済み
     BattleFinished,// エネミー討伐済み
 }
+
 public class CpRoomProxyId
 {
     public static CpRoomProxyId Create()
@@ -185,30 +186,28 @@ public class CpRoomProxy
 
     public void DrawImGui()
     {
-        if (_roomInstance != null)
+        if (ImGui.TreeNode("Room Instance"))
         {
-            bool bActive = _roomInstance.gameObject.activeInHierarchy;
-            if (ImGui.Checkbox("Active", ref bActive))
+            if (_roomInstance != null)
             {
-                _roomInstance.gameObject.SetActive(bActive);
+                _roomInstance.DrawImGui();
             }
-            _roomInstance.DrawImGui();
+            else
+            {
+                ImGui.Text("Room Instance NOT Exists");
+            }
+
+            ImGui.TreePop();
         }
-        else
-        {
-            ImGui.Text("Room Instance NOT Exists");
-        }
+
         if (ImGui.TreeNode("Room Flags"))
         {
             _roomFlags.DrawImGui("");
             ImGui.TreePop();
         }
 
-
-
         if (ImGui.TreeNode("CallFunc for Debug"))
         {
-
             ImGui.TreePop();
         }
     }

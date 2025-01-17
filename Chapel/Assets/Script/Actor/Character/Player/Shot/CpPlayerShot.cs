@@ -19,6 +19,11 @@ public class CpPlayerShot : CpShotBase
         SetRotationToVelocity(SltMath.ToVector(_forwardDegreeOnCreated));
     }
 
+    // CpActorBase interface
+    public override ECpMoverUpdateType GetMoverUpdateType() { return ECpMoverUpdateType.FixedUpdateFunction; }
+
+    // end of CpActorBase interface
+
     // start ICpForwardInterface
     public override float GetForwardDegree()
     {

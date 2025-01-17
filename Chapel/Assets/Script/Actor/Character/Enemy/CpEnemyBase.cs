@@ -34,6 +34,10 @@ public class CpEnemyBase : CpCharacterBase
         });
     }
 
+    // CpActorBase interface
+    public override ECpMoverUpdateType GetMoverUpdateType() { return ECpMoverUpdateType.UpdateFunction; }
+
+    // end of CpActorBase interface
 
     // CpCharacterBase interface
 

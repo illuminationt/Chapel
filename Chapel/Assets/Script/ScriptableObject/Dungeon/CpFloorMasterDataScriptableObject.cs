@@ -16,6 +16,7 @@ public class CpFloorMasterDataScriptableObject : ScriptableObject
     [InfoBox("１つの階層がフロアを構築するのに必要なパラメータを全てまとめたScriptableObject.")]
 
 #endif
+    public ECpSceneType SceneType = ECpSceneType.None;
     public CpRoomProvideParamPerFloor RoomProvideParamPerFloor => _roomProvideSettings.Param;
     // フロアの部屋プレハブ供給パラメータ
     [SerializeField]

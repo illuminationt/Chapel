@@ -1,3 +1,4 @@
+using ImGuiNET;
 using NUnit.Framework;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
@@ -36,7 +37,7 @@ public class CpRoom : CpActorBase
     }
 
     Tilemap _tilemap = null;
-    private void Awake()
+    protected override void Awake()
     {
         _tilemap = GetComponentInChildren<Tilemap>();
         Assert.IsTrue(_tilemap != null);
@@ -337,6 +338,25 @@ public class CpRoom : CpActorBase
 
     public void DrawImGui()
     {
+        bool bActive = gameObject.activeInHierarchy;
+        if (ImGui.Checkbox("Active", ref bActive))
+        {
+            gameObject.SetActive(bActive);
+        }
+
+        if (ImGui.TreeNode("Gates"))
+        {
+            VisitGates((CpRoomGate gate) =>
+            {
+                string treeTitle = gate.name;
+                if (ImGui.TreeNode(treeTitle))
+                {
+                    gate.DrawImGui();
+                    ImGui.TreePop();
+                }
+            });
+            ImGui.TreePop();
+        }
 
     }
 #endif

@@ -18,8 +18,5 @@ public class CpFlowRoomTransition : CpGameFlowElementBase
         _param = param;
     }
 
-
-
     FCpFlowRoomParam _param;
-
 }

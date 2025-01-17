@@ -49,7 +49,10 @@ public class CpPlayer : CpCharacterBase, ICpGameplayEffectReciever
 
         updateShoot();
     }
+    // CpActorBase interface
+    public override ECpMoverUpdateType GetMoverUpdateType() { return ECpMoverUpdateType.UpdateFunction; }
 
+    // end of CpActorBase interface
 
     public void SetCollisionEnabled(bool bEnabled)
     {
@@ -120,12 +123,10 @@ public class CpPlayer : CpCharacterBase, ICpGameplayEffectReciever
     {
         base.OnTriggerEnter2D(collision);
 
-
         CpRoomTransitionTrigger roomTransition = collision.GetComponent<CpRoomTransitionTrigger>();
         roomTransition?.OnTrigger();
 
         ICpGameplayEffectSender sender = collision as ICpGameplayEffectSender;
-
     }
 
 #if DEBUG

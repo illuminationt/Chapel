@@ -14,6 +14,8 @@ public enum ECpGamePlayState
     RoomBattle = 200,
     RoomExplore = 300,
     RoomTransition = 4000,
+
+    SceneTransition = 100000,
 }
 
 public class CpGamePlayStateStack
@@ -83,6 +85,48 @@ public class CpGamePlayManager
         return CpGameManager.Instance.GamePlayManager;
     }
 
+
+    bool CanStartState(ECpGamePlayState newState)
+    {
+        if (_currentState == null)
+        {
+            // 現在なんのステートも走っていなかったら可能
+            return true;
+        }
+
+        return true;
+    }
+
+
+
+    public void Update()
+    {
+        if (_currentState != null)
+        {
+            _currentState.Update();
+            if (_currentState.IsFinished())
+            {
+                _currentState = null;
+            }
+        }
+    }
+
+    public void RequestEnterFloor(CpFloorMasterDataScriptableObject floorMasterSettings)
+    {
+        CpGamePlayStateEnterFloor stateEnterFloor = RequestStartState<CpGamePlayStateEnterFloor>(ECpGamePlayState.EnterDungeon);
+        stateEnterFloor.Setup(floorMasterSettings);
+        stateEnterFloor.ReadyForActivation();
+    }
+
+    public void RequestStartRoomExplore()
+    {
+        CpGamePlayStateRoomExplore stateRoomExplore = RequestStartState<CpGamePlayStateRoomExplore>(ECpGamePlayState.RoomExplore);
+        stateRoomExplore.ReadyForActivation();
+    }
+
+    public void RequestStartSceneTransition(ECpSceneType sceneType)
+    {
+    }
     public T RequestStartState<T>(ECpGamePlayState newGamePlayState) where T : CpGamePlayStateBase
     {
         if (!CanStartState(newGamePlayState))
@@ -99,41 +143,6 @@ public class CpGamePlayManager
 
         _currentState = CpGamePlayStateUtil.CreateState<T>(newGamePlayState);
         return (T)_currentState;
-    }
-    bool CanStartState(ECpGamePlayState newState)
-    {
-        if (_currentState == null)
-        {
-            // 現在なんのステートも走っていなかったら可能
-            return true;
-        }
-
-        return true;
-    }
-
-    public void RequestEnterFloor(CpFloorMasterDataScriptableObject floorMasterSettings)
-    {
-        CpGamePlayStateEnterFloor stateEnterFloor = RequestStartState<CpGamePlayStateEnterFloor>(ECpGamePlayState.EnterDungeon);
-        stateEnterFloor.Setup(floorMasterSettings);
-        stateEnterFloor.ReadyForActivation();
-    }
-
-    public void RequestStartRoomExplore()
-    {
-        CpGamePlayStateRoomExplore stateRoomExplore = RequestStartState<CpGamePlayStateRoomExplore>(ECpGamePlayState.RoomExplore);
-        stateRoomExplore.ReadyForActivation();
-    }
-
-    public void Update()
-    {
-        if (_currentState != null)
-        {
-            _currentState.Update();
-            if (_currentState.IsFinished())
-            {
-                _currentState = null;
-            }
-        }
     }
 
     CpGamePlayStateBase _currentState = null;

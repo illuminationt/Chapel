@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-public class CpActorBase : MonoBehaviour,
+public abstract class CpActorBase : MonoBehaviour,
     ICpActorForwardInterface,
     ICpTweenable,
     ICpActRunnable,
@@ -27,6 +27,12 @@ public class CpActorBase : MonoBehaviour,
     {
         Assert.IsTrue(false);
         return 0f;
+    }
+
+    public virtual ECpMoverUpdateType GetMoverUpdateType()
+    {
+        Assert.IsTrue(false, $"{gameObject.name}‚ÍGetMoverUpdateType‚ðŽÀ‘•‚µ‚Ä‚¢‚Ü‚¹‚ñ");
+        return ECpMoverUpdateType.None;
     }
 
     // ICpTweenable

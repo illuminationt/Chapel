@@ -15,13 +15,9 @@ public class CpImGui : MonoBehaviour
     }
     private void Start()
     {
-        Camera camera = Camera.main;
-        imGuiComponent.SetCamera(camera);
     }
     void Update()
     {
-        Camera camera = Camera.main;
-        imGuiComponent.SetCamera(camera);
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
@@ -65,6 +61,13 @@ public class CpImGui : MonoBehaviour
             {
                 CpDungeonManager dungeonManager = CpDungeonManager.Get();
                 dungeonManager.DrawImGui();
+                ImGui.EndTabItem();
+            }
+
+            if (ImGui.BeginTabItem("GameFlow"))
+            {
+                CpGameFlowManager flowManager = CpGameFlowManager.Get();
+                flowManager.DrawImGui();
                 ImGui.EndTabItem();
             }
 

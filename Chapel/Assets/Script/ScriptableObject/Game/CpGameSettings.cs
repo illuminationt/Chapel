@@ -16,4 +16,5 @@ public class CpGameSettings : ScriptableObject
     public CpPlayerSettings PlayerSettings;
     public CpAttackSenderParamScriptableObject AttackSenderParam;
     public CpPrefabSettings PrefabSettings;
+    public CpSceneSettings SceneSettings;
 }

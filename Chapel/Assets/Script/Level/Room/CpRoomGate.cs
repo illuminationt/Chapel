@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ImGuiNET;
 
 public class CpRoomGate : MonoBehaviour
 {
@@ -35,4 +36,16 @@ public class CpRoomGate : MonoBehaviour
         Vector2 start = transform.position;
         SltDebugDrawOnGizmos.DrawArrow(start, gateDir, 24, Color.green);
     }
+
+
+#if DEBUG
+    public void DrawImGui()
+    {
+        bool bActive = gameObject.activeInHierarchy;
+        if (ImGui.Checkbox("Active", ref bActive))
+        {
+            gameObject.SetActive(bActive);
+        }
+    }
+#endif
 }

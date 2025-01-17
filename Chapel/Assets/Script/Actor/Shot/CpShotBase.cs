@@ -28,6 +28,11 @@ public abstract class CpShotBase : CpActorBase,
         }
     }
 
+    // CpActorBase interface
+    public override ECpMoverUpdateType GetMoverUpdateType() { return ECpMoverUpdateType.FixedUpdateFunction; }
+
+    // end of CpActorBase interface
+
     // start ICpMover interface
     public CpMoveComponent GetMoveComponent() { return _moveComponent; }
 
@@ -97,5 +102,6 @@ public abstract class CpShotBase : CpActorBase,
 
     float _elapsedTime = 0f;
     protected float _lifeTime = 0f;
-    public CpMoveComponent _moveComponent = null;
+    [SerializeField]
+    protected CpMoveComponent _moveComponent = null;
 }

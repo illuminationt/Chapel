@@ -241,6 +241,12 @@ public class CpItemDropper : MonoBehaviour
             CpDropItem dropItem = itemObj.GetComponent<CpDropItem>();
             FCpItemDropRandomScatterRequestParam reqParam = paramRandomScatter.CreateRequestParam(ownerPosition, forward);
             dropItem.RequestStartBehavior(reqParam);
+
+            CpRoomProxyManager roomProxyManager = CpRoomProxyManager.Get();
+            CpRoomProxy roomProxy = roomProxyManager.GetActiveRoomProxy();
+            CpRoom roomInstance = roomProxy.GetRoomInstance();
+
+            itemObj.transform.SetParent(roomInstance.transform);
         }
     }
 

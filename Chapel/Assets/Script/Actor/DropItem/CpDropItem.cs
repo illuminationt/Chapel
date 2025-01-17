@@ -23,6 +23,11 @@ public class CpDropItem : CpActorBase, ICpGameplayEffectSender
         }
     }
 
+    // CpActorBase interface
+    public override ECpMoverUpdateType GetMoverUpdateType() { return ECpMoverUpdateType.UpdateFunction; }
+
+    // end of CpActorBase interface
+
     // ICpActorForwardInterface
 
     public override float GetForwardDegree()

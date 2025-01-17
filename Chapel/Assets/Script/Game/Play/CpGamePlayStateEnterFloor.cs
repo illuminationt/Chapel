@@ -21,14 +21,30 @@ public class CpGamePlayStateEnterFloor : CpGamePlayStateBase
 
     protected override void OnStartInternal()
     {
-        SceneManager.LoadScene("L_DungeonA");
+        CpSceneManager sceneManager = CpSceneManager.Get();
+
+        CpSceneLoader coreSceneLoader = sceneManager.RequestLoadScene(ECpSceneType.Gameplay_Core);
+        if (coreSceneLoader != null)
+        {
+            _sceneLoaders.Add(coreSceneLoader);
+        }
+
+        CpSceneLoader dungeonSceneLoader = sceneManager.RequestLoadScene(_floorMasterSettings.SceneType);
+        if (dungeonSceneLoader != null)
+        {
+            _sceneLoaders.Add(dungeonSceneLoader);
+        }
     }
 
     protected override void UpdateInternal()
     {
-        _timer += CpTime.DeltaTime;
-        if (_timer > 1.3f && SceneManager.GetActiveScene().name == "L_DungeonA")
+        if (IsAllScenesLoaded())
         {
+            foreach (var scene in _sceneLoaders)
+            {
+                scene.ActivateScene();
+            }
+
             OwnerGamePlayManager.RequestStartRoomExplore();
             FinishState();
         }
@@ -41,7 +57,18 @@ public class CpGamePlayStateEnterFloor : CpGamePlayStateBase
 
         dungeonManager.LandPlayer();
     }
+    bool IsAllScenesLoaded()
+    {
+        for (int index = 0; index < _sceneLoaders.Count; index++)
+        {
+            if (!_sceneLoaders[index].IsLoadFinished())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 
     CpFloorMasterDataScriptableObject _floorMasterSettings = null;
-    float _timer = 0f;
+    List<CpSceneLoader> _sceneLoaders = new List<CpSceneLoader>();
 }

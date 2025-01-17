@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: T_RoomTest12x12 1_0
+  m_Name: RoomTest16x16_0
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: -1886291357, guid: a333a2671a562fe4dad55947c97c6a61, type: 3}
+  m_Sprite: {fileID: -8234108107036564845, guid: f205c7a65c245a744b9d4bee3b3f8d0d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1
@@ -33,4 +33,4 @@ MonoBehaviour:
     e33: 1
   m_InstancedGameObject: {fileID: 0}
   m_Flags: 1
-  m_ColliderType: 2
+  m_ColliderType: 1

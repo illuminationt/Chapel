@@ -1,3 +1,4 @@
+using ImGuiNET;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,7 +26,9 @@ public static class CpGameFlowUtil
 
     static readonly Dictionary<ECpGameFlowType, System.Type> flowClassDict = new Dictionary<ECpGameFlowType, System.Type>() {
         { ECpGameFlowType.Root, typeof(CpGameFlowElementRoot) },
-        { ECpGameFlowType.GamePlay, typeof(CpGameFlowElementRoot) },
+        { ECpGameFlowType.GamePlay, typeof(CpFlowGamePlay) },
+        { ECpGameFlowType.RoomTransition, typeof(CpFlowRoomTransition) },
+        { ECpGameFlowType.SceneTransition, typeof(CpFlowSceneTransition) },
  };
 }
 
@@ -106,4 +109,34 @@ public class CpGameFlowManager
     }
 
     CpGameFlowElementBase _rootGameFlowElement = null;
+
+#if DEBUG
+
+    ECpGameFlowType reqFlowType = ECpGameFlowType.None;
+    public void DrawImGui()
+    {
+        if (ImGui.TreeNode("Request Flow"))
+        {
+            SltImGui.EnumValueCombo(ref reqFlowType);
+            if (ImGui.Button(""))
+            {
+                switch (reqFlowType)
+                {
+                    case ECpGameFlowType.None:
+                        break;
+                    case ECpGameFlowType.Root:
+                        break;
+                    case ECpGameFlowType.GamePlay:
+                        break;
+                    case ECpGameFlowType.RoomTransition:
+                        break;
+                    case ECpGameFlowType.EnemyAppearance:
+                        break;
+                    case ECpGameFlowType.SceneTransition:
+                        break;
+                }
+            }
+        }
+    }
+#endif
 }

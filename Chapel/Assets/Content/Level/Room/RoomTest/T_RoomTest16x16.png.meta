@@ -1,7 +1,10 @@
 fileFormatVersion: 2
-guid: a333a2671a562fe4dad55947c97c6a61
+guid: f205c7a65c245a744b9d4bee3b3f8d0d
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: -8234108107036564845
+    second: RoomTest16x16_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -110,27 +113,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: T_RoomTest12x12 1_0
+      name: RoomTest16x16_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 12
-        width: 12
-        height: 12
+        y: 48
+        width: 16
+        height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
-      physicsShape:
-      - - {x: -4, y: -4}
-        - {x: -4, y: 5}
-        - {x: 5, y: 3}
-        - {x: 5, y: 0}
-      tessellationDetail: 0
+      physicsShape: []
+      tessellationDetail: -1
       bones: []
-      spriteID: 4a0a820e1e0f27a40907d7e8e4384269
-      internalID: -1886291357
+      spriteID: 392ebe58d429abd80800000000000000
+      internalID: -8234108107036564845
       vertices: []
       indices: 
       edges: []
@@ -139,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 76038dc10a45a814f85d8d75033da989
     internalID: 0
     vertices: []
     indices: 
@@ -149,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      T_RoomTest12x12 1_0: -1886291357
+      RoomTest16x16_0: -8234108107036564845
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -35,7 +35,7 @@ public abstract class SltUnitBase : Unit
 
     // タスク生成関数。派生先でオーバーライド必須。
     // Unitとタスクは1対1対応するはず！
-    protected abstract SltTaskBase CreateTask();
+    protected abstract SltTaskBase CreateTask(GameObject ownerObj);
     protected virtual void InitializeUnitVariables(Flow flow) { }
 
     protected sealed override void Definition()
@@ -77,7 +77,7 @@ public abstract class SltUnitBase : Unit
         InitializeUnitVariables(flow);
 
         // タスク生成＆実行するコンポーネントに登録
-        SltTaskBase task = CreateTask();
+        SltTaskBase task = CreateTask(Self);
         task.UnitGuid = guid;
         // 全Unit共通で持つOutputフローを登録
         if (outputDefault != null && outputDefault.hasAnyConnection)

@@ -30,7 +30,7 @@ public class CpPlayerWeaponShotParam
 
     public bool IsActionEnable(int actionIndex)
     {
-#if UNITY_EDITOR
+#if CP_EDITOR
         if (IgnoreActionIndexes.Contains(actionIndex))
         {
             return false;
@@ -39,7 +39,7 @@ public class CpPlayerWeaponShotParam
         return true;
     }
 
-#if UNITY_EDITOR
+#if CP_EDITOR
     public List<int> IgnoreActionIndexes = new List<int>();
 #endif
 }

@@ -1,6 +1,9 @@
+using ImGuiNET;
+using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -16,6 +19,7 @@ public class CpEnemyBase : CpCharacterBase
 {
     public static UnityEvent<CpEnemyBase> OnEnemyDead = new UnityEvent<CpEnemyBase>();
 
+    [SerializeField] CpItemDropParamScriptableObject _itemDropSettings = null;
     [SerializeField] CpItemDropParam _itemDropParam = null;
     public void InitializeEnemy(in FCpEnemyInitializeParam initParam)
     {
@@ -25,6 +29,12 @@ public class CpEnemyBase : CpCharacterBase
         transform.position = position;
 
         // スポーンしたエネミーごとの特有パラメータ設定
+        foreach (CpEnemySpecificBehaviorBase behavior in initParam.EnemySpecificParam.SpecificBehaviorList)
+        {
+            behavior.Apply(this);
+        }
+
+        gameObject.SetActive(true);
 
         SltDelay.Delay(this, initParam.EnemySpecificParam.StartDelay, () =>
         {
@@ -45,9 +55,9 @@ public class CpEnemyBase : CpCharacterBase
     {
         OnEnemyDead.Invoke(this);
 
-        if (_itemDropParam.IsValidParam())
+        if (ItemDropParam.IsValidParam())
         {
-            CpItemDropper.Create(transform, _itemDropParam);
+            CpItemDropper.Create(transform, ItemDropParam);
         }
 
         Destroy(gameObject);
@@ -57,7 +67,7 @@ public class CpEnemyBase : CpCharacterBase
 
     public override float GetForwardDegree()
     {
-        return 0f;
+        return _transform.eulerAngles.z;
     }
 
     // ICpAttackSendable
@@ -84,5 +94,47 @@ public class CpEnemyBase : CpCharacterBase
     }
 
     // 
+    public void SetStateGraph(StateGraphAsset stateGraphAsset)
+    {
+        StateMachine stateMachineComp = GetComponent<StateMachine>();
+        Assert.IsTrue(stateMachineComp != null, $"{name}にStateMachineスクリプトがアタッチされていません");
+        stateMachineComp.nest.macro = stateGraphAsset;
+    }
+
+    CpItemDropParam ItemDropParam
+    {
+        get
+        {
+            return _itemDropSettings ? _itemDropSettings.Param : _itemDropParam;
+        }
+    }
+
+    // 
     CpEnemySpawner _ownerSpawner = null;
+
+#if CP_DEBUG
+    public override void DrawImGui()
+    {
+        base.DrawImGui();
+
+        CpTaskComponent taskComp = GetComponent<CpTaskComponent>();
+        if (ImGui.TreeNode("Task Component"))
+        {
+            taskComp.DrawImGui();
+            ImGui.TreePop();
+        }
+
+        if (ImGui.TreeNode("Misc"))
+        {
+            CpPlayer player = CpPlayer.Get();
+            Vector2 playerPos = player.transform.position;
+
+            float distToPlayer = playerPos.GetDistanceTo(transform.position);
+            string distToPlayerStr = $"DistanceToPlayer = {distToPlayer}";
+            ImGui.Text(distToPlayerStr);
+
+            ImGui.TreePop();
+        }
+    }
+#endif
 }

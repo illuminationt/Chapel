@@ -11,17 +11,16 @@ using UnityEngine.Assertions;
 public class SltTaskComponent : MonoBehaviour
 {
     [HideInInspector]
-    public List<SltTaskBase> ActiveTasks = new List<SltTaskBase>();
+    protected List<SltTaskBase> ActiveTasks = new List<SltTaskBase>();
     // Updateのforループ内で新しく生成されたタスクを一時保存する配列.
     [HideInInspector]
-    public List<SltTaskBase> PendingActiveTasks = new List<SltTaskBase>();
+    protected List<SltTaskBase> PendingActiveTasks = new List<SltTaskBase>();
     // タスクをまとめて削除するために一時保存する配列.
     [HideInInspector]
-    public List<SltTaskBase> PendingRemoveTasks = new List<SltTaskBase>();
+    protected List<SltTaskBase> PendingRemoveTasks = new List<SltTaskBase>();
 
     // 既に開始済みフラグ
     bool bAlreadyStart = false;
-
 
     private void Update()
     {
@@ -66,9 +65,16 @@ public class SltTaskComponent : MonoBehaviour
         newTask.Owner = gameObject;
         newTask.OwnerTaskComponent = this;
 
+        OnPreStartNewTask(newTask);
+
         // タスク開始
         PendingActiveTasks.Add(newTask);
         newTask.OnStart();
+    }
+
+    protected virtual void OnPreStartNewTask(SltTaskBase newTask)
+    {
+
     }
 
     public void RegisterRemoveTask(SltTaskBase RemovedTask)
@@ -86,7 +92,7 @@ public class SltTaskComponent : MonoBehaviour
         StateMachine stateMachine = GetComponent<StateMachine>();
 
         // StateMachineがきちんと設定されてるかチェック
-#if UNITY_EDITOR
+#if CP_EDITOR
         if (stateMachine.nest.macro == null)
         {
             Debug.LogError("StateMachine graph is null");
@@ -95,6 +101,4 @@ public class SltTaskComponent : MonoBehaviour
         stateMachine.enabled = true;
         bAlreadyStart = true;
     }
-
-
 }

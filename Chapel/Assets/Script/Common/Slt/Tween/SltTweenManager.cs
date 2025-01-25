@@ -89,11 +89,15 @@ public class SltTweenVector2Param : SltTweenParamBase
 public class SltTweenFloatParam : SltTweenParamBase
 {
     TweenFloat TweenerFloat = null;
+    float _latestDeltaValue = 0f;
+    protected float _prevTweeningFloatValue = 0f;
     protected float _tweeningFloatValue = 0f;
     UnityAction<float> _onUpdateFloat = null;
     public TweenFloat StartTween(
        float initialFloat, float lastFloat, float duration, Ease easingType, UnityAction<float> onUpdate)
     {
+        _latestDeltaValue = 0f;
+        _prevTweeningFloatValue = initialFloat;
         _tweeningFloatValue = initialFloat;
         _onUpdateFloat = onUpdate;
 
@@ -110,10 +114,14 @@ public class SltTweenFloatParam : SltTweenParamBase
     }
 
     public float GetFloatValue() { return _tweeningFloatValue; }
+    public float GetDeltaValue() => _latestDeltaValue;
 
     void OnUpdateTweenerSpeed()
     {
+        _latestDeltaValue = _tweeningFloatValue - _prevTweeningFloatValue;
         _onUpdateFloat?.Invoke(_tweeningFloatValue);
+
+        _prevTweeningFloatValue = _tweeningFloatValue;
     }
 
     void OnCompleteTweenerSpeed()

@@ -11,7 +11,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "ScriptableObject/CpDungeonMasterDataScriptableObject")]
 public class CpDungeonMasterDataScriptableObject : ScriptableObject
 {
-#if UNITY_EDITOR
+#if CP_EDITOR
     [TextArea]
     public string Comment = null;
 #endif

@@ -7,7 +7,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "ScriptableObject/CpPlayerSettings")]
 public class CpPlayerSettings : ScriptableObject
 {
-#if UNITY_EDITOR
+#if CP_EDITOR
     [TextArea]
     public string Comment = null;
 #endif

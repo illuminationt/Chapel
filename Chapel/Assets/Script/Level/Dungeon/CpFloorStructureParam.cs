@@ -18,9 +18,22 @@ public enum ECpRoomSelectType
 public class CpFixedRoomParam
 {
     public CpRoom GetRoomPrefab() => RoomPrefab;
+    public ECpRoomUsableType GetRoomUsableType() => RoomPrefab.RoomUsableType;
+    public CpRoomUsableParam GetOverrideRoomUsableParam() { return RoomUsableParamOverride.GetOverrideRoomUsableParam(); }
 
     [SerializeField]
     CpRoom RoomPrefab = null;
+
+    [SerializeField]
+    CpRoomUsableParamOverride RoomUsableParamOverride;
+
+#if CP_EDITOR
+    public void DebugSetRoomPrefab(CpRoom inRoomPrefab)
+    {
+        RoomPrefab = inRoomPrefab;
+    }
+    public CpRoomUsableParamOverride DebugGetUsableParamOverride => RoomUsableParamOverride;
+#endif
 }
 
 public enum ECpRoomConnectDirectionType
@@ -54,6 +67,17 @@ public class CpFloorStructureRoomParam
         };
     }
 
+    public CpRoomUsableParam GetOverrideRoomUsableParam()
+    {
+        return _roomSelectType switch
+        {
+            ECpRoomSelectType.NoRoom => null,
+            ECpRoomSelectType.Fixed => _fixedRoomParam.GetOverrideRoomUsableParam(),
+            ECpRoomSelectType.FromProvider => null,
+            _ => throw new System.NotImplementedException(),
+        };
+    }
+
     public ECpRoomUsableType GetRoomUsableType()
     {
         switch (_roomSelectType)
@@ -80,7 +104,7 @@ public class CpFloorStructureRoomParam
     [ShowIf("_roomSelectType", ECpRoomSelectType.FromProvider)]
     CpRoomRequestParam _provideParam = new CpRoomRequestParam();
 
-#if UNITY_EDITOR
+#if CP_EDITOR
     public ECpRoomSelectType RoomSelectType { get { return _roomSelectType; } set { _roomSelectType = value; } }
     public CpFixedRoomParam FixedRoomParam { get { return _fixedRoomParam; } set { _fixedRoomParam = value; } }
     public CpRoomRequestParam ProvideParam { get { return _provideParam; } set { _provideParam = value; } }
@@ -171,7 +195,7 @@ public class CpFloorStructureParam
     [SerializeField]
     int _roomWidth = 1;
 
-#if UNITY_EDITOR
+#if CP_EDITOR
     public void SetDungeonSize(int x, int y)
     {
         _roomWidth = x;

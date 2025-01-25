@@ -16,8 +16,17 @@ public enum ECpMoveParamType
 
     HomingOnlyRotate = 500,
     HomingCloseToTarget = 501,
+    HomingForceClose = 502,
 
     Physical = 1000,
+
+    // ‰ñ“]
+    Rotate = 10000,
+    RotateInfFixedDirection = 10500,
+    RotateInfToTarget = 10550,
+
+    // “ÁŽê
+    Trampoline = 20000,
 }
 public interface ICpMoveParam
 {

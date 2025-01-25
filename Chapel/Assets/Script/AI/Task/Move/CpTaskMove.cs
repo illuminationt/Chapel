@@ -10,6 +10,11 @@ public class CpTaskMove : CpTaskBase
         _moveParamSO = moveParamSO;
     }
 
+    public override ECpTaskType GetTaskType()
+    {
+        return ECpTaskType.Move;
+    }
+
     protected override void OnStartInternal()
     {
         CpMoveComponent moveComp = Owner.GetComponent<CpMoveComponent>();
@@ -36,7 +41,7 @@ public class CpUnit_Move : CpUnitBase
     ValueInput inputMoveParamSO;
     CpMoveParamScriptableObject moveParamSO;
 
-    protected override SltTaskBase CreateTask()
+    protected override SltTaskBase CreateTask(GameObject ownerObj)
     {
         return new CpTaskMove(moveParamSO);
     }

@@ -6,7 +6,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using System.Linq;
 
-#if UNITY_EDITOR
+#if CP_EDITOR
 using UnityEditor;
 #endif
 
@@ -17,7 +17,7 @@ public class CpRoomProvideParamSameUse
 {
     public List<CpRoom> Rooms = new List<CpRoom>();
 
-#if UNITY_EDITOR
+#if CP_EDITOR
     public void Reset()
     {
         Rooms.Clear();
@@ -71,7 +71,7 @@ public class CpRoomProvideParamPerRoomType
     public CpRoomProvideParamSameUse DLR;
     public CpRoomProvideParamSameUse UDLR;
 
-#if UNITY_EDITOR
+#if CP_EDITOR
     public void SetRoomPrefabs(List<CpRoom> roomPrefabs)
     {
         VisitParams((CpRoomProvideParamSameUse paramSameUse, string paramName) =>
@@ -160,7 +160,7 @@ public class CpRoomProvideParamPerFloor
     [SerializeField][ReadOnly] CpRoomProvideParamPerRoomType _shop;
     [SerializeField][ReadOnly] CpRoomProvideParamPerRoomType _boss;
 
-#if UNITY_EDITOR
+#if CP_EDITOR
     public void Validate()
     {
         _startPoint.Validate();

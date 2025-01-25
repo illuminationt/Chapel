@@ -1,16 +1,7 @@
 using UnityEngine;
 
-public class ICpAbsorbTarget : MonoBehaviour
+public interface ICpAbsorbTarget
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public bool CanAbsorb(ICpAbsorbable absorbable);
+    public void StartAbsorb(ICpAbsorbable absorbable);
 }

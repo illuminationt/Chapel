@@ -145,7 +145,7 @@ public class SltObjectPool<TPool, TPrefab> where TPool : SltObjects<TPrefab>, ne
     public bool Release(TPrefab Instance)
     {
         TPool Pool = FindPoolFromInstance(Instance);
-#if UNITY_EDITOR
+#if CP_EDITOR
         if (Pool == null)
         {
             Assert.IsTrue(false);

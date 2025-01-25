@@ -40,10 +40,15 @@ public class CpRoomProxy
         }
 
         CpRoomProxy newProxy = new CpRoomProxy();
-        newProxy._roomPrefab = roomParam.GetRoomPrefab(roomProvideParam);
+        CpRoom roomPrefab = roomParam.GetRoomPrefab(roomProvideParam);
+        newProxy._roomPrefab = roomPrefab;
         newProxy._roomType = CpRoomUtil.ToRoomType(roomParam.GetRoomUsableType());
         newProxy._roomParam = roomParam;
         newProxy._roomProvideParam = roomProvideParam;
+
+        // UsableParamê›íË
+        newProxy._roomUsableParam = roomParam.GetOverrideRoomUsableParam() ?? roomPrefab.GetRoomUsableParam();
+
         newProxy._roomIndex = roomIndex;
         newProxy._id = CpRoomProxyId.Create();
 
@@ -97,6 +102,7 @@ public class CpRoomProxy
 
     public void OnAllRoomEnemyDestroyed()
     {
+        CpEnemyShotEraser.Get().RequestErase();
         OpenGate(true);
     }
 
@@ -139,6 +145,8 @@ public class CpRoomProxy
         {
             CpGamePlayManager gamePlayManager = CpGamePlayManager.Get();
             CpGamePlayStateRoomBattle stateBattle = gamePlayManager.RequestStartState<CpGamePlayStateRoomBattle>(ECpGamePlayState.RoomBattle);
+
+            // todo RoomUsableParam
             stateBattle.Setup(this, GetRoomUsableParam().ParamBattle);
             stateBattle.ReadyForActivation();
         }
@@ -159,14 +167,15 @@ public class CpRoomProxy
     //
 
     public ECpRoomType GetRoomType() => _roomType;
-    public CpRoomUsableParam GetRoomUsableParam() => _roomPrefab.GetRoomUsableParam();
+    public CpRoomUsableParam GetRoomUsableParam() => _roomUsableParam;
     public Vector2Int GetRoomIndex() => _roomIndex;
     public CpRoom GetRoomInstance() => _roomInstance;
     public bool GetRoomFlag(ECpRoomFlags flags) => _roomFlags.Get(flags);
 
-    public void MarkAsOpen()
+    public void OnLandPlayer()
     {
         _roomFlags.Set(ECpRoomFlags.GateOpens, true);
+        _roomFlags.Set(ECpRoomFlags.IsPlayerIn, true);
     }
 
     CpRoom _roomInstance = null;
@@ -176,9 +185,10 @@ public class CpRoomProxy
     ECpRoomType _roomType = ECpRoomType.None;
     CpFloorStructureRoomParam _roomParam = null;
     CpRoomProvideParamPerFloor _roomProvideParam = null;
+    CpRoomUsableParam _roomUsableParam = null;
     TSltBitFlag<ECpRoomFlags> _roomFlags;
     CpRoomProxyId _id = null;
-#if DEBUG
+#if CP_DEBUG
     public string GetRoomIndexString()
     {
         return $"{_roomIndex.x},{_roomIndex.y}";

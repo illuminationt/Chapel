@@ -44,13 +44,6 @@ public class CpDebugComponent : MonoBehaviour
         //    newEnemy.transform.position = new Vector2(0f, 70f);
         //}
 
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            CpEnemySpawnerManager enemySpanerManager = CpEnemySpawnerManager.Get();
-            enemySpanerManager.RequestSpawn(ESP_Test.EnemySpawnParam);
-        }
-
-
         if (Input.GetKeyDown(KeyCode.K))
         {
             CpEnemyShot[] shots = FindObjectsByType<CpEnemyShot>(FindObjectsSortMode.None);

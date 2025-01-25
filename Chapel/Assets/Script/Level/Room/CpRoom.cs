@@ -240,7 +240,7 @@ public class CpRoom : CpActorBase
 
     CpRoomProxy _ownerRoomProxy = null;
 
-#if UNITY_EDITOR
+#if CP_EDITOR
     CpRoomGate FindGate(ECpRoomConnectDirectionType dirType)
     {
         CpRoomGate[] gates = GetComponentsInChildren<CpRoomGate>(true);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix;
 using Sirenix.OdinInspector;
+using NUnit.Framework;
 
 public static class SltMath
 {
@@ -31,6 +32,58 @@ public static class SltMath
         }
         while (degree < -180f) { degree += 180f; }
         return degree;
+    }
+
+    public static float CalcFaceRotationZ(in Vector2 from, in Vector2 to)
+    {
+        Vector2 dir = (to - from).normalized;
+        float rotZ = SltMath.ToDegree(dir);
+        return rotZ;
+    }
+
+    public static float UnwindAngle(float angle)
+    {
+        while (angle > 180f)
+        {
+            angle -= 360f;
+        }
+        while (angle < -180f)
+        {
+            angle += 360f;
+        }
+        return angle;
+    }
+
+    // CtdFuncLib.GetRotateDelta‚©‚çˆÚA
+    public static float GetRotateDelta(float from, float to, float equalTorelance)
+    {
+        // ‚Ü‚¸³‹K‰»
+        from = UnwindAngle(from);
+        to = UnwindAngle(to);
+        if (IsNearlyEqual(from, to, equalTorelance))
+        {
+            // “¯‚¶’l‚È‚ç•ûŒü‚Íƒ[ƒ‚ð•Ô‚·
+            return 0f;
+        }
+
+        // ŒvŽZ‚Ì‚½‚ß,To‚ª‘å‚«‚­‚È‚é‚æ‚¤‚É•ÏX‰Á‚¦‚é
+        if (to < from)
+        {
+            to += 360f;
+        }
+
+        if (from + 180f < to)
+        {
+            // Œ»Ý‚Ì’l‚É180‚ð‰Á‚¦‚Ä‚àTo‚É‚½‚Ç‚è’…‚©‚È‚¢
+            // ‹t•ûŒü‰ñ“]
+            float Abs = 360f - (to - from);
+            return Abs * -1f;
+        }
+        else
+        {
+            // ‡•ûŒü
+            return to - from;
+        }
     }
 
     // VectorŒn“
@@ -65,11 +118,21 @@ public static class SltMath
         float normalizedDegree = UnwindDegree(degree);
         return normalizedDegree;
     }
-
     public static Vector2 RotateVector(in Vector2 vector, float degree)
     {
         Quaternion quat = Quaternion.Euler(0f, 0f, degree);
         return quat * vector;
+    }
+
+    public static bool IsSameDirection(in Vector2 a, in Vector2 b)
+    {
+        float cos = a.Cosine(b);
+        return cos > 0f;
+    }
+    public static bool IsInverseDirection(in Vector2 a, in Vector2 b)
+    {
+        float cos = a.Cosine(b);
+        return cos < 0f;
     }
 
     public static Vector2 Lerp(in Vector2 a, in Vector2 b, float alpha)
@@ -244,9 +307,13 @@ public struct SltFloatInterval
 
     public float GetRandom()
     {
+        Assert.IsTrue(IsClosedInterval());
         return Random.Range(_min, _max);
     }
-
+    public bool IsClosedInterval()
+    {
+        return bEnableMin && bEnableMax;
+    }
     void Validate()
     {
         if (bEnableMin && bEnableMax)

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.VisualScripting;
 using DG.DemiEditor;
+using NUnit.Framework;
+
 
 
 
@@ -396,15 +398,75 @@ public class CpFloorRoomParamEditorWindow : EditorWindow
     }
     void DrawRoomFixed(CpFixedRoomParam fixedParam)
     {
+        CpRoom roomPrefab = (CpRoom)EditorGUILayout.ObjectField(
+            fixedParam.GetRoomPrefab(),
+            typeof(CpRoom), false);
+        fixedParam.DebugSetRoomPrefab(roomPrefab);
+
+
+        EditorGUILayout.LabelField("部屋使用時パラメータオーバーライドフラグ");
+        CpRoomUsableParamOverride paramOverride = fixedParam.DebugGetUsableParamOverride;
+        paramOverride.DebugIsOverride = EditorGUILayout.Toggle(paramOverride.DebugIsOverride);
+
+        if (paramOverride.DebugIsOverride)
+        {
+            ECpRoomUsableType roomUsableType = fixedParam.GetRoomUsableType();
+
+            switch (roomUsableType)
+            {
+                case ECpRoomUsableType.StartPoint:
+                    DrawRoomFixed_StartPoint();
+                    Assert.IsTrue(false);
+                    break;
+                case ECpRoomUsableType.Battle:
+                    DrawRoomFixed_Battle(paramOverride.DebugGetRoomUsableParam.ParamBattle);
+                    break;
+                case ECpRoomUsableType.PlaceObject:
+                    Assert.IsTrue(false);
+                    break;
+                case ECpRoomUsableType.Shop:
+                    DrawRoomFixed_Shop(paramOverride.DebugGetRoomUsableParam.ParamShop);
+                    break;
+                case ECpRoomUsableType.Boss:
+                    DrawRoomFixed_Boss(paramOverride.DebugGetRoomUsableParam.ParamBoss);
+                    break;
+            }
+        }
+    }
+    void DrawRoomFixed_StartPoint()
+    {
+        // 未実装
+    }
+    void DrawRoomFixed_Battle(CpRoomUsableParamBattle paramBattle)
+    {
+        paramBattle.ParamSelectType = (ECpEnemySpawnParamSelectType)EditorGUILayout.EnumPopup("エネミー生成パラメータ生成方法", paramBattle.ParamSelectType);
+
+        if (paramBattle.ParamSelectType == ECpEnemySpawnParamSelectType.FixedData)
+        {
+
+            paramBattle.SpawnParamScriptableObject = (CpEnemySpawnParamScriptableObject)EditorGUILayout.ObjectField("エネミー生成用ScriptableObject", paramBattle.SpawnParamScriptableObject, typeof(CpEnemySpawnParamScriptableObject), false);
+        }
+    }
+    void DrawRoomFixed_PlaceObject()
+    {
+    }
+    void DrawRoomFixed_Shop(CpRoomUsableParamShop paramShop)
+    {
+    }
+    void DrawRoomFixed_Boss(CpRoomUsableParamBoss paramBoss)
+    {
 
     }
-
     void DrawRoomFromProvider(CpRoomRequestParam provideParam)
     {
         DrawDirectionFlag(ref provideParam.ConnectionFlag);
 
         provideParam.RoomUsableType = (ECpRoomUsableType)EditorGUILayout.EnumPopup("部屋の種類", provideParam.RoomUsableType);
+
+
     }
+
+
 
     void DrawDirectionFlag(ref TSltBitFlag<ECpRoomConnectDirectionType> connectionFlag)
     {

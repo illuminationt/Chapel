@@ -11,5 +11,4 @@ public interface ICpTweenable
         return GetTweenManager().GetUsableTweener<T>();
     }
 
-
 }

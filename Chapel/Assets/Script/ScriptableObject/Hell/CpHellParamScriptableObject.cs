@@ -10,13 +10,13 @@ using UnityEditor;
 [CreateAssetMenu(menuName = "ScriptableObject/CpHellParam")]
 public class CpHellParamScriptableObject : ScriptableObject
 {
-#if UNITY_EDITOR
+#if CP_EDITOR
     [TextArea]
     public string Comment = null;
 
 
     [Button]
-    void OnTestButtonClicked()
+    void TestHell()
     {
         CpDebugParam.bEnableHellTest = true;
         CpDebugParam.TestHellParamScriptableObject = this;

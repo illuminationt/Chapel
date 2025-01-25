@@ -5,8 +5,10 @@ using UnityEngine;
 
 public class CpEnemyShotInitializeParam
 {
+    public Vector2 SpawnPosition = Vector2.zero;
     public FCpMoveParamEnemyShot enemyShotMoveParam;
     public ECpEnemyShotRotationType RotationType = ECpEnemyShotRotationType.Noop;
+    public float Scale = 1f;
 }
 
 
@@ -51,7 +53,15 @@ public class CpEnemyShot : CpShotBase
     public void Initialize(CpEnemyShotInitializeParam initializeParam)
     {
         _initParam = initializeParam;
+
+        _transform.SetLocalScale(_initParam.Scale);
         StartMove(initializeParam.enemyShotMoveParam);
+    }
+
+
+    public void Erase()
+    {
+        Release();
     }
 
     void StartMove(in FCpMoveParamEnemyShot moveParam)

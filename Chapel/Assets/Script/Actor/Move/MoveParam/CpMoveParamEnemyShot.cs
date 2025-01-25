@@ -1,50 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
-
-
-[System.Serializable]
-public struct FCpMoveParamEnemyShotDefault : ICpMoveParam
-{
-    public FCpMoveParamEnemyShotDefault(
-        float speed, in SltFloatInterval speedInterval,
-        float accel,
-        float angleSpeed, float angleAccel,
-        in Vector2 direction
-        )
-    {
-        Speed = speed;
-        SpeedInterval = speedInterval;
-        Accel = accel;
-        AngleSpeed = angleSpeed;
-        AngleAccel = angleAccel;
-        Direction = direction;
-    }
-    public ECpMoveParamType GetMoveParamType() => ECpMoveParamType.EnemyShotDefault;
-
-    public float Speed;
-    public SltFloatInterval SpeedInterval;
-    public float Accel;
-    public float AngleSpeed;
-    public float AngleAccel;
-    public Vector2 Direction;
-}
-
-[System.Serializable]
-public struct FCpMoveParamEnemyShotMoveParam : ICpMoveParam
-{
-    public ECpMoveParamType GetMoveParamType() => ECpMoveParamType.EnemyShotMoveParam;
-}
-
-[System.Serializable]
-public struct FCpMoveParamEnemyShotMoveParamList : ICpMoveParam
-{
-    public ECpMoveParamType GetMoveParamType() => ECpMoveParamType.EnemyShotMoveParamList;
-
-    public FCpMoveParamEnemyShotMoveParam param2;
-    public FCpMoveParamEnemyShotDefault basdu;
-}
 
 public struct FCpMoveParamEnemyShot
 {
@@ -59,8 +17,4 @@ public struct FCpMoveParamEnemyShot
     public FCpMoveParamEnemyShotDefault ParamDefault;
     public FCpMoveParamEnemyShotMoveParam ParamMoveParam;
     public FCpMoveParamEnemyShotMoveParamList ParamMoveParamList;
-}
-public class CpMoveParamEnemyShot : CpMoveParamBase
-{
-
 }

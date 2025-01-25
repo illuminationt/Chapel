@@ -11,6 +11,10 @@ public class CpTaskHell : CpTaskBase
         _hellParamSO = hellParamSO;
     }
 
+    public override ECpTaskType GetTaskType()
+    {
+        return ECpTaskType.Hell;
+    }
     protected override void OnStartInternal()
     {
         CpHellComponent hellComp = Owner.GetComponent<CpHellComponent>();
@@ -37,7 +41,7 @@ public class CpUnit_Hell : CpUnitBase
     ValueInput inputMoveParamSO;
     CpHellParamScriptableObject hellParamSO;
 
-    protected override SltTaskBase CreateTask()
+    protected override SltTaskBase CreateTask(GameObject ownerObj)
     {
         return new CpTaskHell(hellParamSO);
     }

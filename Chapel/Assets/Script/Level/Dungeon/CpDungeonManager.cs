@@ -16,6 +16,7 @@ public class CpDungeonManager
     }
 
     public static CpDungeonManager Get() => CpGameManager.Instance.DungeonManager;
+    public CpRoomProxyManager RoomProxyManager => _roomProxyManager;
 
     public void InitializeDungeon(CpFloorMasterDataScriptableObject floorMasterSettings)
     {
@@ -29,10 +30,24 @@ public class CpDungeonManager
     {
         Vector2Int startPointIndex = _floorStructureParam.FindRoomIndex(ECpRoomUsableType.StartPoint);
 
-        _activeRoomProxy = _roomProxyManager.FindRoomProxy(startPointIndex);
-        _activeRoomProxy.MarkAsOpen();
+        CpRoomProxy startRoomProxy = _roomProxyManager.FindRoomProxy(startPointIndex);
 
-        _activeRoomProxy.CreateRoomInstance();
+        startRoomProxy.OnLandPlayer();
+        ActiveRoomProxy.CreateRoomInstance();
+
+#if CP_DEBUG
+        if (CpDebugParam.bEnableEnemyTest)
+        {
+            CpRoom roomInstance = ActiveRoomProxy.GetRoomInstance();
+            roomInstance.OpenGate(false);
+        }
+#endif
+        //_activeRoomProxy = CreateRoom(startPointIndex);
+        //if (bOpen)
+        //{
+        //    _activeRoomProxy.MarkAsOpen();
+        //}
+        ////_activeRoomProxy.OnEnterRoom();
     }
 
     // 部屋遷移をリクエスト
@@ -53,7 +68,7 @@ public class CpDungeonManager
 
         CpRoomTransitionParam roomTransitionParam = new CpRoomTransitionParam();
         roomTransitionParam.DungeonManager = this;
-        roomTransitionParam.PrevRoomProxy = _activeRoomProxy;
+        roomTransitionParam.PrevRoomProxy = ActiveRoomProxy;
         roomTransitionParam.TransitionDirection = roomTransitionReqParam.ConnectDirection;
         stateRoomTransition.Setup(roomTransitionParam);
         stateRoomTransition.ReadyForActivation();
@@ -69,23 +84,26 @@ public class CpDungeonManager
     public void EnterRoom(CpRoomProxyId roomProxyId)
     {
         CpRoomProxy proxy = _roomProxyManager.FindRoomProxy(roomProxyId);
-        Assert.IsTrue(_activeRoomProxy == null);
-        _activeRoomProxy = proxy;
-        _activeRoomProxy.OnEnterRoom();
+        if (proxy.GetRoomFlag(ECpRoomFlags.IsPlayerIn))
+        {
+            // 既に部屋に入ってたらスキップ
+            return;
+        }
+        Assert.IsTrue(ActiveRoomProxy.Equals(proxy));
+        proxy.OnEnterRoom();
     }
+
     public void ExitRoom(CpRoomProxyId roomProxyId)
     {
         CpRoomProxy proxy = _roomProxyManager.FindRoomProxy(roomProxyId);
-        Assert.IsTrue(proxy == _activeRoomProxy);
+        Assert.IsTrue(proxy.GetRoomFlag(ECpRoomFlags.IsPlayerIn));
+        Assert.IsTrue(proxy == ActiveRoomProxy);
         proxy.OnExitRoom();
-
-        _activeRoomProxy = null;
     }
-
 
     Vector2Int GetGoalRoomIndex(ECpRoomConnectDirectionType transitionDir)
     {
-        Vector2Int retIndex = _activeRoomProxy.GetRoomIndex();
+        Vector2Int retIndex = ActiveRoomProxy.GetRoomIndex();
         switch (transitionDir)
         {
             case ECpRoomConnectDirectionType.Up: retIndex.y--; break;
@@ -99,14 +117,23 @@ public class CpDungeonManager
     }
 
     CpRoomProxyManager _roomProxyManager = null;
-    CpRoomProxy _activeRoomProxy = null;
+    CpRoomProxy ActiveRoomProxy => _roomProxyManager.GetActiveRoomProxy();
 
     // 現在使用中のダンジョン構造パラメータ
     CpRoomProvideParamPerFloor _roomProvideParam = null;
     CpFloorStructureParam _floorStructureParam = null;
 
-#if DEBUG
-    public CpRoomProxyManager RoomProxyManager => _roomProxyManager;
+#if CP_DEBUG
+
+    public static void CreateDummyRoom()
+    {
+        CpFloorMasterDataScriptableObject dummyFloorSettings = (CpFloorMasterDataScriptableObject)Resources.Load("DummyFloorMasterSettings");
+        CpGamePlayManager gamePlayManager = CpGamePlayManager.Get();
+        gamePlayManager.RequestEnterFloor(dummyFloorSettings);
+
+        CpDungeonManager dungeonManager = CpDungeonManager.Get();
+        //   dungeonManager.LandPlayer(false);
+    }
 
     public void DrawImGui()
     {
@@ -119,9 +146,9 @@ public class CpDungeonManager
 
         if (ImGui.CollapsingHeader("Current Room"))
         {
-            if (_activeRoomProxy != null)
+            if (ActiveRoomProxy != null)
             {
-                _activeRoomProxy.DrawImGui();
+                ActiveRoomProxy.DrawImGui();
             }
             else
             {

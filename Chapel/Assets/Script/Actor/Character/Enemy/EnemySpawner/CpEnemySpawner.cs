@@ -23,6 +23,10 @@ public class CpEnemySpawner
     {
         foreach (CpEnemySpawnParamElement element in param.Elements)
         {
+            if (!element.bEnable)
+            {
+                continue;
+            }
             SpawnEnemy(element);
         }
     }
@@ -50,6 +54,7 @@ public class CpEnemySpawner
     void SpawnEnemy(CpEnemySpawnParamElement element)
     {
         CpEnemyBase newEnemy = MonoBehaviour.Instantiate(element.Prefab);
+        newEnemy.gameObject.SetActive(false);
 
         FCpEnemyInitializeParam initParam;
         initParam.OwnerSpawner = this;

@@ -1,3 +1,5 @@
+using ImGuiNET;
+using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,6 +16,7 @@ public enum ECpMoverUpdateResult
 public enum ECpMoveStopReason
 {
     MoverFinished,//
+    External,
 }
 
 public partial class CpMoverManager
@@ -23,60 +26,97 @@ public partial class CpMoverManager
         _ownerActor = actor;
     }
 
-    public bool IsActive()
+    public void RequestStopAll()
     {
-        if (_currentMover == null) { return false; }
-
-        if (_currentMover.IsFinished())
+        foreach (CpMoverBase mover in _currentMovers)
         {
-            return false;
+            mover.ExternalCancel();
         }
-        return true;
     }
 
-    public FCpMoverId RequestStart(CpMoveParamBase moveParam)
+    public void RequestStop(in FCpMoverId id, ECpMoveStopReason reason)
     {
-        _currentMover = CreateMover(moveParam);
-        return _currentMover.GetId();
+        CpMoverBase mover = FindMover(id);
+        mover?.ExternalCancel();
     }
 
-    public void RequestStop(ECpMoveStopReason reason)
+    public ECpMoverUpdateResult Update(float currentYaw)
     {
-        _bRequestedStop = true;
-    }
-
-    public ECpMoverUpdateResult Update()
-    {
-        if (_currentMover == null)
+        if (_currentMovers.Count == 0)
         {
-            _currentVelocity = Vector2.zero;
+            _latestDeltaMove = Vector2.zero;
+            _latestDeltaYaw = 0f;
             return ECpMoverUpdateResult.NotActive;
         }
 
-        if (_bRequestedStop)
+        // 更新
+        for (int index = 0; index < _currentMovers.Count; index++)
         {
-            OnMoveFinished.Invoke(_currentMover.GetId());
-            _currentMover = null;
-            return ECpMoverUpdateResult.Finished;
+            _currentMovers[index].Update();
         }
 
-        _currentMover.Update();
-        _currentVelocity = _currentMover.GetVelocity();
+        UpdateLatestDeltaMove();
+        UpdateLatestDeltaYaw(currentYaw);
 
-        bool bFinished = _currentMover.IsFinished();
-        if (bFinished)
+        // 終了したMoverを削除
+        for (int index = _currentMovers.Count - 1; index >= 0; index--)
         {
-            OnMoveFinished.Invoke(_currentMover.GetId());
-            _currentMover = null;
-            return ECpMoverUpdateResult.Finished;
+            if (_currentMovers[index].IsFinished())
+            {
+                FCpMoverId finishedMoverId = _currentMovers[index].GetId();
+                _currentMovers[index] = null;
+                _currentMovers.RemoveAt(index);
+
+                OnMoveFinished.Invoke(finishedMoverId);
+            }
         }
 
-        return ECpMoverUpdateResult.Moving;
+        if (_currentMovers.Count > 0)
+        {
+            return ECpMoverUpdateResult.Moving;
+        }
+        else
+        {
+            return ECpMoverUpdateResult.NotActive;
+        }
+    }
+
+    // パラメータがMonobehaviorに適用されたときのコールバック
+
+    public void OnMoverValueApplied()
+    {
+        foreach (CpMoverBase mover in _currentMovers)
+        {
+            mover.OnMoverValueApplied();
+        }
+    }
+    void UpdateLatestDeltaMove()
+    {
+        Vector2 retDeltaMove = Vector2.zero;
+        for (int index = 0; index < _currentMovers.Count; index++)
+        {
+            retDeltaMove += _currentMovers[index].GetDeltaMove();
+        }
+
+        _latestDeltaMove = retDeltaMove;
+    }
+    void UpdateLatestDeltaYaw(float currentYaw)
+    {
+        float totalDeltaYaw = 0f;
+        foreach (CpMoverBase mover in _currentMovers)
+        {
+            totalDeltaYaw += mover.GetDeltaYaw(currentYaw);
+        }
+
+        _latestDeltaYaw = totalDeltaYaw;
     }
 
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        _currentMover?.OnCollisionEnterHit2D(collision);
+        for (int index = 0; index < _currentMovers.Count; index++)
+        {
+            _currentMovers[index].OnCollisionEnterHit2D(collision);
+        }
     }
 
     FCpMoverContext CreateContext()
@@ -85,44 +125,93 @@ public partial class CpMoverManager
         context.OwnerMoverManager = this;
         context.OwnerActor = _ownerActor;
         context.InitialOwnerPosition = _ownerActor.transform.position;
-        context.InitialVelocity = _currentVelocity;
+        context.InitialVelocity = GetVelocity();
 
         ICpActorForwardInterface forwardInterface = _ownerActor;
         context.InitialOwnerDegree = forwardInterface.GetForwardDegree();
         return context;
     }
 
-
     public Vector2 GetDeltaMove()
     {
-        if (_currentMover == null)
-        {
-            return Vector2.zero;
-        }
-        return _currentMover.GetDeltaMove();
+        return _latestDeltaMove;
     }
-
+    public float GetDeltaRotZ()
+    {
+        return _latestDeltaYaw;
+    }
     public Vector2 GetVelocity()
     {
-        return _currentVelocity;
+        return _latestDeltaMove / Time.smoothDeltaTime;
     }
 
-    public FCpMoverId GetCurrentMoverId()
+    CpMoverBase FindMover(in FCpMoverId id)
     {
-        if (_currentMover != null)
+        foreach (CpMoverBase mover in _currentMovers)
         {
-
-            return _currentMover.GetId();
+            if (mover.GetId().Equals(id))
+            {
+                return mover;
+            }
         }
-
-        return FCpMoverId.INVALID_ID;
+        return null;
     }
+
+    bool ExistsActiveMover(System.Type moverType)
+    {
+        foreach (CpMoverBase mover in _currentMovers)
+        {
+            if (mover.GetType() == moverType)
+            {
+                if (!mover.IsFinished())
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void Reset()
+    {
+        _latestDeltaMove = Vector2.zero;
+        _currentMovers.Clear();
+        _latestMoverUpdateResult = ECpMoverUpdateResult.NotActive;
+        _onMoveFinished.RemoveAllListeners();
+    }
+
     public UnityEvent<FCpMoverId> OnMoveFinished => _onMoveFinished;
 
-    Vector2 _currentVelocity = Vector2.zero;
-    CpMoverBase _currentMover = null;
+    Vector2 _latestDeltaMove = Vector2.zero;
+    float _latestDeltaYaw = 0f;
+
+    List<CpMoverBase> _currentMovers = new List<CpMoverBase>();
+    ECpMoverUpdateResult _latestMoverUpdateResult = ECpMoverUpdateResult.NotActive;
     CpActorBase _ownerActor = null;
 
-    bool _bRequestedStop = false;
     UnityEvent<FCpMoverId> _onMoveFinished = new UnityEvent<FCpMoverId>();
+
+#if CP_DEBUG
+    public void DrawImGui()
+    {
+        if (ImGui.TreeNode("Movers"))
+        {
+            foreach (CpMoverBase mover in _currentMovers)
+            {
+                string typeStr = mover.GetType().ToString();
+
+                string treeTitle = $"[{mover.GetId().ToString()}]{typeStr}";
+                if (ImGui.TreeNode(treeTitle))
+                {
+                    mover.DrawImGui();
+                    ImGui.TreePop();
+                }
+            }
+            ImGui.TreePop();
+        }
+    }
+
+    public int DebugGetMoverCount() { return _currentMovers.Count; }
+
+#endif
 }

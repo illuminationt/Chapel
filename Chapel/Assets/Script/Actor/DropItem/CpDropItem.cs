@@ -1,12 +1,16 @@
+using ImGuiNET;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 
 // “G‚ð“|‚·‚Æ—Ž‚Æ‚·ƒAƒCƒeƒ€
 [RequireComponent(typeof(CpMoveComponent))]
-public class CpDropItem : CpActorBase, ICpGameplayEffectSender
+public class CpDropItem : CpActorBase,
+    ICpGameplayEffectSender,
+    ICpAbsorbTarget
 {
     [SerializeField] CpPlayerItemGameplayEffect PlayerItemGameplayEffect = null;
+    [SerializeField] CpMoveParamScriptableObject AbsorbMoveParamSettings = null;
     CpMoveComponent _moveComponent = null;
     protected override void Awake()
     {
@@ -32,6 +36,14 @@ public class CpDropItem : CpActorBase, ICpGameplayEffectSender
     }
     // end of CpActorBase interface
 
+    // ICpPoolable
+    public override void ResetOnRelease()
+    {
+        base.ResetOnRelease();
+        bAlreadyStartAbsorb = false;
+    }
+    // end of ICpPoolable
+
     // ICpActorForwardInterface
 
     public override float GetForwardDegree()
@@ -45,7 +57,6 @@ public class CpDropItem : CpActorBase, ICpGameplayEffectSender
     {
         transform.SetPosition(reqParam.InitialPosition);
         _initialDegree = reqParam.InitialDegree;
-        // transform.SetRotation(reqParam.InitialDegree);
         _moveComponent.RequestStart(reqParam.MoveParamPhysical);
     }
 
@@ -55,6 +66,25 @@ public class CpDropItem : CpActorBase, ICpGameplayEffectSender
         return PlayerItemGameplayEffect.Effect;
     }
     // end of ICpGameplayEffectSender
+
+    // ICpAbsorbTarget
+
+    public bool CanAbsorb(ICpAbsorbable absorbable)
+    {
+        if (bAlreadyStartAbsorb)
+        {
+            return false;
+        }
+        return true;
+    }
+    public void StartAbsorb(ICpAbsorbable absorbable)
+    {
+        _moveComponent.RequestStopAll();
+        bAlreadyStartAbsorb = true;
+        _moveComponent.RequestStart(AbsorbMoveParamSettings.MoveParam);
+    }
+
+    // end of ICpAbsorbTarget
 
     protected void OnTriggerEnter2D(Collider2D collision)
     {
@@ -67,4 +97,18 @@ public class CpDropItem : CpActorBase, ICpGameplayEffectSender
     }
 
     float _initialDegree = 0f;
+    bool bAlreadyStartAbsorb = false;
+#if CP_DEBUG
+
+    public override void DrawImGui()
+    {
+        base.DrawImGui();
+
+        if (ImGui.TreeNode("Move Component"))
+        {
+            _moveComponent.DrawImGui();
+            ImGui.TreePop();
+        }
+    }
+#endif
 }

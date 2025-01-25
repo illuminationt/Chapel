@@ -11,6 +11,10 @@ public class CpTaskMoveHomingCloseToTarget : CpTaskBase
         _param = param;
     }
 
+    public override ECpTaskType GetTaskType()
+    {
+        return ECpTaskType.Move;
+    }
     protected override void OnStartInternal()
     {
         CpMoveComponent moveComp = Owner.GetComponent<CpMoveComponent>();
@@ -48,7 +52,7 @@ public class CpUnit_CpTaskMoveHomingCloseToTarget : CpUnitBase
     FCpMoveParamHomingCloseToTarget param;
 
 
-    protected override SltTaskBase CreateTask()
+    protected override SltTaskBase CreateTask(GameObject ownerObj)
     {
         return new CpTaskMoveHomingCloseToTarget(param);
     }

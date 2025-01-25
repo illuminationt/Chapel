@@ -38,7 +38,7 @@ public class CpRoomGate : MonoBehaviour
     }
 
 
-#if DEBUG
+#if CP_DEBUG
     public void DrawImGui()
     {
         bool bActive = gameObject.activeInHierarchy;

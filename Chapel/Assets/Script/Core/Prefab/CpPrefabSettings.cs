@@ -7,7 +7,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "ScriptableObject/CpPrefabSettings")]
 public class CpPrefabSettings : ScriptableObject
 {
-#if UNITY_EDITOR
+#if CP_EDITOR
     [TextArea]
     public string Comment = null;
 #endif
@@ -19,7 +19,7 @@ public class CpPrefabSettings : ScriptableObject
 
     public CpItemDropper ItemDropperPrefab = null;
 
-#if UNITY_EDITOR
+#if CP_EDITOR
     public CpHellTestObject HellTestObjectPrefab = null;
 #endif
 }

@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.InputSystem.Controls;
 
-#if DEBUG
+#if CP_DEBUG
 using ImGuiNET;
 #endif
 
@@ -17,7 +17,7 @@ public struct TSltBitFlag<TEnum> where TEnum : Enum
     {
         _flag = initialFlag;
 
-#if UNITY_EDITOR
+#if CP_EDITOR
         EnumDict = new Dictionary<TEnum, bool>();
 #endif
     }
@@ -35,7 +35,7 @@ public struct TSltBitFlag<TEnum> where TEnum : Enum
             _flag &= ~(1 << index);
         }
 
-#if UNITY_EDITOR
+#if CP_EDITOR
         if (EnumDict == null)
         {
             EnumDict = new Dictionary<TEnum, bool>();
@@ -81,7 +81,7 @@ public struct TSltBitFlag<TEnum> where TEnum : Enum
     {
         _flag = 0;
 
-#if UNITY_EDITOR
+#if CP_EDITOR
         EnumDict.Clear();
 #endif
     }
@@ -102,11 +102,11 @@ public struct TSltBitFlag<TEnum> where TEnum : Enum
 
 
     // デバッグ表示用
-#if UNITY_EDITOR
+#if CP_EDITOR
     Dictionary<TEnum, bool> EnumDict;
 #endif
 
-#if DEBUG
+#if CP_DEBUG
     public void DrawImGui(string label)
     {
         ImGui.Text(label);

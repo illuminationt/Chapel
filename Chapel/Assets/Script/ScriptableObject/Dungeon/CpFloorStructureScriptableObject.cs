@@ -11,7 +11,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "ScriptableObject/CpFloorStructureScriptableObject")]
 public class CpFloorStructureScriptableObject : ScriptableObject
 {
-#if UNITY_EDITOR
+#if CP_EDITOR
     [TextArea]
     public string Comment = null;
 

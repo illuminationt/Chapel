@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 
 public class CpImGui : MonoBehaviour
 {
-#if DEBUG
+#if CP_DEBUG
     [SerializeField]
     RenderTexture _imGuiRenderTexture = null;
     private void Awake()
@@ -56,6 +56,17 @@ public class CpImGui : MonoBehaviour
                 ImGui.EndTabItem();
             }
 
+            if (ImGui.BeginTabItem("Enemy"))
+            {
+                DrawEnemy();
+                ImGui.EndTabItem();
+            }
+            if (ImGui.BeginTabItem("Item"))
+            {
+                DrawItem();
+                ImGui.EndTabItem();
+            }
+
             // タブ2
             if (ImGui.BeginTabItem("Dungeon"))
             {
@@ -64,17 +75,51 @@ public class CpImGui : MonoBehaviour
                 ImGui.EndTabItem();
             }
 
-            if (ImGui.BeginTabItem("GameFlow"))
+            if (ImGui.BeginTabItem("Gameplay State"))
+            {
+                CpGamePlayManager gameplayManager = CpGamePlayManager.Get();
+                gameplayManager.DrawImGui();
+                ImGui.EndTabItem();
+            }
+
+            if (ImGui.BeginTabItem("(未使用だよ)GameFlow"))
             {
                 CpGameFlowManager flowManager = CpGameFlowManager.Get();
                 flowManager.DrawImGui();
                 ImGui.EndTabItem();
             }
 
-
             ImGui.EndTabBar();
         }
         ImGui.Text("DUMMY");
+    }
+
+    void DrawEnemy()
+    {
+        DrawCpActorBase<CpEnemyBase>();
+    }
+
+    void DrawItem()
+    {
+        DrawCpActorBase<CpDropItem>();
+    }
+
+    void DrawCpActorBase<T>()
+    {
+        CpActorBase[] actors = FindObjectsByType<CpActorBase>(FindObjectsSortMode.InstanceID);
+        foreach (CpActorBase actor in actors)
+        {
+            if (typeof(T) == actor.GetType())
+            {
+                string treeTitle = actor.name + actor.GetInstanceID();
+                if (ImGui.TreeNode(treeTitle))
+                {
+                    actor.DrawImGui();
+                    ImGui.TreePop();
+                }
+            }
+        }
+
     }
 
     private void OnEnable()

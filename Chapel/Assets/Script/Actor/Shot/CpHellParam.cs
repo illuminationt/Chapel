@@ -6,6 +6,8 @@ using Sirenix.OdinInspector;
 using UnityEngine.Events;
 using UnityEngine.Assertions;
 using Sirenix.Utilities;
+using System;
+using JetBrains.Annotations;
 
 public enum ECpHellObjectType
 {
@@ -52,7 +54,25 @@ public class CpHellParamObject
 [System.Serializable]
 public class CpHellParamTiming
 {
-    [LabelText("発射回数")]
+    public CpHellTimingWatcherBase CreateHellTimingWatcher()
+    {
+        CpHellTimingWatcherBase newWatcher = null;
+        if (num > 0)
+        {
+            newWatcher = new CpFiniteHellTimingWatcher(this);
+        }
+        else if (num == -1)
+        {
+            newWatcher = new CpInfiniteHellTimingWatcher(this);
+        }
+        else
+        {
+            Assert.IsTrue(false, $"numは1以上または-1を指定する必要があります");
+        }
+
+        return newWatcher;
+    }
+    [LabelText("発射回数(-1なら無限回)")]
     public int num = 1;
     [LabelText("最初の発射までの時間(秒)")]
     public float FirstDelay = 0f;
@@ -94,6 +114,18 @@ public class CpHellParamOneTrigger
     {
         return forwardDegreeOffset + CpRandom.GetDelta(forwardDegreeOffsetVariation);
     }
+    public float GetSpeed()
+    {
+        return speed + CpRandom.Range(-speedVariation / 2f, speedVariation / 2f);
+    }
+    public float GetScale()
+    {
+        if (ScaleInterval.IsClosedInterval())
+        {
+            return ScaleInterval.GetRandom();
+        }
+        return 1f;
+    }
 
     [LabelText("正面方向の算出方法")]
     public ECpHellForwardType forwardType;
@@ -112,34 +144,132 @@ public class CpHellParamOneTrigger
     public float degreeSubFromPrevShoot = 0f;
 
     // 
+    [LabelText("スピード")]
     public float speed = 10f;
     public float speedSub = 0f;
     public SltFloatInterval speedMinMax;
+    [LabelText("スピードに加えるランダム幅")]
+    public float speedVariation = 0f;
 
     public float accel = 0f;
     public float accelSub = 0f;
 
     public float angleSpeed = 0f;
     public float angleAccel = 0f;
+
+    // スケール
+    public SltFloatInterval ScaleInterval;
 }
 
 public enum ECpHellLocationType
 {
-    Offset,
+    RootLocation = 0,// Transformの位置をそのまま使う
+    Offset = 1,// Transformからのオフセットを姉弟
 }
+
+public enum ECpHellLocationRandomOffsetType
+{
+    None = 0,
+    OffsetX = 1,
+    OffsetY = 2,
+    Rectangle = 3,//正方形の中でランダム範囲
+    Circle = 10,//円の中のランダム範囲
+}
+
+[Serializable]
+public class CpHellLocationRandomOffsetParamRectangle
+{
+    public Vector2 GetOffset()
+    {
+        float x = CpRandom.Range(-Size.x / 2f, Size.x / 2f);
+        float y = CpRandom.Range(-Size.y / 2f, Size.y / 2f);
+        Vector2 ret = new Vector2(Center.x + x, Center.y + y);
+        return ret;
+    }
+    [SerializeField] Vector2 Center = Vector2.zero;
+    [SerializeField] Vector2 Size = Vector2.zero;
+}
+
+[Serializable]
+public class CpHellLocationRandomOffsetParam
+{
+    public Vector2 GetOffset()
+    {
+        switch (RandomOffsetType)
+        {
+            case ECpHellLocationRandomOffsetType.None:
+                return Vector2.zero;
+            case ECpHellLocationRandomOffsetType.OffsetX:
+                return Vector2.right * OffsetXInterval.GetRandom();
+            case ECpHellLocationRandomOffsetType.OffsetY:
+                return Vector2.up * OffsetYInterval.GetRandom();
+            case ECpHellLocationRandomOffsetType.Rectangle:
+                return Rectangle.GetOffset();
+            case ECpHellLocationRandomOffsetType.Circle:
+                return Radius * CpRandom.insideUnitCircle;
+            default:
+                Assert.IsTrue(false, $"存在しないOffsetTypeが指定されています:{SltEnumUtil.ToString(RandomOffsetType)}");
+                return Vector2.zero;
+        }
+    }
+    [SerializeField]
+    ECpHellLocationRandomOffsetType RandomOffsetType = ECpHellLocationRandomOffsetType.None;
+
+    [SerializeField, ShowIf("RandomOffsetType", ECpHellLocationRandomOffsetType.OffsetX)]
+    Vector2 OffsetXInterval = Vector2.zero;
+
+    [SerializeField, ShowIf("RandomOffsetType", ECpHellLocationRandomOffsetType.OffsetY)]
+    Vector2 OffsetYInterval = Vector2.zero;
+
+    [SerializeField, ShowIf("RandomOffsetType", ECpHellLocationRandomOffsetType.Rectangle)]
+    CpHellLocationRandomOffsetParamRectangle Rectangle;
+
+    [SerializeField, ShowIf("RandomOffsetType", ECpHellLocationRandomOffsetType.Circle)]
+    float Radius = 0f;
+
+}
+
 // 弾丸発射開始座標関連パラメータ
 [System.Serializable]
 public class CpHellParamLocation
 {
-    public Vector2 GetLocation(in Vector2 selfPosition)
+    public Vector2 GetLocation(Transform ownerRootTransform)
     {
-        return selfPosition;
+        // 基本オフセット+ランダムで設定するオフセット
+        Vector2 totalOffset = GetBaseOffset() + RandomOffsetParam.GetOffset();
+
+        // 
+        float ownerYaw = ownerRootTransform.eulerAngles.z;
+        Vector2 rotatedTotalOffset = totalOffset.Rotate(ownerYaw);
+
+        return SltMath.AddVec(ownerRootTransform.position, rotatedTotalOffset);
+    }
+    // ランダム座標を加える前のオフセットを取得
+    Vector2 GetBaseOffset()
+    {
+        switch (LocationType)
+        {
+            case ECpHellLocationType.RootLocation:
+                return Vector2.zero;
+
+            case ECpHellLocationType.Offset:
+                return Vector2.zero + Offset;
+
+            default:
+                Assert.IsTrue(false);
+                return Vector2.zero;
+        }
     }
 
-    [SerializeField] ECpHellLocationType LocationType;
+    [SerializeField]
+    ECpHellLocationType LocationType;
+
     [SerializeField]
     [ShowIf("LocationType", ECpHellLocationType.Offset)]
-    float OffsetRadius = 0f;
+    Vector2 Offset = Vector2.zero;
+
+    [SerializeField]
+    CpHellLocationRandomOffsetParam RandomOffsetParam;
 }
 
 // 弾幕の一単位パラメータ
@@ -160,9 +290,42 @@ public enum ECpHellTimingWatchResult
     Finished,
 }
 
-public class CpHellTimingWatcher
+// 弾生成タイミング監視ベースクラス
+public abstract class CpHellTimingWatcherBase
 {
-    public CpHellTimingWatcher(int numInUnit, float intervalSec, float intervalSecSub, SltFloatInterval intervalMinMax, float firstDelay)
+    public CpHellTimingWatcherBase(int numInUnit, float intervalSec, float intervalSecSub, SltFloatInterval intervalMinMax, float firstDelay)
+    {
+
+    }
+
+    public CpHellTimingWatcherBase(CpHellParamTiming paramTiming) : this(
+             paramTiming.num,
+             paramTiming.interval,
+             paramTiming.intervalSub,
+             paramTiming.intervalMinMax,
+             paramTiming.FirstDelay)
+    {
+    }
+
+    public virtual bool Update()
+    {
+        return false;
+    }
+
+    public virtual bool IsFinished()
+    {
+        return false;
+    }
+
+    public virtual int GetCurrentShootCount() { return -1; }
+
+    public UnityEvent OnShootTiming = new UnityEvent();
+}
+
+// 弾を生成するタイミングを監視するクラス
+public class CpFiniteHellTimingWatcher : CpHellTimingWatcherBase
+{
+    public CpFiniteHellTimingWatcher(int numInUnit, float intervalSec, float intervalSecSub, SltFloatInterval intervalMinMax, float firstDelay) : base(numInUnit, intervalSec, intervalSecSub, intervalMinMax, firstDelay)
     {
         // あらかじめメモリ確保
         shootTimingList = new List<float>(numInUnit);
@@ -181,7 +344,7 @@ public class CpHellTimingWatcher
         }
     }
 
-    public CpHellTimingWatcher(CpHellParamTiming paramTiming) : this(
+    public CpFiniteHellTimingWatcher(CpHellParamTiming paramTiming) : this(
              paramTiming.num,
              paramTiming.interval,
              paramTiming.intervalSub,
@@ -190,7 +353,7 @@ public class CpHellTimingWatcher
     {
     }
 
-    public bool Update()
+    public override bool Update()
     {
         if (IsFinished())
         {
@@ -210,12 +373,12 @@ public class CpHellTimingWatcher
         return false;
     }
 
-    public bool IsFinished()
+    public override bool IsFinished()
     {
         return _latestShootTimingIndex >= shootTimingList.Count;
     }
 
-    public int GetCurrentShootCount()
+    public override int GetCurrentShootCount()
     {
         return _latestShootTimingIndex;
     }
@@ -236,21 +399,66 @@ public class CpHellTimingWatcher
             }
         }
         return maxShootableTimingIndex;
-
     }
 
-
-    public UnityEvent OnShootTiming = new UnityEvent();
     float _timer = 0f;
     int _latestShootTimingIndex = -1;
     List<float> shootTimingList;
+}
+
+public class CpInfiniteHellTimingWatcher : CpHellTimingWatcherBase
+{
+    public CpInfiniteHellTimingWatcher(CpHellParamTiming paramTiming) : base(paramTiming)
+    {
+        _param = paramTiming;
+        _timer = 0f;
+        _nextShootTime = paramTiming.FirstDelay;
+    }
+
+    public override bool Update()
+    {
+        _timer += CpTime.DeltaTime;
+        if (_timer > _nextShootTime)
+        {
+            _timer = 0f;
+            _nextShootTime = _param.interval + _param.intervalSub * _shootCounter;
+            _param.intervalMinMax.Clamp(ref _nextShootTime);
+
+            OnShootTiming.Invoke();
+
+            _shootCounter++;
+        }
+
+        // 保険
+        if (_shootCounter > int.MaxValue - 10)
+        {
+            _shootCounter = int.MaxValue / 2;
+        }
+
+        return false;
+    }
+
+    public override bool IsFinished()
+    {
+        return false;
+    }
+
+    public override int GetCurrentShootCount()
+    {
+        return _shootCounter;
+    }
+
+    CpHellParamTiming _param = null;
+    float _timer = 0f;
+    float _nextShootTime = 0f;
+    int _shootCounter = 0;
 }
 
 public struct FCpUpdateHellContext
 {
     public Transform RootTransform;
     public Vector2 InitialPosition;
-    public float InitialDegree;
+    public ICpActorForwardInterface ForwardInterface;
 }
 public class CpHellUpdator
 {
@@ -259,7 +467,7 @@ public class CpHellUpdator
         _hellParam = hellParam;
         _context = context;
 
-        _timingWatcher = new CpHellTimingWatcher(hellParam.paramTiming);
+        _timingWatcher = hellParam.paramTiming.CreateHellTimingWatcher();
         _timingWatcher.OnShootTiming.AddListener(OnNotifyShootTiming);
     }
 
@@ -291,8 +499,7 @@ public class CpHellUpdator
 
     bool CreateEnemyShot(CpEnemyShotInitializeParam initParam)
     {
-        Vector2 selfPosition = _context.RootTransform.position;
-        Vector2 spawnPosition = paramLocation.GetLocation(selfPosition);
+        Vector2 spawnPosition = paramLocation.GetLocation(_context.RootTransform);
 
         // プールから取得
         CpEnemyShot shotPrefab = paramObject.Get();
@@ -314,10 +521,6 @@ public class CpHellUpdator
 
         // 発射方向を算出
         List<Vector2> shootDirections = new List<Vector2>(multiwayNum);
-        // 弾丸発射方向の基準となる、前方方向
-        Vector2 shootForward = CalcForwardVector();
-        // 前方方向に加える角度差分を適用
-        shootForward = SltMath.RotateVector(shootForward, paramTrigger.GetForwardDegreeOffset());
 
         for (int multiwayIndex = 0; multiwayIndex < multiwayNum; multiwayIndex++)
         {
@@ -329,45 +532,80 @@ public class CpHellUpdator
             float deltaDegreeOnShootCount = shootCount * paramTrigger.degreeSubFromPrevShoot;
 
             float totalDeltaDegree = deltaDegreeOnMultiway + deltaDegreeOnShootCount;
-            Vector2 newDirection = Quaternion.AngleAxis(totalDeltaDegree, Vector3.forward) * shootForward;
-            shootDirections.Add(newDirection);
-        }
 
-        // 発射スピードを算出
-        int currentShootCount = _timingWatcher.GetCurrentShootCount();
-        float speed = paramTrigger.speed + paramTrigger.speedSub * currentShootCount;
-        float accel = paramTrigger.accel + paramTrigger.accelSub * currentShootCount;
-        for (int multiwayIndex = 0; multiwayIndex < multiwayNum; multiwayIndex++)
-        {
+            // 弾の初期位置を算出（角度計算で使うのでここで算出）
+            paramLocation.GetLocation(_context.RootTransform);
+
+            // 基準角度に修正を加える（ランダムが存在するので弾ごとに計算する）
+            // 弾丸発射方向の基準となる、前方方向
+            Vector2 spawnPosition = paramLocation.GetLocation(_context.RootTransform);
+            Vector2 shootBaseForward = CalcForwardVector(spawnPosition);
+            Vector2 calcedShootForward = SltMath.RotateVector(shootBaseForward, paramTrigger.GetForwardDegreeOffset());
+
+            Vector2 newDirection = Quaternion.AngleAxis(totalDeltaDegree, Vector3.forward) * calcedShootForward;
+
             CpEnemyShotInitializeParam initParam = new CpEnemyShotInitializeParam();
+
+            // GetSpeed()にランダム要素を含むので弾ごとに計算する
+            int currentShootCount = _timingWatcher.GetCurrentShootCount();
+            float accel = paramTrigger.accel + paramTrigger.accelSub * currentShootCount;
+            float speed = paramTrigger.GetSpeed() + paramTrigger.speedSub * currentShootCount;
+
             FCpMoveParamEnemyShotDefault moveParamDefault = new FCpMoveParamEnemyShotDefault(
                 speed, paramTrigger.speedMinMax, accel,
-                paramTrigger.angleSpeed, paramTrigger.angleAccel, shootDirections[multiwayIndex]);
+                paramTrigger.angleSpeed, paramTrigger.angleAccel, newDirection);
 
             FCpMoveParamEnemyShot moveParam = default;
             moveParam.MoveType = ECpEnemyShotMoveType.Default;
             moveParam.ParamDefault = moveParamDefault;
             initParam.enemyShotMoveParam = moveParam;
+            initParam.Scale = paramTrigger.GetScale();
+
             outParamList.Add(initParam);
+
+            //shootDirections.Add(newDirection);
         }
+
+        // 発射スピードを算出
+        //int currentShootCount = _timingWatcher.GetCurrentShootCount();
+        //float accel = paramTrigger.accel + paramTrigger.accelSub * currentShootCount;
+        //for (int multiwayIndex = 0; multiwayIndex < multiwayNum; multiwayIndex++)
+        //{
+        //    CpEnemyShotInitializeParam initParam = new CpEnemyShotInitializeParam();
+
+        //    // GetSpeed()にランダム要素を含むので弾ごとに計算する
+        //    float speed = paramTrigger.GetSpeed() + paramTrigger.speedSub * currentShootCount;
+
+        //    FCpMoveParamEnemyShotDefault moveParamDefault = new FCpMoveParamEnemyShotDefault(
+        //        speed, paramTrigger.speedMinMax, accel,
+        //        paramTrigger.angleSpeed, paramTrigger.angleAccel, shootDirections[multiwayIndex]);
+
+        //    FCpMoveParamEnemyShot moveParam = default;
+        //    moveParam.MoveType = ECpEnemyShotMoveType.Default;
+        //    moveParam.ParamDefault = moveParamDefault;
+        //    initParam.enemyShotMoveParam = moveParam;
+        //    initParam.Scale = paramTrigger.GetScale();
+
+        //    outParamList.Add(initParam);
+        //}
 
         return true;
     }
 
-    Vector2 CalcForwardVector()
+    Vector2 CalcForwardVector(in Vector2 selfPosition)
     {
         Vector2 retForward = Vector2.zero;
         switch (paramTrigger.forwardType)
         {
             case ECpHellForwardType.Fixed:
                 {
-                    float degree = _context.InitialDegree;
-                    retForward = SltMath.ToVector(degree);
+                    float forwardDegree = _context.ForwardInterface.GetForwardDegree();
+                    retForward = SltMath.ToVector(forwardDegree);
                 }
                 break;
 
             case ECpHellForwardType.AimPlayerAll:
-                retForward = CalcDirectionToPlayer();
+                retForward = CalcDirectionToPlayer(selfPosition);
                 break;
 
             case ECpHellForwardType.AimPlayerFirst:
@@ -375,7 +613,7 @@ public class CpHellUpdator
                     int currentShootCount = _timingWatcher.GetCurrentShootCount();
                     if (currentShootCount == 0)
                     {
-                        _firstShootDir = CalcDirectionToPlayer();
+                        _firstShootDir = CalcDirectionToPlayer(selfPosition);
                     }
                     retForward = _firstShootDir;
                 }
@@ -383,10 +621,12 @@ public class CpHellUpdator
 
             case ECpHellForwardType.AimPlayerMiddle:
                 {
+                    Assert.IsTrue(paramTiming.num > 0, $"AimPlayerMiddleのnumは姓の値である必要があります");
+
                     int currentShootCount = _timingWatcher.GetCurrentShootCount();
                     if (currentShootCount == 0)
                     {
-                        Vector2 toPlayer = CalcDirectionToPlayer();
+                        Vector2 toPlayer = CalcDirectionToPlayer(selfPosition);
                         float deltaAngleToFirstDirection = (-paramTrigger.degreeSubFromPrevShoot / 2f) * (paramTiming.num - 1);
                         _firstShootDir = Quaternion.AngleAxis(deltaAngleToFirstDirection, Vector3.forward) * toPlayer;
                     }
@@ -398,13 +638,11 @@ public class CpHellUpdator
         return retForward;
     }
 
-    Vector2 CalcDirectionToPlayer()
+    Vector2 CalcDirectionToPlayer(in Vector2 selfPosition)
     {
-        Vector2 selfPosition = paramLocation.GetLocation(_context.InitialPosition);
         Vector2 toPlayer = CpUtil.GetDirectionToPlayer(selfPosition);
         return toPlayer;
     }
-
 
     FCpUpdateHellContext _context;
     CpHellParamObject paramObject => _hellParam.paramObject;
@@ -416,6 +654,6 @@ public class CpHellUpdator
     // 更新中パラメータ
     // 発射時コールバック
     public UnityEvent OnShoot = new UnityEvent();
-    CpHellTimingWatcher _timingWatcher;
+    CpHellTimingWatcherBase _timingWatcher;
     Vector2 _firstShootDir = Vector2.zero;
 }

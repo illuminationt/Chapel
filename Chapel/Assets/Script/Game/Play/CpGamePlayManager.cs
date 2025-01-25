@@ -85,7 +85,6 @@ public class CpGamePlayManager
         return CpGameManager.Instance.GamePlayManager;
     }
 
-
     bool CanStartState(ECpGamePlayState newState)
     {
         if (_currentState == null)
@@ -96,8 +95,6 @@ public class CpGamePlayManager
 
         return true;
     }
-
-
 
     public void Update()
     {
@@ -146,4 +143,12 @@ public class CpGamePlayManager
     }
 
     CpGamePlayStateBase _currentState = null;
+
+#if CP_DEBUG
+
+    public void DrawImGui()
+    {
+        _currentState.DrawImGui();
+    }
+#endif
 }

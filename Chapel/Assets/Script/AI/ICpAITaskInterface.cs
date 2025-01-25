@@ -20,7 +20,7 @@ public interface ICpTaskInterface
         CpTaskComponent taskComp = GetTaskComponent();
 
         // ScriptGraphがきちんと設定されてるかチェック
-#if UNITY_EDITOR
+#if CP_EDITOR
         ScriptMachine Machine = taskComp.GetComponent<ScriptMachine>();
         if (Machine.nest.macro == null)
         {

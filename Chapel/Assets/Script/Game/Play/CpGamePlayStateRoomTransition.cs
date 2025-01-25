@@ -102,6 +102,7 @@ public class CpGamePlayStateRoomTransition : CpGamePlayStateBase
         CpDungeonManager dungeonManager = CpDungeonManager.Get();
         dungeonManager.EnterRoom(_nextRoomProxy.GetId());
         CpDebug.Log($"Room Transition {_param.PrevRoomProxy.GetRoomIndexString()}->{_nextRoomProxy.GetRoomIndexString()}");
+
     }
 
     void SetState(ECpState newState)

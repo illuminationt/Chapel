@@ -76,7 +76,7 @@ public class CpShootComponent : MonoBehaviour
         }
     }
 
-#if DEBUG
+#if CP_DEBUG
     public void DrawImGui()
     {
         ImGui.Text("Player Shoot Component");

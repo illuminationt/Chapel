@@ -1,6 +1,6 @@
 using UnityEditor;
 using UnityEngine;
-#if UNITY_EDITOR
+#if CP_EDITOR
 // コンパイルされたときに自動的にロードされます（エディタ限定)
 [InitializeOnLoadAttribute]
 public static class CpEditorEvents

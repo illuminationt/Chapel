@@ -4,6 +4,12 @@ using ImGuiNET;
 
 public class CpRoomProxyManager
 {
+    public static CpRoomProxyManager Get()
+    {
+        CpDungeonManager dungeonMan = CpDungeonManager.Get();
+        return dungeonMan.RoomProxyManager;
+    }
+
     public void Initialize(CpFloorMasterDataScriptableObject floorMasterSettings)
     {
         _roomProxies = null;
@@ -95,14 +101,9 @@ public class CpRoomProxyManager
 
     }
 
-    List<List<CpRoomProxy>> _roomProxies;
+    List<List<CpRoomProxy>> _roomProxies = new List<List<CpRoomProxy>>();
 
-#if DEBUG
-    public static CpRoomProxyManager Get()
-    {
-        CpDungeonManager dungeonMan = CpDungeonManager.Get();
-        return dungeonMan.RoomProxyManager;
-    }
+#if CP_DEBUG
     public void DrawImGui()
     {
         DrawRoomProxies();

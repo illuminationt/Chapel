@@ -1,6 +1,6 @@
 using UnityEngine;
 
-#if DEBUG
+#if CP_DEBUG
 using ImGuiNET;
 #endif
 
@@ -17,7 +17,7 @@ public class CpPlayerAmmo
     }
 
     int _currentAmmo = 101111;
-#if DEBUG
+#if CP_DEBUG
     public void DrawImGui()
     {
         string currentAmmoStr = $"CurrentAmmo = {_currentAmmo}";

@@ -96,7 +96,7 @@ public class CpGameManager : SingletonMonoBehaviour<CpGameManager>
     public CpGameSettings GameSettings => _gameSettings;
     CpGameSettings _gameSettings;
 
-#if DEBUG
+#if CP_DEBUG
     //void ShowImGui(bool bShow)
     //{
     //    if (_imGuiRootInstance == null)

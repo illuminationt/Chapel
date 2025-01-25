@@ -17,7 +17,7 @@ public class CpPlayerForwardCalculator
     {
         _playerTransfomrm = inPlayerTransform;
         _aimMarkerController = new CpPlayerAimMarkerController();
-        _forwardTypeOnRightStick = ECpPlayerForwardType.FocalPoint;
+        _forwardTypeOnRightStick = ECpPlayerForwardType.Direction;
     }
 
     public void Update()
@@ -43,8 +43,8 @@ public class CpPlayerForwardCalculator
 
     void ExecuteDirection()
     {
-        throw new System.NotImplementedException();
-
+        // throw new System.NotImplementedException();
+        _aimMarkerController.SetActive(false);
     }
 
     void ExecuteFocalPoint()
@@ -52,6 +52,7 @@ public class CpPlayerForwardCalculator
         CpInputManager inputManager = CpInputManager.Get();
         ECpDirectionInputDevice directionInputDevice = inputManager.GetDirectionInputDevice();
 
+        _aimMarkerController.SetActive(true);
         _aimMarkerController.Update(directionInputDevice);
     }
 
@@ -100,24 +101,6 @@ public class CpPlayerForwardCalculator
 
         }
 
-        //CpInputManager inputManager = CpInputManager.Get();
-        //ECpDirectionInputDevice directionInputDevice = inputManager.GetDirectionInputDevice();
-        //switch (directionInputDevice)
-        //{
-        //    case ECpDirectionInputDevice.RightStick:
-        //        return CalcFocalLocation_RightStick();
-        //    case ECpDirectionInputDevice.Mouse:
-        //        return CalcFocalLocation_Mouse();
-        //    case ECpDirectionInputDevice.None:
-        //        // まだ操作入力を受けていないならデフォルト方向を向くような座標を返す
-        //        {
-        //            Vector2 defaultFocal = SltMath.AddVec(playerTransfomrm.position, Vector2.right * 100f);
-        //            return defaultFocal;
-        //        }
-        //    default:
-        //        Assert.IsTrue(false);
-        //        return Vector2.zero;
-        //}
     }
 
     // 現在使用すべき正面方向決定方法を算出
@@ -143,38 +126,13 @@ public class CpPlayerForwardCalculator
         }
     }
 
-    //Vector2 CalcFocalLocation_RightStick()
-    //{
-    //    var input = CpInputManager.Get();
-    //    Vector2 currentDirection = input.GetDirectionInput();
-
-    //    const float directionInputDeadZone = 0.8f;
-    //    float currentDirInputSize = currentDirection.magnitude;
-    //    if (currentDirInputSize > directionInputDeadZone)
-    //    {
-    //        latestForwardVector = currentDirection;
-    //    }
-
-    //    Vector2 retFocalLocation = SltMath.AddVec(playerTransfomrm.position, latestForwardVector * 100f);
-    //    return retFocalLocation;
-    //}
-
-    //Vector2 CalcFocalLocation_Mouse()
-    //{
-    //    var input = CpInputManager.Get();
-
-    //    Vector2 mouseScreenPosition = input.GetMouseLocation();
-    //    Vector2 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mouseScreenPosition);
-    //    return mouseWorldPosition;
-    //}
-
     Transform _playerTransfomrm;
     ECpPlayerForwardType _forwardTypeOnRightStick;
     CpPlayerAimMarkerController _aimMarkerController = null;
     Vector2 latestForwardVector = Vector2.right;
 
 
-#if DEBUG
+#if CP_DEBUG
     public void DrawImGui()
     {
         SltImGui.EnumValueCombo(ref _forwardTypeOnRightStick);

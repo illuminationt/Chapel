@@ -102,4 +102,9 @@ public class SltTaskBase
                 break;
         }
     }
+
+    public void ExternalCanel()
+    {
+        EndTask(ESltEndTaskReason.External);
+    }
 }

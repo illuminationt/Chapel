@@ -8,14 +8,17 @@ using ImGuiNET;
 
 [RequireComponent(typeof(CpPilotComponent))]
 [RequireComponent(typeof(CpShootComponent))]
-public class CpPlayer : CpCharacterBase, ICpGameplayEffectReciever
+public class CpPlayer : CpCharacterBase
+    , ICpGameplayEffectReciever
+    , ICpAbsorbable
 {
     CpGameplayEffectHandler _gameplayEffectHandler = null;
     CpPilotComponent _pilotComponent = null;
     CpShootComponent _shootComponent = null;
     CpDebugComponent _debugComponent = null;
     CpPlayerForwardCalculator _forwardCalculator = null;
-
+    CpPredictiveLine _predictiveLine = null;
+    [SerializeField] CpPredictiveLine _predictiveLinePrefab = null;
     List<Collider2D> _colliders = new List<Collider2D>();
     public static CpPlayer Get() => CpGameManager.Instance.Player;
 
@@ -31,6 +34,8 @@ public class CpPlayer : CpCharacterBase, ICpGameplayEffectReciever
         _shootComponent.Initialize(this);
         _forwardCalculator = new CpPlayerForwardCalculator(_transform);
         _colliders = GetComponents<Collider2D>().ToList();
+
+        _predictiveLine = CpPredictiveLine.Create(_predictiveLinePrefab, this);
     }
 
     private void Start()
@@ -48,6 +53,8 @@ public class CpPlayer : CpCharacterBase, ICpGameplayEffectReciever
         transform.SetRotation(forwardDeg);
 
         updateShoot();
+
+        _predictiveLine.execute(forwardDeg);
     }
     // CpActorBase interface
     public override ECpMoverUpdateType GetMoverUpdateType() { return ECpMoverUpdateType.UpdateFunction; }
@@ -89,7 +96,7 @@ public class CpPlayer : CpCharacterBase, ICpGameplayEffectReciever
     }
     public override void OnReceiveAttack(in FCpAttackSendParam attackSendParam)
     {
-        CpDebug.LogError("自機がダメージ受けた");
+        CpDebug.LogWarning("自機がダメージ受けた");
     }
     // end of ICpAttackReceivable
 
@@ -97,6 +104,11 @@ public class CpPlayer : CpCharacterBase, ICpGameplayEffectReciever
     public CpGameplayEffectHandler GetGameplayEffectHandler() { return _gameplayEffectHandler; }
 
     // end of  ICpGameplayEffectReciever
+
+    // ICpAbsorbable
+    public Transform GetAbsorbRootTransform() { return _transform; }
+    // end of ICpAbsorbable
+
     CpPlayerForwardCalculator ForwardCalculator
     {
         get
@@ -129,7 +141,7 @@ public class CpPlayer : CpCharacterBase, ICpGameplayEffectReciever
         ICpGameplayEffectSender sender = collision as ICpGameplayEffectSender;
     }
 
-#if DEBUG
+#if CP_DEBUG
     public void DrawImGui()
     {
         SltImGui.TextVector2("Position", transform.position, 1, 4);

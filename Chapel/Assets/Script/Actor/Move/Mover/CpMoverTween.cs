@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 // ベクトルの意味
@@ -17,6 +18,10 @@ public enum ECpOffsetType
     Absolute,
     Screen,
 }
+
+[Inspectable]
+[System.Serializable]
+[IncludeInSettings(true)]
 public struct FCpMoveParamTween : ICpMoveParam
 {
     public FCpMoveParamTween(in Vector2 vectorValue, float duration, ECpVectorType vectorType, Ease easingType)
@@ -29,12 +34,19 @@ public struct FCpMoveParamTween : ICpMoveParam
 
     public ECpMoveParamType GetMoveParamType() => ECpMoveParamType.Tween;
 
+    public void Inject(CpActorBase owner, CpMoveTweenTaskParamDirection paramDirection)
+    {
+        VectorValue = paramDirection.GetOffset(owner);
+        VectorType = ECpVectorType.OffsetWorldSpace;
+        Duration = paramDirection.Duration;
+        EasingType = paramDirection.EasingType;
+    }
+
     public Vector2 VectorValue;
     public ECpVectorType VectorType;
     public float Duration;
     public Ease EasingType;
 }
-
 
 public class CpMoverTween : CpMoverBase
 {
@@ -58,19 +70,18 @@ public class CpMoverTween : CpMoverBase
         _activeTweener.onComplete += () => { bActive = false; };
     }
 
-    public override Vector2 GetVelocity()
+    public override void GetPosValue(out ECpMoverPositionType outPosType, out Vector2 outValue)
     {
-        Vector2 retVelocity = GetDeltaMove() / CpTime.DeltaTime;
-        return retVelocity;
+        outPosType = ECpMoverPositionType.DeltaPosition;
+        outValue = _tweenVector2Param.GetDeltaMove();
+    }
+    public override void GetYawValue(out ECpMoverRotationType outYawType, out float outValue)
+    {
+        outYawType = ECpMoverRotationType.NoYaw;
+        outValue = 0f;
     }
 
-    public override Vector2 GetDeltaMove()
-    {
-        Vector2 retDeltaMove = _tweenVector2Param.GetDeltaMove();
-        return retDeltaMove;
-    }
-
-    public override bool IsFinished()
+    protected override bool IsFinishedInternal()
     {
         if (bActive)
         {
@@ -81,8 +92,6 @@ public class CpMoverTween : CpMoverBase
             return true;
         }
     }
-
-
 
     // ワールド空間での移動ベクトルを算出
     Vector2 CalcMoveVector()

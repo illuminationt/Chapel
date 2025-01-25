@@ -13,6 +13,10 @@ public class CpEnemyShotEraser
     public void RequestErase()
     {
         CpEnemyShot[] allEnemyShots = MonoBehaviour.FindObjectsByType<CpEnemyShot>(FindObjectsSortMode.None);
+        for (int index = 0; index < allEnemyShots.Length; index++)
+        {
+            allEnemyShots[index].Erase();
+        }
     }
     public void RequestErase(float duration)
     {

@@ -63,11 +63,15 @@ public class CpSpawnedEnemySpecificParam
 {
     // スポーンからAI実行開始までのディレイ
     public float StartDelay = 0f;
+
+    [SerializeReference]
+    public List<CpEnemySpecificBehaviorBase> SpecificBehaviorList;
 }
 
 [System.Serializable]
 public class CpEnemySpawnParamElement
 {
+    public bool bEnable = true;
     public CpEnemyBase Prefab;
 
     public CpEnemySpawnLocationParam LocationParam;

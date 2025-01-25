@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 [CreateAssetMenu(menuName = "ScriptableObject/CpSceneScriptableObject")]
 public class CpSceneSettings : ScriptableObject
 {
-#if UNITY_EDITOR
+#if CP_EDITOR
     [TextArea]
     public string Comment = null;
 #endif

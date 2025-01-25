@@ -42,8 +42,7 @@ public class CpHellComponent : MonoBehaviour
         context.RootTransform = transform;
         context.InitialPosition = transform.position;
 
-        ICpActorForwardInterface forwardInterface = GetComponent<CpActorBase>();
-        context.InitialDegree = forwardInterface.GetForwardDegree();
+        context.ForwardInterface = GetComponent<CpActorBase>();
 
         CpMultiHellUpdator newMultiUpdator = new CpMultiHellUpdator(multiHellParam, context);
         newMultiUpdator.Start();

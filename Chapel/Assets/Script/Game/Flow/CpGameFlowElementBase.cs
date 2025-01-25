@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using ImGuiNET;
+using Unity.VisualScripting;
+using Sirenix.OdinInspector.Editor.Internal.UIToolkitIntegration;
 
 public enum ECpGameFlowType
 {
@@ -61,6 +64,29 @@ public abstract class CpGameFlowElementBase
     CpGameFlowElementBase _parentFlowElement = null;
     CpGameFlowElementBase _childFlowElement = null;
     bool _bReadyForActivation = false;
+
+#if CP_DEBUG
+    public void DrawImGui()
+    {
+        string flowStr = SltEnumUtil.ToString(GetGameFlowType());
+        ImGui.Text($"FlowType={flowStr}");
+
+        DrawImGuiInternal();
+
+        if (_childFlowElement != null)
+        {
+            _childFlowElement.DrawImGui();
+        }
+        else
+        {
+            ImGui.Text("Child Flow DOESNOT exists");
+        }
+    }
+    public virtual void DrawImGuiInternal()
+    {
+
+    }
+#endif
 }
 
 public class CpGameFlowElementRoot : CpGameFlowElementBase

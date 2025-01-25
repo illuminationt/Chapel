@@ -1,3 +1,4 @@
+using ImGuiNET;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -140,6 +141,24 @@ public abstract class CpGamePlayStateBase
     public CpGamePlayManager OwnerGamePlayManager => _ownerGamePlayManager;
     CpGamePlayManager _ownerGamePlayManager = null;
     ECpState _currentState = ECpState.None;
+
+#if CP_DEBUG
+    public void DrawImGui()
+    {
+        string stateStr = $"StateType = {SltEnumUtil.ToString(GetGamePlayState())}";
+        ImGui.Text(stateStr);
+
+        string currentStateStr = $"CurrentState = {SltEnumUtil.ToString(_currentState)}";
+        ImGui.Text(currentStateStr);
+
+        DrawImGuiInternal();
+    }
+
+    protected virtual void DrawImGuiInternal()
+    {
+
+    }
+#endif
 }
 
 // 何もしないステート

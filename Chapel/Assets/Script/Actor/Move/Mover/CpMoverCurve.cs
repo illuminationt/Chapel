@@ -1,6 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+
+public class CpMoveParamCurve : CpMoveParamBase
+{
+    public FCpMoveParamCurve ParamCurve;
+}
+
+[Inspectable]
+[System.Serializable]
+[IncludeInSettings(true)]
+public struct FCpMoveParamCurve : ICpMoveParam
+{
+    public ECpMoveParamType GetMoveParamType() => ECpMoveParamType.Curve;
+
+    public float Speed;
+    public float MaxSpeed;
+    public float Accel;
+    public float Degree;
+    public float AngularSpeed;
+    public float MaxCurveDegree;
+}
 
 public class CpMoverCurve : CpMoverBase
 {
@@ -22,10 +43,17 @@ public class CpMoverCurve : CpMoverBase
         _currentSpeed += _paramCurve.Accel * CpTime.DeltaTime;
     }
 
-    public override Vector2 GetVelocity()
+    public override void GetPosValue(out ECpMoverPositionType outPosType, out Vector2 outValue)
     {
+        outPosType = ECpMoverPositionType.Velocity;
+
         Vector2 dir = SltMath.ToVector(_currentDegree);
-        return dir * _currentSpeed;
+        outValue = dir * _currentSpeed;
+    }
+    public override void GetYawValue(out ECpMoverRotationType outYawType, out float outValue)
+    {
+        outYawType = ECpMoverRotationType.NoYaw;
+        outValue = 0f;
     }
 
     float _currentSpeed;

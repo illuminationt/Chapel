@@ -110,12 +110,18 @@ public class CpGameFlowManager
 
     CpGameFlowElementBase _rootGameFlowElement = null;
 
-#if DEBUG
+#if CP_DEBUG
 
     ECpGameFlowType reqFlowType = ECpGameFlowType.None;
     public void DrawImGui()
     {
-        if (ImGui.TreeNode("Request Flow"))
+        if (ImGui.TreeNode("Show CurrntFlow"))
+        {
+            _rootGameFlowElement.DrawImGui();
+
+            ImGui.TreePop();
+        }
+        if (ImGui.TreeNode("Request Start Flow"))
         {
             SltImGui.EnumValueCombo(ref reqFlowType);
             if (ImGui.Button(""))

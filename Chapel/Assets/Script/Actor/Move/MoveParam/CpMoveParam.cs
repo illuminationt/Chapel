@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
 [System.Serializable]
 public struct FCpMoveParam
 {
@@ -35,6 +33,7 @@ public struct FCpMoverContext
     }
     public CpMoverManager OwnerMoverManager;
     public CpActorBase OwnerActor;
+    public Transform OwnerTransform => OwnerActor.transform;
     public Vector2 InitialVelocity;
     public Vector2 InitialOwnerPosition;
     public float InitialOwnerDegree;

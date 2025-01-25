@@ -174,6 +174,9 @@ public class CpItemDropper : MonoBehaviour
     {
         switch (_param.ItemDropType)
         {
+            case ECpItemDropType.None:
+                // アイテムドロップしない
+                break;
             case ECpItemDropType.RandomScatter:
                 RequestDropItem_RandomScatter(_param.ParamRandomScatter);
                 break;

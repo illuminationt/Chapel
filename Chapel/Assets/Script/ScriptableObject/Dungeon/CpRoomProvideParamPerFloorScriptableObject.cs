@@ -10,7 +10,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "ScriptableObject/CpRoomProvideMasterParamScriptableObject")]
 public class CpRoomProvideParamPerFloorScriptableObject : ScriptableObject
 {
-#if UNITY_EDITOR
+#if CP_EDITOR
     [TextArea]
     public string Comment = null;
 #endif
@@ -20,7 +20,7 @@ public class CpRoomProvideParamPerFloorScriptableObject : ScriptableObject
     [SerializeField]
     CpRoomProvideParamPerFloor _param;
 
-#if UNITY_EDITOR
+#if CP_EDITOR
 
 
     [Button("Validate")]

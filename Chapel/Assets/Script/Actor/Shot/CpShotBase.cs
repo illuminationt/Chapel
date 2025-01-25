@@ -11,6 +11,11 @@ public abstract class CpShotBase : CpActorBase,
     ICpAttackSendable,
     ICpAttackReceivable
 {
+    protected override void Awake()
+    {
+        base.Awake();
+        _moveComponent = GetComponent<CpMoveComponent>();
+    }
     protected virtual void FixedUpdate()
     {
         if (_lifeTime > 0f)
@@ -33,7 +38,18 @@ public abstract class CpShotBase : CpActorBase,
     public override void OnActivated()
     {
         base.OnActivated();
+        _transform.localEulerAngles = Vector3.zero;
+        _transform.localScale = Vector3.one;
+
         AttachCurrentRoom();
+    }
+
+    public override void OnReleased()
+    {
+        base.OnReleased();
+        _transform.localEulerAngles = Vector3.zero;
+        _transform.localScale = Vector3.one;
+        _moveComponent.Reset();
     }
 
     // end of CpActorBase interface

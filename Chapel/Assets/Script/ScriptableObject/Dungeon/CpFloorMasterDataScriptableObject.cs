@@ -9,7 +9,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "ScriptableObject/CpFloorMasterDataScriptableObject")]
 public class CpFloorMasterDataScriptableObject : ScriptableObject
 {
-#if UNITY_EDITOR
+#if CP_EDITOR
     [TextArea]
     public string Comment = null;
 

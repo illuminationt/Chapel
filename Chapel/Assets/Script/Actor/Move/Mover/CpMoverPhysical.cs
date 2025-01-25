@@ -1,8 +1,11 @@
 using JetBrains.Annotations;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
 
+[Inspectable]
 [System.Serializable]
+[IncludeInSettings(true)]
 public struct FCpMoveParamPhysical : ICpMoveParam
 {
     public ECpMoveParamType GetMoveParamType()
@@ -42,12 +45,20 @@ public class CpMoverPhysical : CpMoverBase
         }
     }
 
-    public override Vector2 GetVelocity()
+    public override void GetPosValue(out ECpMoverPositionType outPosType, out Vector2 outValue)
     {
+        outPosType = ECpMoverPositionType.Velocity;
+
         Vector2 dir = SltMath.ToVector(_currentDegree);
-        return dir * _currentSpeed;
+        outValue = dir * _currentSpeed;
     }
-    public override bool IsFinished() { return _currentSpeed == 0f; }
+    public override void GetYawValue(out ECpMoverRotationType outYawType, out float outValue)
+    {
+        outYawType = ECpMoverRotationType.NoYaw;
+        outValue = 0f;
+    }
+
+    protected override bool IsFinishedInternal() { return _currentSpeed == 0f; }
 
 
     public override void OnCollisionEnterHit2D(Collision2D collision)

@@ -23,4 +23,5 @@ public static class ListExtensions
         int index = UnityEngine.Random.Range(0, num - 1);
         return self[index];
     }
+
 }

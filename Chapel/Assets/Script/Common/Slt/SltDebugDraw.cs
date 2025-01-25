@@ -46,6 +46,13 @@ public static class SltDebugDraw
         }
     }
 
+    public static void DrawSphere(Vector2 position, float radius, Color color)
+    {
+        using (Draw.Command(Camera.main))
+        {
+            Draw.Sphere(position, radius, color);
+        }
+    }
 }
 
 public static class SltDebugDrawOnGizmos

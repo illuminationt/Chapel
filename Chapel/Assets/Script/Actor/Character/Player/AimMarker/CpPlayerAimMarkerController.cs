@@ -35,6 +35,11 @@ public class CpPlayerAimMarkerController
         _markerObject.transform.position = _markerWorldPosition;
     }
 
+    public void SetActive(bool bActive)
+    {
+        _markerObject.gameObject.SetActive(bActive);
+    }
+
     public Vector2 GetAimMarkerWorldPosition()
     {
         return _markerWorldPosition;
@@ -74,7 +79,7 @@ public class CpPlayerAimMarkerController
     CpPlayerAimMarkerParam _param;
     CpPlayerAimMarker _markerObject;
 
-#if DEBUG
+#if CP_DEBUG
 
     public void DrawImGui()
     {

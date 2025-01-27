@@ -42,16 +42,17 @@ public struct FCpMultiHellUpdatorId
 
 public class CpMultiHellUpdator
 {
-    public CpMultiHellUpdator(CpMultiHellParam multiHellParam, in FCpUpdateHellContext context)
+    public CpMultiHellUpdator(CpMultiHellParam multiHellParam, CpHellRequestOption option, in FCpUpdateHellContext context)
     {
         _timer = 0f;
         _id = FCpMultiHellUpdatorId.Create();
         _multiHellParam = multiHellParam;
+        _option = option;
         _updators = new List<CpHellUpdator>(multiHellParam.ParamElements.Count);
 
         foreach (CpMultiHellParamElement element in multiHellParam.ParamElements)
         {
-            CpHellUpdator newUpdator = new CpHellUpdator(element.ParamElement, context);
+            CpHellUpdator newUpdator = new CpHellUpdator(element.ParamElement, option, context);
             _updators.Add(newUpdator);
         }
     }
@@ -87,6 +88,7 @@ public class CpMultiHellUpdator
 
     float _timer = 0f;
     CpMultiHellParam _multiHellParam = null;
+    CpHellRequestOption _option = null;
     List<CpHellUpdator> _updators;
     FCpMultiHellUpdatorId _id;
 }

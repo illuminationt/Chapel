@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class CpGamePlayStateRoomExplore : CpGamePlayStateBase
 {
+    public CpGamePlayStateRoomExplore(CpGamePlayManager owner) : base(owner) { }
     public override ECpGamePlayState GetGamePlayState()
     {
         return ECpGamePlayState.RoomExplore;

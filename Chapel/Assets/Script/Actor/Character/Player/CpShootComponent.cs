@@ -2,7 +2,7 @@ using ImGuiNET;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UniRx;
 public struct FCpShootControlParam
 {
     public CpPlayer Player;
@@ -25,6 +25,10 @@ public class CpShootComponent : MonoBehaviour
     CpPlayerShootSlot _slotSpecial = new CpPlayerShootSlot();
     CpPlayerAmmo _ammo = new CpPlayerAmmo();
     CpPlayer _ownerPlayer = null;
+
+    //
+    public IReadOnlyReactiveProperty<int> OnAmmoChanged { get { return _ammo.CurrentAmmo; } }
+    //
 
     public void Initialize(CpPlayer ownerPlayer)
     {
@@ -75,6 +79,7 @@ public class CpShootComponent : MonoBehaviour
             _ammo.AddAmmo(gePlayerAmmo.DeltaAmmo);
         }
     }
+
 
 #if CP_DEBUG
     public void DrawImGui()

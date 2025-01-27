@@ -5,4 +5,8 @@ using UnityEngine;
 public interface ICpActorForwardInterface
 {
     public abstract float GetForwardDegree();
+    public Vector2 GetForwardVector()
+    {
+        return SltMath.ToVector(GetForwardDegree());
+    }
 }

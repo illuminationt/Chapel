@@ -54,16 +54,16 @@ public class CpHellParamObject
 [System.Serializable]
 public class CpHellParamTiming
 {
-    public CpHellTimingWatcherBase CreateHellTimingWatcher()
+    public CpHellTimingWatcherBase CreateHellTimingWatcher(CpHellRequestOption option)
     {
         CpHellTimingWatcherBase newWatcher = null;
         if (num > 0)
         {
-            newWatcher = new CpFiniteHellTimingWatcher(this);
+            newWatcher = new CpFiniteHellTimingWatcher(this, option);
         }
         else if (num == -1)
         {
-            newWatcher = new CpInfiniteHellTimingWatcher(this);
+            newWatcher = new CpInfiniteHellTimingWatcher(this, option);
         }
         else
         {
@@ -293,17 +293,18 @@ public enum ECpHellTimingWatchResult
 // 弾生成タイミング監視ベースクラス
 public abstract class CpHellTimingWatcherBase
 {
-    public CpHellTimingWatcherBase(int numInUnit, float intervalSec, float intervalSecSub, SltFloatInterval intervalMinMax, float firstDelay)
+    public CpHellTimingWatcherBase(int numInUnit, float intervalSec, float intervalSecSub, SltFloatInterval intervalMinMax, float firstDelay, CpHellRequestOption option)
     {
 
     }
 
-    public CpHellTimingWatcherBase(CpHellParamTiming paramTiming) : this(
+    public CpHellTimingWatcherBase(CpHellParamTiming paramTiming, CpHellRequestOption option) : this(
              paramTiming.num,
              paramTiming.interval,
              paramTiming.intervalSub,
              paramTiming.intervalMinMax,
-             paramTiming.FirstDelay)
+             paramTiming.FirstDelay,
+             option)
     {
     }
 
@@ -325,7 +326,8 @@ public abstract class CpHellTimingWatcherBase
 // 弾を生成するタイミングを監視するクラス
 public class CpFiniteHellTimingWatcher : CpHellTimingWatcherBase
 {
-    public CpFiniteHellTimingWatcher(int numInUnit, float intervalSec, float intervalSecSub, SltFloatInterval intervalMinMax, float firstDelay) : base(numInUnit, intervalSec, intervalSecSub, intervalMinMax, firstDelay)
+    public CpFiniteHellTimingWatcher(int numInUnit, float intervalSec, float intervalSecSub, SltFloatInterval intervalMinMax, float firstDelay, CpHellRequestOption option) :
+        base(numInUnit, intervalSec, intervalSecSub, intervalMinMax, firstDelay, option)
     {
         // あらかじめメモリ確保
         shootTimingList = new List<float>(numInUnit);
@@ -333,7 +335,7 @@ public class CpFiniteHellTimingWatcher : CpHellTimingWatcherBase
         _timer = 0f;
         _latestShootTimingIndex = -1;
 
-        float shootTiming = firstDelay;
+        float shootTiming = firstDelay + (option?.AdditionalFirstDelay ?? 0f);
         shootTimingList.Add(shootTiming);
         for (int shotIndex = 1; shotIndex < numInUnit; shotIndex++)
         {
@@ -344,12 +346,13 @@ public class CpFiniteHellTimingWatcher : CpHellTimingWatcherBase
         }
     }
 
-    public CpFiniteHellTimingWatcher(CpHellParamTiming paramTiming) : this(
+    public CpFiniteHellTimingWatcher(CpHellParamTiming paramTiming, CpHellRequestOption option) : this(
              paramTiming.num,
              paramTiming.interval,
              paramTiming.intervalSub,
              paramTiming.intervalMinMax,
-             paramTiming.FirstDelay)
+             paramTiming.FirstDelay,
+             option)
     {
     }
 
@@ -408,7 +411,7 @@ public class CpFiniteHellTimingWatcher : CpHellTimingWatcherBase
 
 public class CpInfiniteHellTimingWatcher : CpHellTimingWatcherBase
 {
-    public CpInfiniteHellTimingWatcher(CpHellParamTiming paramTiming) : base(paramTiming)
+    public CpInfiniteHellTimingWatcher(CpHellParamTiming paramTiming, CpHellRequestOption option) : base(paramTiming, option)
     {
         _param = paramTiming;
         _timer = 0f;
@@ -462,12 +465,13 @@ public struct FCpUpdateHellContext
 }
 public class CpHellUpdator
 {
-    public CpHellUpdator(CpHellParam hellParam, in FCpUpdateHellContext context)
+    public CpHellUpdator(CpHellParam hellParam, CpHellRequestOption option, in FCpUpdateHellContext context)
     {
         _hellParam = hellParam;
+        _option = option;
         _context = context;
 
-        _timingWatcher = hellParam.paramTiming.CreateHellTimingWatcher();
+        _timingWatcher = hellParam.paramTiming.CreateHellTimingWatcher(_option);
         _timingWatcher.OnShootTiming.AddListener(OnNotifyShootTiming);
     }
 
@@ -531,7 +535,11 @@ public class CpHellUpdator
             int shootCount = _timingWatcher.GetCurrentShootCount();
             float deltaDegreeOnShootCount = shootCount * paramTrigger.degreeSubFromPrevShoot;
 
-            float totalDeltaDegree = deltaDegreeOnMultiway + deltaDegreeOnShootCount;
+            float optionalDeltaDegree = _option?.DeltaDegree ?? 0f;
+
+            float totalDeltaDegree = deltaDegreeOnMultiway + deltaDegreeOnShootCount + optionalDeltaDegree;
+
+
 
             // 弾の初期位置を算出（角度計算で使うのでここで算出）
             paramLocation.GetLocation(_context.RootTransform);
@@ -565,29 +573,6 @@ public class CpHellUpdator
 
             //shootDirections.Add(newDirection);
         }
-
-        // 発射スピードを算出
-        //int currentShootCount = _timingWatcher.GetCurrentShootCount();
-        //float accel = paramTrigger.accel + paramTrigger.accelSub * currentShootCount;
-        //for (int multiwayIndex = 0; multiwayIndex < multiwayNum; multiwayIndex++)
-        //{
-        //    CpEnemyShotInitializeParam initParam = new CpEnemyShotInitializeParam();
-
-        //    // GetSpeed()にランダム要素を含むので弾ごとに計算する
-        //    float speed = paramTrigger.GetSpeed() + paramTrigger.speedSub * currentShootCount;
-
-        //    FCpMoveParamEnemyShotDefault moveParamDefault = new FCpMoveParamEnemyShotDefault(
-        //        speed, paramTrigger.speedMinMax, accel,
-        //        paramTrigger.angleSpeed, paramTrigger.angleAccel, shootDirections[multiwayIndex]);
-
-        //    FCpMoveParamEnemyShot moveParam = default;
-        //    moveParam.MoveType = ECpEnemyShotMoveType.Default;
-        //    moveParam.ParamDefault = moveParamDefault;
-        //    initParam.enemyShotMoveParam = moveParam;
-        //    initParam.Scale = paramTrigger.GetScale();
-
-        //    outParamList.Add(initParam);
-        //}
 
         return true;
     }
@@ -650,6 +635,7 @@ public class CpHellUpdator
     CpHellParamOneTrigger paramTrigger => _hellParam.paramOneTrigger;
     CpHellParamLocation paramLocation => _hellParam.paramLocation;
     CpHellParam _hellParam;
+    CpHellRequestOption _option = null;
 
     // 更新中パラメータ
     // 発射時コールバック

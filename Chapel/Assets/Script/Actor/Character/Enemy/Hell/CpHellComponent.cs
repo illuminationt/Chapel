@@ -26,17 +26,17 @@ public class CpHellComponent : MonoBehaviour
         }
     }
 
-    public void RequestStart(CpHellParam hellParam)
+    public void RequestStart(CpHellParam hellParam, CpHellRequestOption option)
     {
         CpMultiHellParam newMultiHellParam = new CpMultiHellParam();
         CpMultiHellParamElement element = new CpMultiHellParamElement();
         element.ParamElement = hellParam;
         newMultiHellParam.ParamElements.Add(element);
 
-        RequestStart(newMultiHellParam);
+        RequestStart(newMultiHellParam, option);
     }
 
-    public FCpMultiHellUpdatorId RequestStart(CpMultiHellParam multiHellParam)
+    public FCpMultiHellUpdatorId RequestStart(CpMultiHellParam multiHellParam, CpHellRequestOption option)
     {
         FCpUpdateHellContext context;
         context.RootTransform = transform;
@@ -44,12 +44,23 @@ public class CpHellComponent : MonoBehaviour
 
         context.ForwardInterface = GetComponent<CpActorBase>();
 
-        CpMultiHellUpdator newMultiUpdator = new CpMultiHellUpdator(multiHellParam, context);
+        CpMultiHellUpdator newMultiUpdator = new CpMultiHellUpdator(multiHellParam, option, context);
         newMultiUpdator.Start();
         _multiHellUpdators.Add(newMultiUpdator);
 
         return newMultiUpdator.GetId();
     }
+    public void RequestStart(List<CpHellParamListElement> hellParamList, out List<FCpMultiHellUpdatorId> outHellUpdatorIdList)
+    {
+        outHellUpdatorIdList = new List<FCpMultiHellUpdatorId>(hellParamList.Count);
+
+        foreach (CpHellParamListElement elem in hellParamList)
+        {
+            FCpMultiHellUpdatorId id = RequestStart(elem.Setting.MultiHellParam, elem.Option);
+            outHellUpdatorIdList.Add(id);
+        }
+    }
+
 
     public UnityEvent<FCpMultiHellUpdatorId> OnHellFinished => _onHellFinished;
 

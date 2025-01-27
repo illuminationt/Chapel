@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using Sirenix;
 using Sirenix.OdinInspector;
+using UniRx;
+using System;
 
 public abstract partial class CpActorBase : MonoBehaviour,
     ICpActorForwardInterface,
@@ -30,6 +32,11 @@ public abstract partial class CpActorBase : MonoBehaviour,
     {
         ICpActRunnable actRunnable = this;
         actRunnable.UpdateActRunnerManager();
+    }
+
+    protected virtual void OnDestroy()
+    {
+        // 
     }
 
     protected virtual void Release()
@@ -91,8 +98,14 @@ public abstract partial class CpActorBase : MonoBehaviour,
         _tweenManager = null;
         _actRunnerManager = null;
     }
-    public virtual void OnActivated() { }
-    public virtual void OnReleased() { }
+    public virtual void OnActivated()
+    {
+        _onActivated.OnNext(UniRx.Unit.Default);
+    }
+    public virtual void OnReleased()
+    {
+        _onReleased.OnNext(UniRx.Unit.Default);
+    }
     // end of ICpPoolable
 
     // ï÷óòä÷êî
@@ -105,12 +118,17 @@ public abstract partial class CpActorBase : MonoBehaviour,
         _transform.SetParent(roomInstnace.transform);
     }
 
-
     protected Transform _transform = null;
     SltTweenManager _tweenManager = null;
     CpActRunnerManager _actRunnerManager = null;
     Animator _animator = null;
     int _instanceId = -1;
+
+    public IObservable<UniRx.Unit> OnActivatedCallback => _onActivated;
+    public IObservable<UniRx.Unit> OnReleasedCallback => _onReleased;
+
+    Subject<UniRx.Unit> _onActivated = new Subject<UniRx.Unit>();
+    Subject<UniRx.Unit> _onReleased = new Subject<UniRx.Unit>();
 
 #if CP_DEBUG
 

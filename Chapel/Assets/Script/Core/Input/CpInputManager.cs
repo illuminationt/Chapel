@@ -47,6 +47,7 @@ public struct FCpPendingInput
         _mouseLocation = inputActions.Player.MouseLocation.ReadValue<Vector2>();
 
         _shootButtonInput = FCpButtonInput.Get(inputActions.Player.Shoot);
+        _lockonButtonInput = FCpButtonInput.Get(inputActions.Player.Lockon);
         _decideButtonInput = FCpButtonInput.Get(inputActions.Player.Decide);
         _pauseButtonInput = FCpButtonInput.Get(inputActions.Player.Pause);
     }
@@ -58,6 +59,7 @@ public struct FCpPendingInput
         _direction = inputActionMapPlayer["Direction"].ReadValue<Vector2>();
         _mouseLocation = inputActionMapPlayer["MouseLocation"].ReadValue<Vector2>();
         _shootButtonInput = FCpButtonInput.Get(inputActionMapPlayer["Shoot"]);
+        _lockonButtonInput = FCpButtonInput.Get(inputActionMapPlayer["Lockon"]);
         _decideButtonInput = FCpButtonInput.Get(inputActionMapPlayer["Decide"]);
         _pauseButtonInput = FCpButtonInput.Get(inputActionMapPlayer["Pause"]);
 
@@ -81,6 +83,7 @@ public struct FCpPendingInput
 
         bool bButtonInputExists = false;
         bButtonInputExists |= _shootButtonInput.ExistsInput();
+        bButtonInputExists |= _lockonButtonInput.ExistsInput();
         bButtonInputExists |= _decideButtonInput.ExistsInput();
         bButtonInputExists |= _pauseButtonInput.ExistsInput();
         return bButtonInputExists;
@@ -120,6 +123,7 @@ public struct FCpPendingInput
         switch (button)
         {
             case ECpButton.Shoot: return _shootButtonInput;
+            case ECpButton.Lockon: return _lockonButtonInput;
             case ECpButton.Decide: return _decideButtonInput;
             case ECpButton.Pause: return _pauseButtonInput;
 
@@ -136,6 +140,7 @@ public struct FCpPendingInput
     Vector2 _direction;
     Vector2 _mouseLocation;
     FCpButtonInput _shootButtonInput;
+    FCpButtonInput _lockonButtonInput;
     FCpButtonInput _decideButtonInput;
     FCpButtonInput _pauseButtonInput;
 

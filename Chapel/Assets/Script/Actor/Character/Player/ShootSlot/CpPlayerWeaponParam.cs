@@ -61,6 +61,7 @@ public class CpPlayerWeaponParamElementBase
     protected virtual void UpdateInternal(in FCpShootControlParam controlParam, bool bPressed, bool bPressHold, bool bReleased, ref FCpShootControlResult refResult)
     {
         // Œp³æ‚Å‚Ì‚İÀ‘•‚µ‚Ä‚­‚¾‚³‚¢
+        Assert.IsTrue(false, $"Œp³æ‚Å‚Ì‚İÀ‘•‚µ‚Ä‚­‚¾‚³‚¢");
     }
 
     protected bool CreateShot(in FCpShootControlParam controlParam, CpPlayerWeaponShotParam weaponShotParam)

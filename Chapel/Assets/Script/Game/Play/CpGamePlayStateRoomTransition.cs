@@ -16,6 +16,8 @@ public class CpRoomTransitionParam
 
 public class CpGamePlayStateRoomTransition : CpGamePlayStateBase
 {
+    public CpGamePlayStateRoomTransition(CpGamePlayManager owner) : base(owner) { }
+
     enum ECpState
     {
         None,

@@ -28,7 +28,14 @@ public class CpDebugManager : MonoBehaviour
         Vector2 position = CpUtil.GetWorldPositionFromNormalizedPosition(CpDebugParam.HellTestObjectNormalizedPosition);
         obj.transform.position = position;
 
-        obj.RequestStartHell(CpDebugParam.TestHellParamScriptableObject);
+        if (CpDebugParam.TestHellParamScriptableObject != null)
+        {
+            obj.RequestStartHell(CpDebugParam.TestHellParamScriptableObject);
+        }
+        if (CpDebugParam.TestHellListScriptableObject != null)
+        {
+            obj.RequestStartHell(CpDebugParam.TestHellListScriptableObject);
+        }
     }
 
     void StartEnemySpawnTest()

@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class CpGamePlayStateEnterFloor : CpGamePlayStateBase
 {
+    public CpGamePlayStateEnterFloor(CpGamePlayManager owner) : base(owner) { }
+
     public override ECpGamePlayState GetGamePlayState()
     {
         return ECpGamePlayState.EnterDungeon;

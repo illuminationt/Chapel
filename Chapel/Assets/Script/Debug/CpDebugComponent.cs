@@ -23,27 +23,6 @@ public class CpDebugComponent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            CpTaskComponent taskComp = GetComponent<CpTaskComponent>();
-            taskComp.StartStateMachine();
-        }
-
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            CpHellComponent hellComp = GetComponent<CpHellComponent>();
-            hellComp.RequestStart(HellParamScriptableObject.MultiHellParam);
-        }
-
-        //_timer += CpTime.DeltaTime;
-        //if (_timer > 1f && count < 11111111)
-        //{
-        //    _timer = 0f;
-        //    count++;
-        //    CpEnemyBase newEnemy = Instantiate(EnemyPrefab); ;
-        //    newEnemy.transform.position = new Vector2(0f, 70f);
-        //}
-
         if (Input.GetKeyDown(KeyCode.K))
         {
             CpEnemyShot[] shots = FindObjectsByType<CpEnemyShot>(FindObjectsSortMode.None);

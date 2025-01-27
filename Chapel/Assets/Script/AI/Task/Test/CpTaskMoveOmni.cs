@@ -7,14 +7,16 @@ using UnityEngine;
 public class CpTaskMoveOmni : CpTaskBase
 {
     public override ECpTaskType GetTaskType() { return ECpTaskType.Move; }
-    public CpTaskMoveOmni(ICpMoveParam moveParam)
+    public CpTaskMoveOmni(ICpMoveParam moveParam, GameObject moveGameObject)
     {
         _moveParam = moveParam;
+        _moveGameObject = moveGameObject;
     }
 
     protected override void OnStartInternal()
     {
-        CpMoveComponent moveComp = Owner.GetComponent<CpMoveComponent>();
+        GameObject moveTargetObject = _moveGameObject ?? Owner;
+        CpMoveComponent moveComp = moveTargetObject.GetComponent<CpMoveComponent>();
         _moverId = moveComp.RequestStart(_moveParam);
 
         moveComp.OnMoveFinished.AddListener(OnMoveFinished);
@@ -39,6 +41,7 @@ public class CpTaskMoveOmni : CpTaskBase
         }
     }
     ICpMoveParam _moveParam;
+    GameObject _moveGameObject = null;
     FCpMoverId _moverId;
 }
 
@@ -48,11 +51,13 @@ public class CpTaskMoveOmni : CpTaskBase
 public class CpUnit_CpTaskMoveOmni : CpUnitBase
 {
     ValueInput inputMoveParam;
+    ValueInput inputMoveGameObject;
     ICpMoveParam moveParam;
+    GameObject moveGameObject;
 
     protected override SltTaskBase CreateTask(GameObject ownerObj)
     {
-        return new CpTaskMoveOmni(moveParam);
+        return new CpTaskMoveOmni(moveParam, moveGameObject);
     }
 
     protected override void InitializeUnitVariables(Flow flow)
@@ -60,6 +65,7 @@ public class CpUnit_CpTaskMoveOmni : CpUnitBase
         // example: vectorValue = flow.GetValue<Vector2>(inputVectorValue);
 
         moveParam = flow.GetValue<ICpMoveParam>(inputMoveParam);
+        moveGameObject = flow.GetValue<GameObject>(inputMoveGameObject);
 
     }
 
@@ -68,5 +74,6 @@ public class CpUnit_CpTaskMoveOmni : CpUnitBase
         // exapmple: inputVectorValue = ValueInput("VectorValue", Vector2.zero);
 
         inputMoveParam = ValueInput<ICpMoveParam>("MoveParam", null);
+        inputMoveGameObject = ValueInput<GameObject>("GameObject", null);
     }
 }

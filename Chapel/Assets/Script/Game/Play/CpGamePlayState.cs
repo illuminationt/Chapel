@@ -1,4 +1,5 @@
 using ImGuiNET;
+using NUnit.Framework.Constraints;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,10 +8,10 @@ using UnityEngine.Assertions;
 
 public static class CpGamePlayStateUtil
 {
-    public static T CreateState<T>(ECpGamePlayState state)
+    public static T CreateState<T>(CpGamePlayManager owner, ECpGamePlayState state) where T : CpGamePlayStateBase
     {
         System.Type stateClass = CpGamePlayStateUtil.GetGamePlayStateClass(state);
-        T newState = (T)Activator.CreateInstance(stateClass);
+        T newState = (T)Activator.CreateInstance(stateClass, owner);
         return newState;
     }
 
@@ -28,17 +29,19 @@ public static class CpGamePlayStateUtil
     }
 }
 
+public enum ECpGamePlayStateSeq
+{
+    None = 0,
+    Start = 1,
+    Update = 5,
+    Finished = 10,
+}
+
 public abstract class CpGamePlayStateBase
 {
-    enum ECpState
+    public CpGamePlayStateBase(CpGamePlayManager ownerManager)
     {
-        None = 0,
-        Update,
-        Finished,
-    }
-    public CpGamePlayStateBase()
-    {
-        _ownerGamePlayManager = CpGamePlayManager.Get();
+        _ownerGamePlayManager = ownerManager;
     }
     public abstract ECpGamePlayState GetGamePlayState();
     public abstract List<ECpGamePlayState> GetCanStackStates();
@@ -60,19 +63,19 @@ public abstract class CpGamePlayStateBase
     // 明示的に開始
     public void ReadyForActivation()
     {
-        SetState(ECpState.Update);
+        SetState(ECpGamePlayStateSeq.Update);
     }
 
     public void Update()
     {
-        Assert.IsTrue(_currentState != ECpState.None, "ReadyForActivation()を呼んでないかも");
-        switch (_currentState)
+        Assert.IsTrue(_currentSeq != ECpGamePlayStateSeq.None, "ReadyForActivation()を呼んでないかも");
+        switch (_currentSeq)
         {
-            case ECpState.Update:
+            case ECpGamePlayStateSeq.Update:
                 UpdateInternal();
                 break;
 
-            case ECpState.Finished:
+            case ECpGamePlayStateSeq.Finished:
                 break;
 
             default:
@@ -95,7 +98,7 @@ public abstract class CpGamePlayStateBase
     // 次のステートを指定せずにステートを終了させる
     protected void FinishState()
     {
-        SetState(ECpState.Finished);
+        SetState(ECpGamePlayStateSeq.Finished);
     }
 
     // 次のステートを指定してステートを終了させる
@@ -115,32 +118,36 @@ public abstract class CpGamePlayStateBase
 
     public bool IsFinished()
     {
-        return _currentState == ECpState.Finished;
+        return _currentSeq == ECpGamePlayStateSeq.Finished;
     }
 
-    void SetState(ECpState newState)
+    void SetState(ECpGamePlayStateSeq newState)
     {
-        if (_currentState == newState)
+        if (_currentSeq == newState)
         {
             return;
         }
 
-        _currentState = newState;
+        _currentSeq = newState;
 
         switch (newState)
         {
-            case ECpState.Update:
+            case ECpGamePlayStateSeq.Update:
                 // 更新処理開始時にステート開始処理を呼ぶ
                 OnStart();
+                _ownerGamePlayManager.InvokeGamePlayStateSeqChangedEvent(GetGamePlayState(), ECpGamePlayStateSeq.Start);
+                _ownerGamePlayManager.InvokeGamePlayStateSeqChangedEvent(GetGamePlayState(), ECpGamePlayStateSeq.Update);
                 break;
-            case ECpState.Finished:
+
+            case ECpGamePlayStateSeq.Finished:
                 OnFinished();
+                _ownerGamePlayManager.InvokeGamePlayStateSeqChangedEvent(GetGamePlayState(), ECpGamePlayStateSeq.Finished);
                 break;
         }
     }
     public CpGamePlayManager OwnerGamePlayManager => _ownerGamePlayManager;
     CpGamePlayManager _ownerGamePlayManager = null;
-    ECpState _currentState = ECpState.None;
+    ECpGamePlayStateSeq _currentSeq = ECpGamePlayStateSeq.None;
 
 #if CP_DEBUG
     public void DrawImGui()
@@ -148,7 +155,7 @@ public abstract class CpGamePlayStateBase
         string stateStr = $"StateType = {SltEnumUtil.ToString(GetGamePlayState())}";
         ImGui.Text(stateStr);
 
-        string currentStateStr = $"CurrentState = {SltEnumUtil.ToString(_currentState)}";
+        string currentStateStr = $"CurrentState = {SltEnumUtil.ToString(_currentSeq)}";
         ImGui.Text(currentStateStr);
 
         DrawImGuiInternal();
@@ -164,6 +171,8 @@ public abstract class CpGamePlayStateBase
 // 何もしないステート
 public class CpGamePlayStateRoot : CpGamePlayStateBase
 {
+    public CpGamePlayStateRoot(CpGamePlayManager owner) : base(owner) { }
+
     public override ECpGamePlayState GetGamePlayState()
     {
         return ECpGamePlayState.Root;

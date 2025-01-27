@@ -15,6 +15,7 @@ public enum ECpButton
 {
     Shoot,
     Decide,
+    Lockon,
     Pause,
 
     UiDecide,

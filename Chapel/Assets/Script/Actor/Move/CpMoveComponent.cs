@@ -1,9 +1,10 @@
+using JetBrains.Annotations;
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-
+using UniRx;
 public enum ECpMoverUpdateType
 {
     None = 0,
@@ -12,40 +13,56 @@ public enum ECpMoverUpdateType
     Manually,
 }
 
-[RequireComponent(typeof(CpActorBase))]
 public class CpMoveComponent : MonoBehaviour
 {
-    private void Awake()
-    {
-        _moverUpdateType = GetComponent<CpActorBase>().GetMoverUpdateType();
-        _rigidbody2D = GetComponent<Rigidbody2D>();
-        _transform = transform;
-    }
     private void Start()
     {
-        if (_moverUpdateType == ECpMoverUpdateType.None)
+        _ownerActor = GetComponent<CpActorBase>();
+
+        _rigidbody2D = _ownerActor.GetComponent<Rigidbody2D>();
+        _transform = _ownerActor.transform;
+
+        // バリデーション
+        Assert.IsTrue(_ownerActor != null);
+        if (GetMoverUpdateType() == ECpMoverUpdateType.None)
         {
-            string str = $"{gameObject}のMoveComponent._moverUpdateTypeが設定されていません";
-            Assert.IsTrue(_moverUpdateType != ECpMoverUpdateType.None,
+            string str = $"{_ownerActor.name}のMoveComponent._moverUpdateTypeが設定されていません";
+            Assert.IsTrue(GetMoverUpdateType() != ECpMoverUpdateType.None,
                 str);
         }
-    }
-    private void Update()
-    {
-        if (_moverUpdateType == ECpMoverUpdateType.UpdateFunction)
-        {
-            UpdateManually();
-        }
+
+        _ownerActor.OnActivatedCallback.Subscribe(OnOwnerActivated);
+        _ownerActor.OnReleasedCallback.Subscribe(OnOwnerReleased);
+
+        CpMoveComponentHolder holder = CpMoveComponentHolder.Get();
+        holder.Register(this);
     }
 
-    private void FixedUpdate()
+    private void OnDestroy()
     {
-        if (_moverUpdateType == ECpMoverUpdateType.FixedUpdateFunction)
-        {
-            UpdateManually();
-        }
+        CpMoveComponentHolder holder = CpMoveComponentHolder.Get();
+        holder.Unregister(this);
     }
-    public void UpdateManually()
+
+    public ECpMoverUpdateType GetMoverUpdateType()
+    {
+        return _ownerActor.GetMoverUpdateType();
+    }
+
+    public void Execute()
+    {
+        UpdateManually();
+    }
+    void OnOwnerActivated(Unit _)
+    {
+        enabled = true;
+    }
+    void OnOwnerReleased(Unit _)
+    {
+        enabled = false;
+    }
+
+    void UpdateManually()
     {
         float currentYaw = _transform.eulerAngles.z;
         ECpMoverUpdateResult updateResult = MoverManager.Update(currentYaw);
@@ -60,7 +77,7 @@ public class CpMoveComponent : MonoBehaviour
             }
             else
             {
-                SltUtil.AddToPosition(transform, deltaMove);
+                SltUtil.AddToPosition(_transform, deltaMove);
             }
 
             float deltaYaw = _moverManager.GetDeltaRotZ();
@@ -170,10 +187,20 @@ public class CpMoveComponent : MonoBehaviour
         {
             if (_moverManager == null)
             {
-                CpActorBase ownerActor = GetComponent<CpActorBase>();
-                _moverManager = new CpMoverManager(ownerActor);
+                _moverManager = new CpMoverManager(OwnerActor);
             }
             return _moverManager;
+        }
+    }
+    CpActorBase OwnerActor
+    {
+        get
+        {
+            if (_ownerActor == null)
+            {
+                _ownerActor = GetComponent<CpActorBase>();
+            }
+            return _ownerActor;
         }
     }
 
@@ -185,7 +212,7 @@ public class CpMoveComponent : MonoBehaviour
         }
     }
 
-    ECpMoverUpdateType _moverUpdateType = ECpMoverUpdateType.None;
+    CpActorBase _ownerActor = null;
     CpMoverManager _moverManager;
     Rigidbody2D _rigidbody2D = null;
     Transform _transform = null;

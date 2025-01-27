@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 public enum ECpGamePlayState
 {
@@ -10,10 +12,10 @@ public enum ECpGamePlayState
 
     Root = 0,
 
-    EnterDungeon = 1000,
-    RoomBattle = 200,
-    RoomExplore = 300,
-    RoomTransition = 4000,
+    EnterDungeon = 1000, //ダンジョンに入る演出
+    RoomBattle = 200,// 部屋での戦闘中
+    RoomExplore = 300,// 部屋での探索中（戦闘中以外）
+    RoomTransition = 4000,//部屋の間の繊維中
 
     SceneTransition = 100000,
 }
@@ -82,7 +84,7 @@ public class CpGamePlayManager
 
     public static CpGamePlayManager Get()
     {
-        return CpGameManager.Instance.GamePlayManager;
+        return CpGameManager.Instance?.GamePlayManager;
     }
 
     bool CanStartState(ECpGamePlayState newState)
@@ -138,12 +140,32 @@ public class CpGamePlayManager
             _currentState = null;
         }
 
-        _currentState = CpGamePlayStateUtil.CreateState<T>(newGamePlayState);
+        _currentState = CpGamePlayStateUtil.CreateState<T>(this, newGamePlayState);
         return (T)_currentState;
     }
 
-    CpGamePlayStateBase _currentState = null;
+    public void InvokeGamePlayStateSeqChangedEvent(ECpGamePlayState state, ECpGamePlayStateSeq seq)
+    {
+        OnGamePlayStateSeqUpdated.Invoke(state, seq);
 
+        switch (state)
+        {
+            case ECpGamePlayState.EnterDungeon:
+                if (seq == ECpGamePlayStateSeq.Start)
+                {
+                    OnStartPlayable.Invoke();
+                }
+                break;
+        }
+    }
+
+    public UnityEvent<ECpGamePlayState, ECpGamePlayStateSeq> OnGamePlayStateSeqUpdated => _stateSeqEvent;
+    public UnityEvent OnStartPlayable => _onStartPlayable;
+
+    CpGamePlayStateBase _currentState = null;
+    UnityEvent<ECpGamePlayState, ECpGamePlayStateSeq> _stateSeqEvent = new UnityEvent<ECpGamePlayState, ECpGamePlayStateSeq>();
+    UnityEvent _onStartPlayable = new UnityEvent();
+    UnityEvent _onEndPlayable = new UnityEvent();
 #if CP_DEBUG
 
     public void DrawImGui()

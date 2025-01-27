@@ -65,13 +65,14 @@ public class CpSpawnedEnemySpecificParam
     public float StartDelay = 0f;
 
     [SerializeReference]
-    public List<CpEnemySpecificBehaviorBase> SpecificBehaviorList;
+    public List<CpEnemySpecificBehaviorBase> SpecificBehaviorList = new List<CpEnemySpecificBehaviorBase>();
 }
 
 [System.Serializable]
 public class CpEnemySpawnParamElement
 {
     public bool bEnable = true;
+    [SerializeField] string Comment = null;
     public CpEnemyBase Prefab;
 
     public CpEnemySpawnLocationParam LocationParam;

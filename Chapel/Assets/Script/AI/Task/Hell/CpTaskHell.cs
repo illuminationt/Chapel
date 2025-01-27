@@ -18,7 +18,7 @@ public class CpTaskHell : CpTaskBase
     protected override void OnStartInternal()
     {
         CpHellComponent hellComp = Owner.GetComponent<CpHellComponent>();
-        _hellUdpatorId = hellComp.RequestStart(_hellParamSO.MultiHellParam);
+        _hellUdpatorId = hellComp.RequestStart(_hellParamSO.MultiHellParam, null);
         hellComp.OnHellFinished.AddListener(OnHellFinished);
     }
 

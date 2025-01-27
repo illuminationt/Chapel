@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 public class CpGamePlayStateRoomBattle : CpGamePlayStateBase
 {
+    public CpGamePlayStateRoomBattle(CpGamePlayManager owner) : base(owner) { }
+
     public override ECpGamePlayState GetGamePlayState()
     {
         return ECpGamePlayState.RoomBattle;

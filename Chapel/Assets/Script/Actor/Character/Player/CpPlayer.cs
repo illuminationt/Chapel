@@ -16,6 +16,7 @@ public class CpPlayer : CpCharacterBase
     CpPilotComponent _pilotComponent = null;
     CpShootComponent _shootComponent = null;
     CpDebugComponent _debugComponent = null;
+    CpPlayerLockonController _lockonController = null;
     CpPlayerForwardCalculator _forwardCalculator = null;
     CpPredictiveLine _predictiveLine = null;
     [SerializeField] CpPredictiveLine _predictiveLinePrefab = null;
@@ -32,15 +33,11 @@ public class CpPlayer : CpCharacterBase
         _pilotComponent = GetComponent<CpPilotComponent>();
         _shootComponent = GetComponent<CpShootComponent>();
         _shootComponent.Initialize(this);
-        _forwardCalculator = new CpPlayerForwardCalculator(_transform);
+        _lockonController = CpPlayerLockonController.Create(_transform, this);
+        _forwardCalculator = CpPlayerForwardCalculator.Create(_transform, _lockonController);
         _colliders = GetComponents<Collider2D>().ToList();
 
         _predictiveLine = CpPredictiveLine.Create(_predictiveLinePrefab, this);
-    }
-
-    private void Start()
-    {
-
     }
 
     protected override void Update()
@@ -55,7 +52,12 @@ public class CpPlayer : CpCharacterBase
         updateShoot();
 
         _predictiveLine.execute(forwardDeg);
+
+
+        // ƒƒbƒNƒIƒ“‚¢‚Á‚½‚ñ‚±‚±‚É‘‚­
+        updateLockon();
     }
+
     // CpActorBase interface
     public override ECpMoverUpdateType GetMoverUpdateType() { return ECpMoverUpdateType.UpdateFunction; }
 
@@ -109,13 +111,14 @@ public class CpPlayer : CpCharacterBase
     public Transform GetAbsorbRootTransform() { return _transform; }
     // end of ICpAbsorbable
 
+    public CpShootComponent GetShootComponent() => _shootComponent;
     CpPlayerForwardCalculator ForwardCalculator
     {
         get
         {
             if (_forwardCalculator == null)
             {
-                _forwardCalculator = new CpPlayerForwardCalculator(transform);
+                _forwardCalculator = CpPlayerForwardCalculator.Create(transform, _lockonController);
             }
             return _forwardCalculator;
         }
@@ -130,6 +133,16 @@ public class CpPlayer : CpCharacterBase
         _shootComponent.execute(shootControlParam);
     }
 
+    void updateLockon()
+    {
+        // _lockonController.Update();
+
+        CpInputManager input = CpInputManager.Get();
+        if (input.WasPressed(ECpButton.Lockon))
+        {
+            _lockonController.Toggle();
+        }
+    }
 
     protected override void OnTriggerEnter2D(Collider2D collision)
     {

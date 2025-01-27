@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CpGamePlayStateSceneTransition : CpGamePlayStateBase
 {
+    public CpGamePlayStateSceneTransition(CpGamePlayManager owner) : base(owner) { }
+
     public override ECpGamePlayState GetGamePlayState()
     {
         return ECpGamePlayState.RoomTransition;

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UniRx;
 
 #if CP_DEBUG
 using ImGuiNET;
@@ -6,17 +7,22 @@ using ImGuiNET;
 
 public class CpPlayerAmmo
 {
+    public CpPlayerAmmo()
+    {
+    }
+
     public void AddAmmo(int delta)
     {
-        _currentAmmo += delta;
+        _currentAmmo.Value += delta;
     }
 
     public bool IsRemainAmmo()
     {
-        return _currentAmmo > 0;
+        return _currentAmmo.Value > 0;
     }
 
-    int _currentAmmo = 101111;
+    readonly ReactiveProperty<int> _currentAmmo = new ReactiveProperty<int>(10000);
+    public IReadOnlyReactiveProperty<int> CurrentAmmo => _currentAmmo;
 #if CP_DEBUG
     public void DrawImGui()
     {

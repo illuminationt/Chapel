@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
+
 // 自機の正面方向決定タイプ
 public enum ECpPlayerForwardType
 {
@@ -13,11 +14,18 @@ public enum ECpPlayerForwardType
 
 public class CpPlayerForwardCalculator
 {
-    public CpPlayerForwardCalculator(Transform inPlayerTransform)
+    public static CpPlayerForwardCalculator Create(Transform inPlayerTransform, ICpLockonControlInterface lockonControl)
+    {
+        CpPlayerForwardCalculator instance = new CpPlayerForwardCalculator();
+        instance.Initialize(inPlayerTransform, lockonControl);
+        return instance;
+    }
+    void Initialize(Transform inPlayerTransform, ICpLockonControlInterface lockonControl)
     {
         _playerTransfomrm = inPlayerTransform;
         _aimMarkerController = new CpPlayerAimMarkerController();
         _forwardTypeOnRightStick = ECpPlayerForwardType.Direction;
+        _lockonControl = lockonControl;
     }
 
     public void Update()
@@ -29,11 +37,11 @@ public class CpPlayerForwardCalculator
                 break;
 
             case ECpPlayerForwardType.Direction:
-                ExecuteDirection();
+                Update_ForwardTypeDirection();
                 break;
 
             case ECpPlayerForwardType.FocalPoint:
-                ExecuteFocalPoint();
+                Update_ForwardTypeFocalPoint();
                 break;
 
             default:
@@ -41,28 +49,42 @@ public class CpPlayerForwardCalculator
         }
     }
 
-    void ExecuteDirection()
+    void Update_ForwardTypeDirection()
     {
-        // throw new System.NotImplementedException();
         _aimMarkerController.SetActive(false);
     }
 
-    void ExecuteFocalPoint()
+    void Update_ForwardTypeFocalPoint()
     {
-        CpInputManager inputManager = CpInputManager.Get();
-        ECpDirectionInputDevice directionInputDevice = inputManager.GetDirectionInputDevice();
+        Vector2 lockonDirection = Vector2.zero;
+        if (_lockonControl.GetLockonDirection(ref lockonDirection))
+        {
+            _aimMarkerController.SetActive(false);
+        }
+        else
+        {
+            CpInputManager inputManager = CpInputManager.Get();
+            ECpDirectionInputDevice directionInputDevice = inputManager.GetDirectionInputDevice();
 
-        _aimMarkerController.SetActive(true);
-        _aimMarkerController.Update(directionInputDevice);
+            _aimMarkerController.SetActive(true);
+            _aimMarkerController.Update(directionInputDevice);
+        }
     }
-
 
     public Vector2 GetForwardVector()
     {
-        Vector2 selfPosition = _playerTransfomrm.position;
-        Vector2 focalPosition = CalcFocalLocation();
-        Vector2 retForward = (focalPosition - selfPosition).normalized;
-        return retForward;
+        Vector2 forward = Vector2.zero;
+        if (_lockonControl.GetLockonDirection(ref forward))
+        {
+            return forward;
+        }
+        else
+        {
+            Vector2 selfPosition = _playerTransfomrm.position;
+            Vector2 focalPosition = CalcFocalLocation();
+            Vector2 retForward = (focalPosition - selfPosition).normalized;
+            return retForward;
+        }
     }
     public float GetForwardDegree()
     {
@@ -131,6 +153,7 @@ public class CpPlayerForwardCalculator
     CpPlayerAimMarkerController _aimMarkerController = null;
     Vector2 latestForwardVector = Vector2.right;
 
+    ICpLockonControlInterface _lockonControl = null;
 
 #if CP_DEBUG
     public void DrawImGui()

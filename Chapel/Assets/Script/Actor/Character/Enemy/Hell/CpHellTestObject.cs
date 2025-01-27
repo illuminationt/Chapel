@@ -1,4 +1,9 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
+using UnityEngine.Events;
+
 
 [RequireComponent(typeof(CpHellComponent))]
 public class CpHellTestObject : CpActorBase
@@ -27,6 +32,11 @@ public class CpHellTestObject : CpActorBase
 
     public void RequestStartHell(CpHellParamScriptableObject paramSO)
     {
-        _hellComponent.RequestStart(paramSO.MultiHellParam);
+        _hellComponent.RequestStart(paramSO.MultiHellParam, null);
+    }
+    public void RequestStartHell(CpHellParamListScriptableObject paramSO)
+    {
+        List<FCpMultiHellUpdatorId> idList = null;
+        _hellComponent.RequestStart(paramSO.HellParamList, out idList);
     }
 }

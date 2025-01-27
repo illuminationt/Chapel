@@ -49,5 +49,16 @@ public class CpPlayerShot : CpShotBase
         return ECpAttackReceiverGroup.PlayerShot;
     }
 
+    protected override void OnTriggerEnter2D(Collider2D collision)
+    {
+        base.OnTriggerEnter2D(collision);
+
+        int layer = collision.gameObject.layer;
+        if (layer == CpLayer.EnemyShield)
+        {
+            Release();
+        }
+    }
+
     float _forwardDegreeOnCreated = 0f;
 }

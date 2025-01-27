@@ -5,9 +5,6 @@ using Unity.VisualScripting;
 using DG.DemiEditor;
 using NUnit.Framework;
 
-
-
-
 #if UNITY_EDITOR
 using UnityEditor;
 
@@ -21,7 +18,8 @@ public class CpFloorEditorWindow : EditorWindow
     int _workingHeight = -1;
     int _workingWidth = -1;
     TSltBitFlag<KeyCode> _pressedKeyCodeFlags;
-    readonly int roomButtonSize = 80;
+    // íËêî
+    readonly int roomButtonSize = 100;
     [MenuItem("Chapel/Floor Editor")]
     public static void ShowWindow()
     {
@@ -78,7 +76,8 @@ public class CpFloorEditorWindow : EditorWindow
                 GUIStyle style = GetButtonStyle(roomParam);
                 if (GUILayout.Button(buttonString, style, GUILayout.Width(roomButtonSize), GUILayout.Height(roomButtonSize)))
                 {
-                    EditRoom(roomParam);
+                    Vector2 roomIndex = new Vector2(x, y);
+                    EditRoom(roomParam, roomIndex);
                 }
             }
 
@@ -86,7 +85,7 @@ public class CpFloorEditorWindow : EditorWindow
         }
     }
 
-    void EditRoom(CpFloorStructureRoomParam roomParam)
+    void EditRoom(CpFloorStructureRoomParam roomParam, in Vector2 roomIndex)
     {
         // ìØéûâüÇµîªíË
         if (OnRoomPressed(roomParam))
@@ -96,7 +95,8 @@ public class CpFloorEditorWindow : EditorWindow
         EditingRoomParam = roomParam;
         if (!HasOpenInstances<CpFloorRoomParamEditorWindow>())
         {
-            CreateWindow<CpFloorRoomParamEditorWindow>("Floor Room Param");
+            string title = $"RoomParam ({roomIndex.x},{roomIndex.y})";
+            CreateWindow<CpFloorRoomParamEditorWindow>(title);
         }
     }
 

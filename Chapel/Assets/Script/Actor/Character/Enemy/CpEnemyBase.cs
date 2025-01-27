@@ -15,7 +15,7 @@ public struct FCpEnemyInitializeParam
 }
 
 [RequireComponent(typeof(CpTaskComponent))]
-public class CpEnemyBase : CpCharacterBase
+public class CpEnemyBase : CpCharacterBase, ICpLockonTarget
 {
     public static UnityEvent<CpEnemyBase> OnEnemyDead = new UnityEvent<CpEnemyBase>();
 
@@ -45,6 +45,18 @@ public class CpEnemyBase : CpCharacterBase
     }
 
     // CpActorBase interface
+    protected override void Awake()
+    {
+        base.Awake();
+        ICpContainable.OnAwakeContainable<ICpLockonTarget>(this);
+    }
+
+    protected override void OnDestroy()
+    {
+        ICpContainable.OnDestroyContainable<ICpLockonTarget>(this);
+        base.OnDestroy();
+    }
+
     public override ECpMoverUpdateType GetMoverUpdateType() { return ECpMoverUpdateType.UpdateFunction; }
 
     // end of CpActorBase interface
@@ -94,6 +106,11 @@ public class CpEnemyBase : CpCharacterBase
     }
 
     // 
+
+    // ICpLockonTarget
+    public Transform GetLockonTargetTransform() { return _transform; }
+
+    // end of ICpLockonTarget
     public void SetStateGraph(StateGraphAsset stateGraphAsset)
     {
         StateMachine stateMachineComp = GetComponent<StateMachine>();

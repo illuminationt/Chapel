@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UniRx;
+using System;
+
 public class CpGameManager : SingletonMonoBehaviour<CpGameManager>
 {
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -26,13 +29,22 @@ public class CpGameManager : SingletonMonoBehaviour<CpGameManager>
         _gamePlayManager = CpGamePlayManager.Create();
         _sceneManager = CpSceneManager.Create(this);
         _pauseManager = CpPauseManager.Create();
+        _interfaceContainer = CpInterfaceContainer.Create();
+        _moveComponentHolder = new CpMoveComponentHolder();
         _enemyShotEraser = CpEnemyShotEraser.Create();
+
     }
 
     private void Update()
     {
+        _updateSubject.OnNext(Unit.Default);
+
         _gamePlayManager.Update();
         _enemyShotEraser.Update();
+    }
+    private void FixedUpdate()
+    {
+        _fixedUpdateSubject.OnNext(Unit.Default);
     }
 
     public CpPlayer Player
@@ -93,9 +105,20 @@ public class CpGameManager : SingletonMonoBehaviour<CpGameManager>
 
     public CpEnemyShotEraser EnemyShotEraser => _enemyShotEraser;
     CpEnemyShotEraser _enemyShotEraser = null;
+
+    public CpInterfaceContainer InterfaceContainer => _interfaceContainer;
+    CpInterfaceContainer _interfaceContainer = null;
+    public CpMoveComponentHolder MoveComponentHolder => _moveComponentHolder;
+    CpMoveComponentHolder _moveComponentHolder = null;
+
     public CpGameSettings GameSettings => _gameSettings;
     CpGameSettings _gameSettings;
 
+    public IObservable<Unit> OnUpdateAsObservaable => _updateSubject;
+    public IObservable<Unit> OnFixedUpdateAsObservabale => _fixedUpdateSubject;
+
+    readonly Subject<Unit> _updateSubject = new Subject<Unit>();
+    readonly Subject<Unit> _fixedUpdateSubject = new Subject<Unit>();
 #if CP_DEBUG
     //void ShowImGui(bool bShow)
     //{

@@ -104,7 +104,7 @@ public abstract class CpShotBase : CpActorBase,
     }
     // end of 
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
         ICpAttackReceivable otherAttackReceivable = collision.gameObject.GetComponent<ICpAttackReceivable>();
         CpAttackUtil.OnTriggerEnter2D(this, otherAttackReceivable, collision);

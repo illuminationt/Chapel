@@ -80,6 +80,15 @@ public partial class @CpInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Lockon"",
+                    ""type"": ""Button"",
+                    ""id"": ""27cbd31c-359d-4d51-9585-f87ad28af142"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -247,6 +256,28 @@ public partial class @CpInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Direction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5ce84dbd-357b-4966-a2e2-d128a7e6b8c2"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Lockon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2812d60a-f8b4-4041-9e3d-85a512b49cd6"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Lockon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -386,6 +417,7 @@ public partial class @CpInputActions: IInputActionCollection2, IDisposable
         m_Player_Decide = m_Player.FindAction("Decide", throwIfNotFound: true);
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
         m_Player_MouseLocation = m_Player.FindAction("MouseLocation", throwIfNotFound: true);
+        m_Player_Lockon = m_Player.FindAction("Lockon", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Move = m_UI.FindAction("Move", throwIfNotFound: true);
@@ -463,6 +495,7 @@ public partial class @CpInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Decide;
     private readonly InputAction m_Player_Pause;
     private readonly InputAction m_Player_MouseLocation;
+    private readonly InputAction m_Player_Lockon;
     public struct PlayerActions
     {
         private @CpInputActions m_Wrapper;
@@ -473,6 +506,7 @@ public partial class @CpInputActions: IInputActionCollection2, IDisposable
         public InputAction @Decide => m_Wrapper.m_Player_Decide;
         public InputAction @Pause => m_Wrapper.m_Player_Pause;
         public InputAction @MouseLocation => m_Wrapper.m_Player_MouseLocation;
+        public InputAction @Lockon => m_Wrapper.m_Player_Lockon;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -500,6 +534,9 @@ public partial class @CpInputActions: IInputActionCollection2, IDisposable
             @MouseLocation.started += instance.OnMouseLocation;
             @MouseLocation.performed += instance.OnMouseLocation;
             @MouseLocation.canceled += instance.OnMouseLocation;
+            @Lockon.started += instance.OnLockon;
+            @Lockon.performed += instance.OnLockon;
+            @Lockon.canceled += instance.OnLockon;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -522,6 +559,9 @@ public partial class @CpInputActions: IInputActionCollection2, IDisposable
             @MouseLocation.started -= instance.OnMouseLocation;
             @MouseLocation.performed -= instance.OnMouseLocation;
             @MouseLocation.canceled -= instance.OnMouseLocation;
+            @Lockon.started -= instance.OnLockon;
+            @Lockon.performed -= instance.OnLockon;
+            @Lockon.canceled -= instance.OnLockon;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -601,6 +641,7 @@ public partial class @CpInputActions: IInputActionCollection2, IDisposable
         void OnDecide(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
         void OnMouseLocation(InputAction.CallbackContext context);
+        void OnLockon(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
